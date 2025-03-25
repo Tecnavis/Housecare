@@ -1,0 +1,268 @@
+.dashboards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .cards, .subcard {
+    background-color: var(--bs-primary);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .positiveChange {
+    color: green; /* Change this to your desired shade of green */
+  }
+  
+  .negativeChange {
+    color: red; /* Change this to your desired shade of red */
+  }
+  .cardsubtext {
+    font-size: 14px;
+    /* Add any other general styles for cardsubtext here */
+  }
+  .cards {
+    flex: 1 1 calc(25% - 40px);
+    text-align: center;
+  }
+  
+  .cardtitle, .subcardtitle {
+    font-size: 1.2em;
+    color: white;
+  }
+  
+  .cardvalue, .subcardvalue {
+    font-size: 2em;
+    color: white;
+    margin: 10px 0;
+  }
+  
+  .cardsubtext, .subcardsubtext {
+    font-size: 0.8em;
+    color: black;
+  }
+  
+  .subcards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .subcard {
+    flex: 1 1 calc(33.33% - 40px);
+    text-align: center;
+  }
+  
+
+/* dashboard.module.css */
+
+.App {
+  padding: 20px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.tables {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.tables th, .tables td {
+  padding: 10px;
+  border: 1px solid #e0dddd;
+}
+
+.tables th {
+  background-color: #f5f5f5;
+}
+
+.tables td {
+  text-align: center;
+}
+
+.btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* Alert styles */
+.alert_container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 90%;
+  max-width: 400px;
+}
+
+.alert_container button {
+  margin-right: 10px;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  .tables th, .tables td {
+    padding: 5px;
+    font-size: 12px;
+  }
+
+  .btn {
+    padding: 3px 5px;
+    font-size: 12px;
+  }
+
+  .alert-container {
+    width: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  .tables th, .tables td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .tables td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .tables td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 50%;
+    padding-left: 10px;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .btn {
+    padding: 2px 4px;
+    font-size: 10px;
+  }
+
+  .alert-container {
+    width: 100%;
+  }
+}
+
+
+.card {
+  border-radius: 12px;
+  background: linear-gradient(135deg, #007bff, #0056b3); /* Smooth gradient background */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Enhanced shadow for depth */
+  padding: 2rem;
+  color: #ffffff; /* White text for contrast */
+  position: relative;
+  overflow: hidden;
+}
+
+.card-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 250px; /* Fixed height for card */
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card-logo {
+  height: 40px; /* Adjust logo size */
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff; /* White text color for the title */
+  margin-bottom: 1rem;
+}
+
+.card-number {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ffffff; /* White text color for the card number */
+  margin: 0;
+}
+
+.card-info {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8); /* Slightly muted white for card details */
+  margin-bottom: 0.5rem;
+}
+
+.card-name {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-expiry {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8); /* Slightly muted white for expiry date */
+}
+
+.card-footer {
+  border-top: 2px solid rgba(255, 255, 255, 0.3); /* Light border for footer separation */
+  padding-top: 1rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8); /* Muted white text for footer */
+  text-align: right;
+}
+
+.badge-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px; /* Rounded corners for the badge */
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.badge.bg-success {
+  background-color: #28a745; /* Green for active status */
+  color: #ffffff;
+}
+
+.badge.bg-danger {
+  background-color: #dc3545; /* Red for inactive status */
+  color: #ffffff;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.2); /* Semi-transparent white circle for decorative effect */
+  border-radius: 50%;
+  z-index: 0;
+}

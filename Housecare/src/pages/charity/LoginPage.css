@@ -1,0 +1,53 @@
+.custom-input {
+    border-radius: 25px;
+    border: 1px solid #dcdcdc;
+    padding: 10px 15px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .custom-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+    outline: none;
+  }
+  
+  .btn-custom {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    border: none;
+    color: white;
+    border-radius: 25px;
+    width: 100%;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px ;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-custom:hover {
+    background: linear-gradient(135deg, #5a7dff, #9366e0);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+    border: none;
+  }
+  
+  .text-primary {
+    color: #6e8efb; /* Use the same primary color for consistency */
+  }
+  
+  .text-muted {
+    color: #6c757d; /* Use a muted color for links */
+  }
+  
+  .font-size-24 {
+    font-size: 24px; /* Larger font size for headings */
+  }
+  
+  .text-center {
+    text-align: center; /* Center align text */
+  }
+  
+  .text-end {
+    text-align: end; /* Align text to the end (right in LTR) */
+  }
+  

@@ -1,0 +1,29 @@
+.table_container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  .tables {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* Adjust as needed */
+  }
+  
+  .theads {
+    background-color: #f4f4f4;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+ 
+  

@@ -1,0 +1,10 @@
+var express = require('express');
+var router = express.Router();
+const Controller = require("../controller/email");
+router.post("/", Controller.create);
+router.get("/", Controller.list);
+router.get("/:id", Controller.edit);
+router.put("/:id", Controller.update);
+router.delete("/:id", Controller.delete);
+// router.post('/send', Controller.sendEmail);
+module.exports = router;
