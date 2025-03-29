@@ -21,6 +21,7 @@ useEffect(() => {
         const response = await axios.get(`${BASE_URL}/approvals/notifications`, {
           params: { charity: charityName }, // Fetch only unseen notifications
         });
+        
         setNotifications(response.data);
       } catch (error) {
         console.error("Error fetching notifications:", error);

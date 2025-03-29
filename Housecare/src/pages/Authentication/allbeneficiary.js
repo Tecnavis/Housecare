@@ -52,7 +52,6 @@ function Beneficiary() {
   const toggleModal = () => setModal(!modal);
 
   const handlePayNowClick = (benificiary) => {
-    console.log('Selected Beneficiary:', benificiary); // Check if id is present
     setSelectedBenificiary(benificiary);
     setTransactionId(generateTransactionId()); // Generate custom transaction ID starting with "TR"
     setSpendAmount(""); // Clear the spend amount field

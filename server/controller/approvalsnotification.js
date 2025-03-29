@@ -37,9 +37,10 @@ exports.createNotification = async (req, res) => {
 exports.getNotifications = async (req, res) => {
     try {
       const { charity } = req.query; // Get charity name from query parameters
-  
+
+      
       // Fetch unseen notifications for the specific charity
-      const notifications = await Notification.find({ charityName: charity, seen: false }).sort({ createdAt: -1 });
+      const notifications = await Notification.find({ charityName: charity, seen: true }).sort({ createdAt: -1 });
   
       res.status(200).json(notifications);
     } catch (error) {

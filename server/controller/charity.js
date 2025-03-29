@@ -259,6 +259,11 @@ exports.signin = asyncHandler(async (req, res) => {
 
 exports.detailses = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
+  if (!id || id === "undefined" ) {
+    return res.status(400).json({ message: "Invalid or missing charity ID" });
+  }
+  
   try {
     const charities = await Charity.findById(id); // Find by ID
     if (!charities) {

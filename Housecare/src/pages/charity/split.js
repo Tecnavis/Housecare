@@ -24,6 +24,19 @@ const App = () => {
   const [alertMessage, setAlertMessage] = useState("")
   const [confirmAction, setConfirmAction] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [emailList, setEmailList] = useState([]);
+
+  
+
+
+  const fetchEmails = async () => {
+    try {
+      const { data } = await axios.get(`${BASE_URL}/emailsender`);
+      setEmailList(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const fetchDatas = async () => {
     try {
@@ -59,6 +72,7 @@ const App = () => {
 
       setData(initialData)
     }
+    fetchEmails();
   }, [benificiarys])
 
   const handleEditClick = index => {
@@ -93,8 +107,14 @@ const App = () => {
     setNewLimitedAmount(event.target.value)
   }
 
-  const handleLimitedAmountSave = () => {
+  const handleLimitedAmountSave =  async () => {
     const updatedLimitedAmount = parseFloat(newLimitedAmount)
+    const id =   localStorage.getItem("amountId");    
+    try {
+        await axios.patch(`${BASE_URL}/amount/${id}`, { amount: updatedLimitedAmount })
+    } catch (error) {
+      console.error(error)
+    }
     setLimitedAmount(updatedLimitedAmount)
     localStorage.setItem("limitedamount", updatedLimitedAmount)
     setIsEditingLimitedAmount(false)
@@ -269,8 +289,14 @@ const App = () => {
 
     // Prepare form data to send to the server
     const formData = new FormData()
+    console.log(excelBlob, "blob");
+    
     formData.append("excel", excelBlob, "split_details.xlsx")
+    formData.append("recipients", JSON.stringify(emailList.map(item => item.email)));
 
+
+    console.log(formData, "form");
+    
     // Send the Excel file to the server via POST request
     axios
       .post(`${BASE_URL}/sendmail`, formData, {
@@ -323,6 +349,8 @@ const App = () => {
   
       await axios.post(`${BASE_URL}/increment`);
       console.log("Notification count incremented successfully");
+
+
   
       handleSaveData();
       sendEmail();

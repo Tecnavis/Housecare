@@ -49,10 +49,8 @@ const SplitedHistory = () => {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const data = XLSX.utils.sheet_to_json(sheet);
-        console.log("Parsed data:", data);
 
         for (const row of data) {
-          console.log("Updating row:", row); // Log each row being updated
           
           // Construct the request payload
           const payload = {
@@ -73,7 +71,6 @@ const SplitedHistory = () => {
 
           try {
             const response = await axios.put(`${BASE_URL}/splits/${row._id}`, payload);
-            console.log("Update response:", response.data); // Log the response data
           } catch (error) {
             console.error(`Error updating split with id ${row._id}:`, error.response ? error.response.data : error.message);
           }
@@ -132,7 +129,6 @@ const handleShareEmail = () => {
       },
     })
     .then(response => {
-      console.log(response.data.message);
       Swal.fire({
         title: 'Success!',
         text: 'Email sent successfully!',

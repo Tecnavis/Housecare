@@ -22,7 +22,7 @@ const fetchStaff = async () => {
 const EmailCompose = ({ onShare }) => {
   document.title = "Email Compose | Housecare";
   const [ccInputs, setCcInputs] = useState([{ id: 1, value: "" }]);
-  const [toAddress, setToAddress] = useState("narjishakuniyil@gmail.com");
+  const [toAddress, setToAddress] = useState("muhammedsafvanmp7@gmail.com");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState(() => {
     const initialContent = `Hello sir,\n\nThis is From Charity Organization For approval\n\nThank you,\nCharity Organization`;

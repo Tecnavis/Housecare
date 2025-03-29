@@ -82,6 +82,7 @@ import SplitHistory from "pages/Authentication/splithistory"
 import Charitysplithistory from "pages/Authentication/charitysplithistory"
 import Datesplits from "pages/Authentication/datesplits"
 import History from "pages/Authentication/History"
+import EmailSender from "pages/Authentication/emailSender"
 import Email from "pages/charity/email"
 import Resetpassword from "pages/Authentication/resetpassword"
 import LatestNotifications from "pages/Authentication/latestnotifications"
@@ -99,6 +100,7 @@ const userRoutes = [
   { path: "/datesplits/:id", component: <Datesplits /> },
   { path: "/allsplit", component: <Allsplit /> },
   {path: "/history-split" , component: <History/>},
+  {path: "/email-sender" , component: <EmailSender/>},
   {path: "/latest-notifications" , component: <LatestNotifications/>},
   {path: "/beneficiary" , component: <Allbeneficiaries/>},
 

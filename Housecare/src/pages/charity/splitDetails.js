@@ -5,6 +5,8 @@ import { Button, Card } from "reactstrap";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Authentication/handle-api";
 const SplitedDetails = () => {
+
+  
   const [splits, setSplits] = useState([]);
 
   const charitydetails = JSON.parse(localStorage.getItem("charitydetails"));
@@ -14,16 +16,14 @@ const SplitedDetails = () => {
     const fetchSplits = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/splits`);
-        console.log(response.data, "All Splits Data");
   
-        const filteredSplits = response.data
+        const filteredSplits = response?.data
           .filter(
             split => split.beneficiary && split.beneficiary.charity_name === charityName
           )
           .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date in descending order
   
         setSplits(filteredSplits);
-        console.log(filteredSplits, "Filtered Splits");
       } catch (error) {
         console.error("Error fetching splits:", error);
       }

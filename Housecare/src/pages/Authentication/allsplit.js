@@ -15,7 +15,6 @@ function Allsplit() {
       try {
         const response = await axios.get(`${BASE_URL}/api/splits`);
         setSplits(response.data);
-        console.log(response.data, "All Splits Data");
       } catch (error) {
         console.error("Error fetching splits:", error);
       }

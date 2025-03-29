@@ -18,12 +18,22 @@ const NotificationDropdown = (props) => {
     const fetchNotifications = async () => {
       try {
         const charityDetails = JSON.parse(localStorage.getItem("charitydetails"));
-        if (charityDetails) {
+        // if (charityDetails) {
+        //   const response = await axios.get(`http://localhost:8000/notification/notifications`);
+        //   console.log(response.data, "noti");
+        //   setNotifications(response.data);
+          
+        //   const unread = response.data.filter(notification => !notification.isRead).length;
+        //   setUnreadCount(unread);
+        // }
+
+       
           const response = await axios.get(`${BASE_URL}/notification/notifications`);
           setNotifications(response.data);
+          
           const unread = response.data.filter(notification => !notification.isRead).length;
           setUnreadCount(unread);
-        }
+        
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }

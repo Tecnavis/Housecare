@@ -19,6 +19,7 @@ const Dashboards = () => {
       }
     }
     fetchDatas()
+    fetchTotalAmount();
   }, [])
   // const limitedamount = JSON.parse(localStorage.getItem("limitedamount"))
   const charitydetails = JSON.parse(localStorage.getItem("charitydetails"))
@@ -28,41 +29,39 @@ const Dashboards = () => {
     benificiary => benificiary.charity_name === charitydetails.charity
   )
 
-  const [currentAmount, setCurrentAmount] = useState(0)
-  const [previousAmount, setPreviousAmount] = useState(0)
-  const [percentageChange, setPercentageChange] = useState(0)
+  const [totalAmount, setTotalAmount] = useState(0)
   const [splitsAmountSum, setSplitsAmountSum] = useState(0); // New state for sum of spliteamount
   
-  const updateLimitedAmount = (newAmount) => {
-    const currentAmount = JSON.parse(localStorage.getItem("limitedamount")) || 0;
-    localStorage.setItem("previousLimitedAmount", JSON.stringify(currentAmount));
-    localStorage.setItem("limitedamount", JSON.stringify(newAmount));
-    setCurrentAmount(newAmount);
-  };
+  // const updateLimitedAmount = (newAmount) => {
+  //   const currentAmount = JSON.parse(localStorage.getItem("limitedamount")) || 0;
+  //   localStorage.setItem("previousLimitedAmount", JSON.stringify(currentAmount));
+  //   // localStorage.setItem("limitedamount", JSON.stringify(newAmount));
+  //   // setCurrentAmount(newAmount);
+  // };
   
-  useEffect(() => {
-    const storedCurrentAmount =
-      JSON.parse(localStorage.getItem("limitedamount")) || 0;
-    const storedPreviousAmount =
-      JSON.parse(localStorage.getItem("previousLimitedAmount")) || 0;
   
-    // console.log("Stored Current Amount:", storedCurrentAmount);
-    // console.log("Stored Previous Amount:", storedPreviousAmount);
+
+  // useEffect(() => {
+  //   const storedCurrentAmount =
+  //     JSON.parse(localStorage.getItem("limitedamount")) || 0;
+  //   const storedPreviousAmount =
+  //     JSON.parse(localStorage.getItem("previousLimitedAmount")) || 0;
   
-    setCurrentAmount(storedCurrentAmount);
-    setPreviousAmount(storedPreviousAmount);
   
-    // Calculate percentage change if previous amount is greater than 0
-    if (storedPreviousAmount > 0) {
-      const change =
-        ((storedCurrentAmount - storedPreviousAmount) / storedPreviousAmount) *
-        100;
-      setPercentageChange(change.toFixed(2));
-    } else {
-      // Handle cases where there is no previous amount
-      setPercentageChange(0);
-    }
-  }, []);
+  //   setCurrentAmount(storedCurrentAmount);
+  //   setPreviousAmount(storedPreviousAmount);
+  
+  //   // Calculate percentage change if previous amount is greater than 0
+  //   if (storedPreviousAmount > 0) {
+  //     const change =
+  //       ((storedCurrentAmount - storedPreviousAmount) / storedPreviousAmount) *
+  //       100;
+  //     setPercentageChange(change.toFixed(2));
+  //   } else {
+  //     // Handle cases where there is no previous amount
+  //     setPercentageChange(0);
+  //   }
+  // }, []);
   
 //fetch splits data for find out the pending approvals
 const [splits, setSplits] = useState([]);
@@ -71,24 +70,33 @@ const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
   const fetchSplits = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/api/splits`);  
-      const filteredSplits = response.data.filter(
+      
+      // setTotalAmount(response?.data)
+      const filteredSplits = response?.data.filter(
         split => split.beneficiary && split.beneficiary.charity_name === charityName
       );
       setSplits(filteredSplits);
-      console.log(filteredSplits, "Filtered Splits");
       
       const pendingCount = filteredSplits.filter(split => split.status === "Pending").length;
       setPendingApprovalsCount(pendingCount);  
         // Calculate the sum of spliteamount
         const amountSum = filteredSplits.reduce((total, split) => total + (split.splitamount || 0), 0);
-        setSplitsAmountSum(amountSum); 
-        console.log(splitsAmountSum, "Splits Amount Sum");
-        
+        setSplitsAmountSum(amountSum);         
   
     } catch (error) {
       console.error("Error fetching splits:", error);
     }
   };
+
+  const fetchTotalAmount =  async () => {
+    try {
+      const response =  await axios.get(`${BASE_URL}/amount`)
+
+      setTotalAmount(response.data.totalAmount)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <>
@@ -97,7 +105,7 @@ const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
       <div className={styles.dashboards}>
         <div className={styles.cards}>
           <div className={styles.cardtitle}>Fund Size</div>
-          <div className={styles.cardvalue}>SAR {currentAmount || "000"}</div>
+          <div className={styles.cardvalue}>SAR {totalAmount || "000"}</div>
          
         </div>
         <div className={styles.cards}>

@@ -3,13 +3,24 @@ import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button, Input, FormFeedback
 } from 'reactstrap';
+import axios from 'axios';
+import { BASE_URL} from "pages/Authentication/handle-api"
+
 
 const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
   const [amount, setAmount] = useState('');
   const [isInvalid, setIsInvalid] = useState(false);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (amount >= 1) {
+
+      try {
+        const response =  await axios.post(`${BASE_URL}/amount`, {amount})
+        localStorage.setItem("amountId", response.data?.newAmount._id);
+      } catch (error) {
+        console.error(error)
+      }
+      
       saveAmount(amount);
       toggle();
     } else {

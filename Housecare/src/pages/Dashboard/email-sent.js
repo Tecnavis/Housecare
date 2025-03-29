@@ -101,7 +101,6 @@ const fetchSplits = async () => {
         setSplits(allSplits);  // Store all splits if you need them elsewhere
         setAcceptedAmount(acceptedAmountSum);  // Set the sum to state
 
-        console.log(allSplits, "All Splits Data");
     } catch (error) {
         console.error("Error fetching splits:", error);
     }

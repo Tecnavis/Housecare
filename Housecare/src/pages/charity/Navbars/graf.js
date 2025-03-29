@@ -54,6 +54,7 @@ const MonthlyEarnings = () => {
   const fetchSplits = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/api/splits`);
+      
 
       if (!charitydetails || !charitydetails.charity) {
         console.error("Charity details are missing or undefined.");
@@ -62,8 +63,8 @@ const MonthlyEarnings = () => {
 
       const charityName = charitydetails.charity;
 
-      if (response && response.data && Array.isArray(response.data)) {
-        const filteredSplits = response.data
+      if (response && response?.data && Array.isArray(response?.data)) {
+        const filteredSplits = response?.data
           .filter(
             split => split.beneficiary && split.beneficiary.charity_name === charityName
           )
@@ -83,7 +84,7 @@ const MonthlyEarnings = () => {
           { name: "REJECTED", data: monthlyData.Rejected },
         ]);
       } else {
-        console.error("Invalid response data:", response.data);
+        console.error("Invalid response data:", response?.data?.splits);
       }
     } catch (error) {
       console.error("Error fetching splits:", error);

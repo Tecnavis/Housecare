@@ -12,7 +12,7 @@ import {
   ModalBody,
   Input,
 } from "reactstrap"
-import ImportBeneficiaryModal from './charitybenificiaryimport';
+import ImportBeneficiaryModal from "./charitybenificiaryimport"
 import axios from "axios"
 import { useNavigate, useParams } from "react-router-dom"
 import { Link } from "react-router-dom"
@@ -57,7 +57,7 @@ const Beneficiary = () => {
   const [editedId, setEditedId] = useState(null)
   const [validationErrors, setValidationErrors] = useState({})
   const navigate = useNavigate()
-  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importModalOpen, setImportModalOpen] = useState(false)
   //charity details
   useEffect(() => {
     // loadData()
@@ -84,7 +84,7 @@ const Beneficiary = () => {
   const benificiaryCreate = async e => {
     e.preventDefault()
     const errors = {}
-    if(!datas.date) errors.date = "Date is required."
+    if (!datas.date) errors.date = "Date is required."
     if (!datas.benificiary_name) errors.benificiary_name = "Name is required."
     if (!datas.category) errors.category = "Category is required."
     if (!datas.age) errors.age = "Age is required."
@@ -191,7 +191,7 @@ const Beneficiary = () => {
     e.preventDefault()
 
     const errors = {}
-    if(!datas.date) errors.date = "Date is required."
+    if (!datas.date) errors.date = "Date is required."
     if (!datas.benificiary_name) errors.benificiary_name = "Name is required."
     if (!datas.category) errors.category = "Category is required."
     if (!datas.age) errors.age = "Age is required."
@@ -247,12 +247,11 @@ const Beneficiary = () => {
     navigate(`/beneficiariesdetails/${_id}`)
   }
   //search
-  const filteredBen = filteredBenificiarys.filter(ben => 
-    ben?.benificiary_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ben?.benificiary_id?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-
+  const filteredBen = filteredBenificiarys.filter(
+    ben =>
+      ben?.benificiary_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ben?.benificiary_id?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   const handleExport = async () => {
     try {
@@ -273,43 +272,45 @@ const Beneficiary = () => {
         date: ben.date,
         category: ben.category,
         age: ben.age,
-        Balance: ben.Balance || 0
-      }));
+        Balance: ben.Balance || 0,
+      }))
 
       // Create and download CSV
-      const headers = Object.keys(exportData[0]).join(',');
+      const headers = Object.keys(exportData[0]).join(",")
       const csv = [
         headers,
-        ...exportData.map(row => Object.values(row).join(','))
-      ].join('\n');
+        ...exportData.map(row => Object.values(row).join(",")),
+      ].join("\n")
 
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `beneficiaries_${charitydetails.charity}_${new Date().toISOString().split('T')[0]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      const blob = new Blob([csv], { type: "text/csv" })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `beneficiaries_${charitydetails.charity}_${
+        new Date().toISOString().split("T")[0]
+      }.csv`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
 
       Swal.fire({
         title: "Success!",
         text: "Beneficiaries exported successfully",
         icon: "success",
         confirmButtonText: "OK",
-      });
+      })
     } catch (error) {
-      console.error("Export failed:", error);
+      console.error("Export failed:", error)
       Swal.fire({
         title: "Error!",
         text: "Failed to export beneficiaries",
         icon: "error",
         confirmButtonText: "OK",
-      });
+      })
     }
-  };
-  const toggleImportModal = () => setImportModalOpen(!importModalOpen);
+  }
+  const toggleImportModal = () => setImportModalOpen(!importModalOpen)
   return (
     <div>
       <Navbar />
@@ -323,16 +324,16 @@ const Beneficiary = () => {
                     <div style={{ display: "flex", alignItems: "baseline" }}>
                       BENIFICIARIES
                       <Input
-                type="text"
-                placeholder="Search Benificiaries..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                style={{
-                  flex: 1,
-                  padding: "10px",
-                  marginInline:"40px",
-                }}
-              />
+                        type="text"
+                        placeholder="Search Benificiaries..."
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                        style={{
+                          flex: 1,
+                          padding: "10px",
+                          marginInline: "40px",
+                        }}
+                      />
                       <Button
                         style={{
                           marginLeft: "auto",
@@ -348,7 +349,7 @@ const Beneficiary = () => {
                             xmlns="http://www.w3.org/2000/svg"
                             width="16"
                             height="16"
-                            class="bi bi-plus-circle-dotted"
+                            className="bi bi-plus-circle-dotted"
                             viewBox="0 0 16 16"
                           >
                             <path d="M8 0q-.264 0-.523.017l.064.998a7 7 0 0 1 .918 0l.064-.998A8 8 0 0 0 8 0M6.44.152q-.52.104-1.012.27l.321.948q.43-.147.884-.237L6.44.153zm4.132.271a8 8 0 0 0-1.011-.27l-.194.98q.453.09.884.237zm1.873.925a8 8 0 0 0-.906-.524l-.443.896q.413.205.793.459zM4.46.824q-.471.233-.905.524l.556.83a7 7 0 0 1 .793-.458zM2.725 1.985q-.394.346-.74.74l.752.66q.303-.345.648-.648zm11.29.74a8 8 0 0 0-.74-.74l-.66.752q.346.303.648.648zm1.161 1.735a8 8 0 0 0-.524-.905l-.83.556q.254.38.458.793l.896-.443zM1.348 3.555q-.292.433-.524.906l.896.443q.205-.413.459-.793zM.423 5.428a8 8 0 0 0-.27 1.011l.98.194q.09-.453.237-.884zM15.848 6.44a8 8 0 0 0-.27-1.012l-.948.321q.147.43.237.884zM.017 7.477a8 8 0 0 0 0 1.046l.998-.064a7 7 0 0 1 0-.918zM16 8a8 8 0 0 0-.017-.523l-.998.064a7 7 0 0 1 0 .918l.998.064A8 8 0 0 0 16 8M.152 9.56q.104.52.27 1.012l.948-.321a7 7 0 0 1-.237-.884l-.98.194zm15.425 1.012q.168-.493.27-1.011l-.98-.194q-.09.453-.237.884zM.824 11.54a8 8 0 0 0 .524.905l.83-.556a7 7 0 0 1-.458-.793zm13.828.905q.292-.434.524-.906l-.896-.443q-.205.413-.459.793zm-12.667.83q.346.394.74.74l.66-.752a7 7 0 0 1-.648-.648zm11.29.74q.394-.346.74-.74l-.752-.66q-.302.346-.648.648zm-1.735 1.161q.471-.233.905-.524l-.556-.83a7 7 0 0 1-.793.458zm-7.985-.524q.434.292.906.524l.443-.896a7 7 0 0 1-.793-.459zm1.873.925q.493.168 1.011.27l.194-.98a7 7 0 0 1-.884-.237zm4.132.271a8 8 0 0 0 1.012-.27l-.321-.948a7 7 0 0 1-.884.237l.194.98zm-2.083.135a8 8 0 0 0 1.046 0l-.064-.998a7 7 0 0 1-.918 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
@@ -356,15 +357,16 @@ const Beneficiary = () => {
                         </Link>{" "}
                         ADD NEW BENEFICIARY{" "}
                       </Button>
-                      <Button 
+                      <Button
                         className="btn btn-primary ms-2"
                         onClick={handleExport}
                       >
                         EXPORT BENEFICIARY
                       </Button>
                       <Button onClick={toggleImportModal}>
-  IMPORT BENEFICIARY
-</Button>                 </div>
+                        IMPORT BENEFICIARY
+                      </Button>{" "}
+                    </div>
 
                     <Modal
                       size="lg"
@@ -602,7 +604,7 @@ const Beneficiary = () => {
                                 )}
                               </div>
                             </Col>
-                            
+
                             <Col lg={4}>
                               <div className="mb-3">
                                 <label htmlFor="marital">Marital</label>
@@ -664,7 +666,7 @@ const Beneficiary = () => {
                                 )}
                               </div>
                             </Col>
-                           </Row>
+                          </Row>
                           <Row>
                             <Col lg={12}>
                               <div className="text-right">
@@ -701,7 +703,7 @@ const Beneficiary = () => {
                   </thead>
                   <tbody>
                     {filteredBen.map(benificiary => (
-                      <tr className="table-light">
+                      <tr key={benificiary._id} className="table-light">
                         <td>{benificiary.benificiary_name}</td>
                         <td>{benificiary.benificiary_id}</td>
                         <td>{benificiary.number}</td>
@@ -728,7 +730,7 @@ const Beneficiary = () => {
                               width="16"
                               height="16"
                               color="black"
-                              class="bi bi-eye"
+                              className="bi bi-eye"
                               viewBox="0 0 16 16"
                             >
                               <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
@@ -752,7 +754,7 @@ const Beneficiary = () => {
                                 width="16"
                                 height="16"
                                 color="black"
-                                class="bi bi-pencil"
+                                className="bi bi-pencil"
                                 viewBox="0 0 16 16"
                               >
                                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
@@ -1050,23 +1052,23 @@ const Beneficiary = () => {
                                   </Col>
 
                                   <Col lg={4}>
-                              <div className="mb-3">
-                                <label htmlFor="Date">Date</label>
-                                <input
-                                  className="form-control"
-                                  name="date"
-                                  value={datas.date}
-                                  onChange={handleChanges}
-                                  placeholder="Date"
-                                  type="date"
-                                />
-                                {validationErrors.date && (
-                                  <small className="text-danger">
-                                    {validationErrors.date}
-                                  </small>
-                                )}
-                              </div>
-                            </Col>
+                                    <div className="mb-3">
+                                      <label htmlFor="Date">Date</label>
+                                      <input
+                                        className="form-control"
+                                        name="date"
+                                        value={datas.date}
+                                        onChange={handleChanges}
+                                        placeholder="Date"
+                                        type="date"
+                                      />
+                                      {validationErrors.date && (
+                                        <small className="text-danger">
+                                          {validationErrors.date}
+                                        </small>
+                                      )}
+                                    </div>
+                                  </Col>
                                 </Row>
 
                                 <Row>
@@ -1097,7 +1099,7 @@ const Beneficiary = () => {
                               width="16"
                               height="16"
                               color="black"
-                              class="bi bi-trash"
+                              className="bi bi-trash"
                               viewBox="0 0 16 16"
                             >
                               <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
@@ -1114,11 +1116,11 @@ const Beneficiary = () => {
           </Card>
         </Col>
       </Row>
-      <ImportBeneficiaryModal 
-  isOpen={importModalOpen}
-  toggle={toggleImportModal}
-  onImportSuccess={fetchDatas}
-/>
+      <ImportBeneficiaryModal
+        isOpen={importModalOpen}
+        toggle={toggleImportModal}
+        onImportSuccess={fetchDatas}
+      />
     </div>
   )
 }

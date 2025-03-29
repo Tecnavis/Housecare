@@ -21,6 +21,7 @@ const createNotification = async (req, res) => {
 const getNotificationsForCharity = async (req, res) => {
   try {
     const notifications = await Notification.find();
+    
     res.status(200).json(notifications);
   } catch (error) {
     res.status(500).json({ message: 'Error retrieving notifications', error });

@@ -248,14 +248,26 @@ exports.updateBeneficiary = async (req, res) => {
 //balanceupdate splited tobalance
 exports.updateBalances = async (req, res) => {
   try {
-    const { balanceUpdates } = req.body;
+    const { balanceUpdates } = req.body;    
 
-    await Promise.all(balanceUpdates.map((update) =>
-      Benificiaries.updateOne(
+    await Promise.all(balanceUpdates.map(async (update) => {
+      const beneficiary = await Benificiaries.findById(update.beneficiaryId);
+      
+      if (beneficiary && (beneficiary.Balance === null || beneficiary.Balance === undefined)) {
+        // Set Balance to 0 only if it's null/undefined
+        await Benificiaries.updateOne(
+          { _id: update.beneficiaryId },
+          { $set: { Balance: 0 } }
+        );
+      }
+    
+      // Now safely increment
+      await Benificiaries.updateOne(
         { _id: update.beneficiaryId },
         { $inc: { Balance: update.newBalance } }
-      )
-    ));
+      );
+    }));
+    
     
 
     res.status(200).json({ message: 'Balances updated successfully' });

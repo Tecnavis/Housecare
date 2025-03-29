@@ -18,6 +18,8 @@ import calendar from "./calendar/reducer"
 
 //tasks
 import tasks from "./tasks/reducer";
+ 
+
 
 const rootReducer = combineReducers({
   // public
@@ -31,6 +33,7 @@ const rootReducer = combineReducers({
   Profile,
   calendar,
   chat,
+
 })
 
 export default rootReducer

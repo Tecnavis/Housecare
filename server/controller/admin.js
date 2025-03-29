@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const crypto = require('crypto');
 const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 exports.requestOtp = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -23,13 +24,13 @@ exports.requestOtp = asyncHandler(async (req, res) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: "narjishakuniyil@gmail.com", // your email
-      pass: "uizijtixkxgvcvmw",
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: 'narjishakuniyil@gmail.com',
+    from: process.env.EMAIL_USER,
     to: superadmin.email,
     subject: 'Your OTP for Password Reset',
     text: `Your OTP is ${otp}. It will expire in 10 minutes.`,

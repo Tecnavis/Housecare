@@ -1,117 +1,140 @@
 import React, { useState } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap';
-import axios from 'axios';
-import Swal from 'sweetalert2';
+import { Modal, ModalHeader, ModalBody, Button, Alert } from 'reactstrap';
 import { BASE_URL } from '../Authentication/handle-api';
+import img1 from '../../assets/images/benificiary.png';
+import * as XLSX from "xlsx";
 
 const ImportBeneficiaryModal = ({ isOpen, toggle, onImportSuccess }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [error, setError] = useState('');
+  const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        setError('File size should not exceed 5MB');
-        setSelectedFile(null);
-        event.target.value = null;
-        return;
-      }
-      
-      const fileType = file.name.split('.').pop().toLowerCase();
-      if (!['xlsx', 'xls'].includes(fileType)) {
-        setError('Please select only Excel files (.xlsx or .xls)');
-        setSelectedFile(null);
-        event.target.value = null;
-        return;
-      }
-      
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile && (selectedFile.type === 'application/vnd.ms-excel' || 
+        selectedFile.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+      setFile(selectedFile);
       setError('');
-      setSelectedFile(file);
+    } else {
+      setFile(null);
+      setError('Please upload a valid Excel file (.xlsx or .xls)');
     }
   };
-
   const handleImport = async () => {
-    if (!selectedFile) {
-      setError('Please select a file first');
+    if (!file) {
+      setError('Please select a file before importing.');
       return;
     }
-
-    setLoading(true);
+  
     const formData = new FormData();
-    formData.append('file', selectedFile);
-
+    formData.append('file', file);
+  
+    setLoading(true);
+    setError('');
+    
     try {
-      const token = localStorage.getItem('token');
-      const charityDetails = JSON.parse(localStorage.getItem('charitydetails'));
-      
-      const response = await axios.post(
-        `${BASE_URL}/imports/importbenificiaybasedoncharity`, 
-        formData,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-
-      Swal.fire({
-        title: 'Success!',
-        text: response.data.message,
-        icon: 'success',
-        confirmButtonText: 'OK'
+      const response = await fetch(`${BASE_URL}/imports/importbeneficiaries`, {
+        method: 'POST',
+        body: formData,
       });
-
-      onImportSuccess();
-      toggle();
+  
+      const result = await response.json();
+      if (response.ok) {
+        setSuccess(result.message);
+        onImportSuccess();
+        setTimeout(() => {
+          toggle();
+        }, 2000);
+      } else {
+        setError(result.error || 'Failed to import data');
+      }
     } catch (error) {
-      console.error('Import failed:', error);
-      const errorMessage = error.response?.data?.error || 'Failed to import beneficiaries';
-      setError(errorMessage);
-      
-      Swal.fire({
-        title: 'Error!',
-        text: errorMessage,
-        icon: 'error',
-        confirmButtonText: 'OK'
-      });
+      setError('Network error while importing file. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleDownloadTemplate = () => {
+    const headings = [
+      ["benificiary_name", "number", "email_id", "charity_name", "nationality", 
+       "sex", "health_status", "marital", "navision_linked_no", 
+       "physically_challenged", "family_members", "account_status", 
+       "Balance", "category", "age"]
+    ];
+    
+    // Add a sample row to show expected format
+    const sampleRow = [
+      ["John Doe", "1234567890", "john@example.com", "Charity A", "US", 
+       "Male", "Good", "Single", "NAV001", 
+       "No", "3", "Active", 
+       "1000", "Category A", "30"]
+    ];
+
+    const worksheet = XLSX.utils.aoa_to_sheet([...headings, ...sampleRow]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
+    XLSX.writeFile(workbook, "Benificiary_Template.xlsx");
+  };
+
   return (
-    <Modal isOpen={isOpen} toggle={toggle}>
-      <ModalHeader toggle={toggle}>Import Beneficiaries</ModalHeader>
+    <Modal isOpen={isOpen} toggle={toggle} className="modal-dialog-centered" size="xl">
+      <ModalHeader toggle={toggle}>
+        Import Benificiary Data from Excel
+      </ModalHeader>
       <ModalBody>
-        {error && <Alert color="danger">{error}</Alert>}
-        <div className="mb-3">
-          <label className="form-label">Select Excel File</label>
+        <div className="mb-4">
+          <label className="form-label">Upload Excel File</label>
           <input
             type="file"
             className="form-control"
-            accept=".xlsx,.xls"
-            onChange={handleFileSelect}
+            accept=".xlsx, .xls"
+            onChange={handleFileChange}
           />
-          <small className="text-muted">
-            Only Excel files (.xlsx or .xls) up to 5MB are supported
+          <small className="text-muted d-block">
+            Supported formats: .xlsx, .xls
           </small>
+          <small className="text-danger d-block mt-2">
+            All fields marked with * in the template are required
+          </small>
+          <img src={img1} alt="Excel Template" style={{ maxWidth: '100%', marginTop: '10px' }} />
+        </div>
+
+        {error && (
+          <Alert color="danger" className="mb-4">
+            {error}
+          </Alert>
+        )}
+
+        {success && (
+          <Alert color="success" className="mb-4">
+            {success}
+          </Alert>
+        )}
+
+        <div className="text-center">
+          <Button 
+            color="primary" 
+            onClick={handleImport} 
+            disabled={loading || !file} 
+            style={{ marginRight: '10px' }}
+          >
+            {loading ? "Importing..." : "Import Data"}
+          </Button>
+
+          <Button 
+            color="primary" 
+            onClick={handleDownloadTemplate} 
+            style={{ marginRight: "10px" }}
+          >
+            Download Template
+          </Button>       
+          <Button color="secondary" onClick={toggle}>
+            Cancel
+          </Button>
         </div>
       </ModalBody>
-      <ModalFooter>
-        <Button 
-          color="primary" 
-          onClick={handleImport}
-          disabled={!selectedFile || loading}
-        >
-          {loading ? 'Importing...' : 'Import'}
-        </Button>
-        <Button color="secondary" onClick={toggle}>
-          Cancel
-        </Button>
-      </ModalFooter>
     </Modal>
   );
 };

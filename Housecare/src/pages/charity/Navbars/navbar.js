@@ -10,10 +10,26 @@ import { withTranslation } from "react-i18next"
 import { connect } from "react-redux"
 
 const Navbar = props => {
+  // const saveAmount = (amount) => {
+  //   localStorage.setItem('limitedamount', amount);
+  //   localStorage.setItem("previousLimitedAmount", JSON.stringify(currentAmount));
+
+  //   window.location.href = "/split";
+  // };
+
   const saveAmount = (amount) => {
+
+    const currentAmount = localStorage.getItem('limitedamount');
+  
+    if (currentAmount !== null) {
+      localStorage.setItem("previousLimitedAmount", currentAmount);
+    }
+  
     localStorage.setItem('limitedamount', amount);
+  
     window.location.href = "/split";
   };
+  
 
   const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
   const togglePaymentModal = () => {
@@ -120,6 +136,12 @@ const Navbar = props => {
                   <Link to="/beneficiaries" className="nav-link">
                   <i className="mdi mdi-account-box"></i>
                     <span>{props.t("Beneficiary")}</span>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/history" className="nav-link">
+                  <i className="mdi mdi-format-line-weight"></i>
+                  <span>{props.t("History")}</span>
                   </Link>
                 </li>
                  {/* <li className="nav-item">

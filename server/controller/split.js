@@ -3,52 +3,58 @@ const Debited = require("../model/debited");
 const Benificiary = require("../model/benificiary");
 const Notifications = require("../model/notification");
 const nodemailer = require('nodemailer');
+const Staffs = require("../model/housecare-model");
 const fs = require('fs');
 require('dotenv').config();  // Load environment variables
 
-exports.sendPdf =async (req, res) => {
-  try {
-    const { filename, path: filePath } = req.file;
+// exports.sendPdf =async (req, res) => {
+//   try {
+//     const { filename, path: filePath } = req.file;
+//    
+    
 
-    // Set up Nodemailer
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER, 
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+//     // Set up Nodemailer
+//     const transporter = nodemailer.createTransport({
+//       service: 'gmail',
+//       auth: {
+//         user: process.env.EMAIL_USER, 
+//         pass: process.env.EMAIL_PASS,
+//       },
+//     });
 
-    // Send email with the Excel file attachment
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: 'navaskuniyil6@gmail.com',
-      subject: 'Excel Document from Housecare',
-      text: 'Please find the attached Excel document.',
-      attachments: [
-        {
-          filename: 'split_details.xlsx',
-          path: filePath,
-        },
-      ],
-    });
+//     // Send email with the Excel file attachment
+//     await transporter.sendMail({
+//       from: process.env.EMAIL_USER,
+//       to: 'muhammedsafvanmp7@gmail.com',
+//       subject: 'Excel Document from Housecare',
+//       text: 'Please find the attached Excel document.',
+//       attachments: [
+//         {
+//           filename: 'split_details.xlsx',
+//           path: filePath,
+//         },
+//       ],
+//     });
 
-    // Clean up the uploaded file
-    fs.unlinkSync(filePath);
 
-    res.status(200).json({ message: 'Excel file sent successfully!' });
-  } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ message: 'Failed to send Excel file.' });
-  }
-};
+//     // Clean up the uploaded file
+//     fs.unlinkSync(filePath);
+
+//     res.status(200).json({ message: 'Excel file sent successfully!' });
+//   } catch (error) {
+//     console.error('Error sending email:', error);
+//     res.status(500).json({ message: 'Failed to send Excel file.' });
+//   }
+// };
 
 
 
 exports.saveSplits = async (req, res) => {
   try {
     const { splits } = req.body;
+    
     await Splits.insertMany(splits);
+        
     res.status(200).json({ message: "Splits saved successfully" });
   } catch (error) {
     res.status(500).json({ error: "Failed to save splits" });
@@ -57,7 +63,8 @@ exports.saveSplits = async (req, res) => {
 
 exports.getSplits = async (req, res) => {
   try {
-    const splits = await Splits.find().populate("beneficiary");
+    const splits = await Splits.find().populate("beneficiary"); 
+    
     res.status(200).json(splits);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch splits" });
@@ -218,42 +225,42 @@ exports.resetNotificationCount = async (req, res) => {
 };
 //send a  email to charity
 
-exports.sendEmail = async (req, res) => {
-  try {
-    const { filename, path: filePath } = req.file;
+// exports.sendEmail = async (req, res) => {
+//   try {
+//     const { filename, path: filePath } = req.file;
 
-    // Set up Nodemailer
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER, 
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+//     // Set up Nodemailer
+//     const transporter = nodemailer.createTransport({
+//       service: 'gmail',
+//       auth: {
+//         user: process.env.EMAIL_USER, 
+//         pass: process.env.EMAIL_PASS,
+//       },
+//     });
 
-    // Send email with the Excel file attachment
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: 'navaskuniyil6@gmail.com',
-      subject: 'Excel Document from Housecare',
-      text: 'Please find the attached Excel document.',
-      attachments: [
-        {
-          filename: 'split_details.xlsx',
-          path: filePath,
-        },
-      ],
-    });
+//     // Send email with the Excel file attachment
+//     await transporter.sendMail({
+//       from: process.env.EMAIL_USER,
+//       to: 'muhammedsafvanmp7@gmail.com',
+//       subject: 'Excel Document from Housecare',
+//       text: 'Please find the attached Excel document.',
+//       attachments: [
+//         {
+//           filename: 'split_details.xlsx',
+//           path: filePath,
+//         },
+//       ],
+//     });
 
-    // Clean up the uploaded file
-    fs.unlinkSync(filePath);
+//     // Clean up the uploaded file
+//     fs.unlinkSync(filePath);
 
-    res.status(200).json({ message: 'Excel file sent successfully!' });
-  } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ message: 'Failed to send Excel file.' });
-  }
-};
+//     res.status(200).json({ message: 'Excel file sent successfully!' });
+//   } catch (error) {
+//     console.error('Error sending email:', error);
+//     res.status(500).json({ message: 'Failed to send Excel file.' });
+//   }
+// };
 
 ////transactions
 exports.getTransactions = async (req, res) => {
@@ -272,5 +279,122 @@ exports.getTransactions = async (req, res) => {
       });
   } catch (error) {
       res.status(500).json({ message: "Error fetching transaction details", error });
+  }
+};
+
+
+
+//send a  email to charity
+
+
+const sendEmailWithAttachment = async (file, recipients, subject, text) => {
+  try {
+    const { path: filePath, originalname } = file;
+    
+
+    // Set up Nodemailer
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // Send email with the attachment
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: recipients, 
+      subject,
+      text,
+      attachments: [
+        {
+          filename: originalname, 
+          path: filePath,
+        },
+      ],
+    });
+
+    // Clean up the uploaded file
+    fs.unlinkSync(filePath);
+
+    return { success: true, message: 'Email sent successfully!' };
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return { success: false, message: 'Failed to send email.' };
+  }
+};
+
+
+
+
+exports.sendEmail = async (req, res) => {
+  try {
+    let recipients = req.body.recipients;
+  
+    if (typeof recipients === "string") {
+      try {
+        recipients = JSON.parse(recipients); 
+      } catch (error) {
+        return res.status(400).json({ message: "Invalid recipients format. Must be an array." });
+      }
+    }
+
+    if (!Array.isArray(recipients) || recipients.length === 0) {
+      return res.status(400).json({ message: "Recipients are required and should be an array." });
+    }
+
+
+  // Fetch only emails from Staffs collection
+  const staffEmails = await Staffs.find().select("email -_id");
+
+  // Staff emil map to push in recipients array
+
+  const staffEmailList = staffEmails.map((staff) => staff.email);
+  recipients.push(...staffEmailList);
+    
+
+    const result = await sendEmailWithAttachment(
+      req.file,
+      recipients,
+      "PDF Document from Housecare",
+      "Please find the attached PDF document."
+    );
+
+    res.status(200).json({ message: result.message });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+
+
+exports.sendPdf = async (req, res) => {
+  try {
+    let recipients = req.body.recipients;
+  
+    if (typeof recipients === "string") {
+      try {
+        recipients = JSON.parse(recipients); 
+      } catch (error) {
+        return res.status(400).json({ message: "Invalid recipients format. Must be an array." });
+      }
+    }
+
+    if (!Array.isArray(recipients) || recipients.length === 0) {
+      return res.status(400).json({ message: "Recipients are required and should be an array." });
+    }
+
+  
+    const result = await sendEmailWithAttachment(
+      req.file,
+      recipients,
+      "PDF Document from Housecare",
+      "Please find the attached PDF document."
+    );
+
+    res.status(200).json({ message: result.message });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
 };
