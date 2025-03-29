@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Benificiaries = require("./model/benificiary");
 
 // Replace with your MongoDB connection string
-const connectionString = "mongodb+srv://narjishakuniyil:e7eEAKgbyxLzh3AG@housecare.243sss4.mongodb.net/?retryWrites=true&w=majority&appName=housecare";
+const connectionString = "mongodb+srv://tecnaviswebsolutions:BjUzlgVyfGIJB1dQ@housecare.hapql0h.mongodb.net/?retryWrites=true&w=majority&appName=housecare";
 
 // Connect to your database
 mongoose.connect(connectionString)
