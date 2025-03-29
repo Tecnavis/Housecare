@@ -203,10 +203,6 @@ const SidebarContent = props => {
                 onClick={handleResetNotifications}
               >
                 <i className="mdi mdi-format-line-weight"></i>
-                <span className="badge rounded-pill bg-primary float-end">
-                  {" "}
-                  {notificationCount}
-                </span>
                 <span>{props.t("History")}</span>
               </Link>
             </li>
