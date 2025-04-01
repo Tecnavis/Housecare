@@ -1,9 +1,9 @@
 {
   "files": {
-    "main.css": "/static/css/main.04aa03df.css",
-    "main.js": "/static/js/main.5be9c7cd.js",
+    "main.css": "/static/css/main.bb320193.css",
+    "main.js": "/static/js/main.53d33ec9.js",
     "static/js/213.e0fccc90.chunk.js": "/static/js/213.e0fccc90.chunk.js",
-    "static/js/455.8967994e.chunk.js": "/static/js/455.8967994e.chunk.js",
+    "static/js/455.fde812f0.chunk.js": "/static/js/455.fde812f0.chunk.js",
     "static/media/materialdesignicons-webfont.eot": "/static/media/materialdesignicons-webfont.52adde0de9840940801f.eot",
     "static/media/materialdesignicons-webfont.ttf?v=5.8.55": "/static/media/materialdesignicons-webfont.506bc8215df8660d8f04.ttf",
     "static/media/fa-solid-900.svg": "/static/media/fa-solid-900.371dbce0dd46bd4d2033.svg",
@@ -47,7 +47,7 @@
     "static/media/img-1.jpg": "/static/media/img-1.9c3a9dc579a317f56752.jpg",
     "static/media/img-2.jpg": "/static/media/img-2.4dde4053fbc2ce5a04b4.jpg",
     "static/media/benificiary.png": "/static/media/benificiary.d72e24bdc7b82e5341b0.png",
-    "static/media/axios.cjs": "/static/media/axios.f50781e842ef05922fb7.cjs",
+    "static/media/axios.cjs": "/static/media/axios.ad480bcf6eaa61b44839.cjs",
     "static/media/dripicons-v2.eot": "/static/media/dripicons-v2.7f392f1e4787b46b3e8b.eot",
     "static/media/dripicons-v2.ttf": "/static/media/dripicons-v2.09c9c870ef8f9cffcc8f.ttf",
     "static/media/fa-regular-400.eot": "/static/media/fa-regular-400.08f9891a6f44d9546678.eot",
@@ -59,13 +59,13 @@
     "static/media/fa-regular-400.woff2": "/static/media/fa-regular-400.1008b5226941c24f4468.woff2",
     "static/media/bg-1.png": "/static/media/bg-1.7694411d08a41ca3baef.png",
     "index.html": "/index.html",
-    "main.04aa03df.css.map": "/static/css/main.04aa03df.css.map",
-    "main.5be9c7cd.js.map": "/static/js/main.5be9c7cd.js.map",
+    "main.bb320193.css.map": "/static/css/main.bb320193.css.map",
+    "main.53d33ec9.js.map": "/static/js/main.53d33ec9.js.map",
     "213.e0fccc90.chunk.js.map": "/static/js/213.e0fccc90.chunk.js.map",
-    "455.8967994e.chunk.js.map": "/static/js/455.8967994e.chunk.js.map"
+    "455.fde812f0.chunk.js.map": "/static/js/455.fde812f0.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.04aa03df.css",
-    "static/js/main.5be9c7cd.js"
+    "static/css/main.bb320193.css",
+    "static/js/main.53d33ec9.js"
   ]
 }
