@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Modal, ModalHeader, ModalBody, Button, Alert } from 'reactstrap';
-import { BASE_URL } from './handle-api';
+import { BASE_URL, fetchBenificiarys } from './handle-api';
 import img1 from '../../assets/images/benificiary.png';
 import * as XLSX from "xlsx";
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const ExcelImport = ({ isOpen, toggle, onImportSuccess }) => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+     const [emailList, setEmailList] = useState([]);
+         const [benificiarys, setBenificiarys] = useState([])
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -45,6 +49,7 @@ const ExcelImport = ({ isOpen, toggle, onImportSuccess }) => {
         onImportSuccess();
         setTimeout(() => {
           toggle();
+          sendEmail();
         }, 2000);
       } else {
         setError(result.error || 'Failed to import data');
@@ -77,6 +82,93 @@ const ExcelImport = ({ isOpen, toggle, onImportSuccess }) => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
     XLSX.writeFile(workbook, "Benificiary_Template.xlsx");
   };
+
+
+  const fetchEmails = async () => {
+    try {
+      const { data } = await axios.get(`${BASE_URL}/emailsender`);
+      setEmailList(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+    useEffect(() => {
+    fetchEmails();
+    fetchDatas();
+    }, [])
+  
+   
+       const fetchDatas = async () => {
+          try {
+            const response = await fetchBenificiarys()
+            setBenificiarys(response)
+          } catch (error) {
+            console.error("Error fetching benificiary details:", error)
+          }
+        }
+      
+ const sendEmail = async () => {
+   
+  const  latestData = await fetchBenificiarys(); 
+  
+  setBenificiarys(latestData);
+
+  const filteredTableData = latestData?.filter(split => split.amount !== 0);
+          const tableData = filteredTableData.map(split => ({
+          Name: split.benificiary_name,
+          BEN_ID: split.benificiary_id,
+          Phone: split.number,
+          Category: split.category,
+          Email: split.email_id,
+          Charity: split.charity_name,
+          Age: split.age,
+          Nationality: split.nationality,
+          Sex: split.sex,
+          Amount: split.Balance || 0,
+        }));
+      
+        const worksheet = XLSX.utils.json_to_sheet(tableData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Split Details");
+        const excelBuffer = XLSX.write(workbook, {
+          bookType: "xlsx",
+          type: "array",
+        });
+        const excelBlob = new Blob([excelBuffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+      
+        const formData = new FormData();
+        formData.append("excel", excelBlob, "split_details.xlsx");
+        formData.append("recipients", JSON.stringify(emailList.map(item => item.email)));
+      
+        try {
+          const response = await axios.post(`${BASE_URL}/sendmail`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+      
+          Swal.fire({
+            title: 'Success',
+            text: response.data.message || 'Email sent successfully!',
+            icon: 'success',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+          });
+        } catch (error) {
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to send email. Please try again.',
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+          });
+        }
+      };
+  
 
   return (
     <Modal isOpen={isOpen} toggle={toggle} className="modal-dialog-centered" size="xl">

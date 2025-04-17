@@ -14,10 +14,13 @@ const NotificationDropdown = (props) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
+
+  const charityDetails = JSON.parse(localStorage.getItem("charitydetails"));
+  const charityName = charityDetails?.charity;
+
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const charityDetails = JSON.parse(localStorage.getItem("charitydetails"));
         // if (charityDetails) {
         //   const response = await axios.get(`http://localhost:8000/notification/notifications`);
         //   console.log(response.data, "noti");
@@ -28,7 +31,9 @@ const NotificationDropdown = (props) => {
         // }
 
        
-          const response = await axios.get(`${BASE_URL}/notification/notifications`);
+          const response = await axios.get(`${BASE_URL}/notification/notifications`, {
+            params: { charity: charityName }, // Fetch only unseen notifications
+          });
           setNotifications(response.data);
           
           const unread = response.data.filter(notification => !notification.isRead).length;
@@ -41,10 +46,10 @@ const NotificationDropdown = (props) => {
 
     fetchNotifications();
   }, []);
+  
 
   const handleNotificationClick = async (notificationId) => {
     try {
-      const charityDetails = JSON.parse(localStorage.getItem("charitydetails"));
       if (charityDetails) {
         // Delete the notification from the backend
         await axios.delete(`${BASE_URL}/notification/${notificationId}`);
@@ -61,6 +66,22 @@ const NotificationDropdown = (props) => {
       console.error("Error deleting notification:", error);
     }
   };
+
+
+  //reset notifications
+const handleViewAll = async () => {
+
+  try {
+    // Mark notifications as seen
+    await axios.patch(`${BASE_URL}/notification/notifications/${charityName}/read`);
+
+    // Clear the notifications in the frontend
+    setNotifications([]);
+    setUnreadCount(0);
+  } catch (error) {
+    console.error("Error marking notifications as seen:", error);
+  }
+};
 
   return (
     <React.Fragment>
@@ -131,6 +152,8 @@ const NotificationDropdown = (props) => {
             <Link
               className="btn btn-sm btn-link font-size-14 btn-block text-center"
               to="/history-split"
+              onClick={handleViewAll}
+
             >
               <i className="mdi mdi-arrow-right-circle me-1"></i>
               {props.t("View all")}

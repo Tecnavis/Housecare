@@ -12,22 +12,23 @@ const NotificationDropdown = () => {
   const [menu, setMenu] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
+  
+  const fetchNotifications = async () => {
+    if (!charityName) return;
 
-useEffect(() => {
-    const fetchNotifications = async () => {
-      if (!charityName) return;
-  
-      try {
-        const response = await axios.get(`${BASE_URL}/approvals/notifications`, {
-          params: { charity: charityName }, // Fetch only unseen notifications
-        });
-        
-        setNotifications(response.data);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    };
-  
+    try {
+      const response = await axios.get(`${BASE_URL}/approvals/notifications`, {
+        params: { charity: charityName }, // Fetch only unseen notifications
+      });
+      
+      
+      setNotifications(response.data);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchNotifications();
   }, [charityName]);
   
@@ -36,7 +37,8 @@ const handleViewAll = async () => {
 
     if (!charityName) return;
     window.location.href = `/history`
-  
+    fetchNotifications();
+
     try {
       // Mark notifications as seen
       await axios.delete(`${BASE_URL}/approvals/mark-as-seen`, {
@@ -49,7 +51,7 @@ const handleViewAll = async () => {
       console.error("Error marking notifications as seen:", error);
     }
   };
-  
+    
   
   return (
     <Dropdown
@@ -73,7 +75,9 @@ const handleViewAll = async () => {
         </div>
 
         <SimpleBar style={{ height: "130px" }}>
-          {notifications.map((notification, index) => (
+          {
+            notifications.length !== 0 ?
+          notifications?.map((notification, index) => (
             <Link to="#" key={index} className="text-reset notification-item">
               <div className="d-flex">
                 <div className="flex-grow-1">
@@ -86,7 +90,10 @@ const handleViewAll = async () => {
                 </div>
               </div>
             </Link>
-          ))}
+          ))
+          :
+              <div className="p-3 text-center">No notifications</div>          
+          }
         </SimpleBar>
 
         <div className="p-2 border-top d-grid">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 import {
   Table,
   Card,
@@ -11,66 +11,68 @@ import {
   FormGroup,
   Label,
   Form,
-} from "reactstrap";
-import axios from "axios";
-import moment from 'moment'; // Import moment.js for handling dates
-import GoogleSheetsImport from "./benificiaryimport";
-import * as XLSX from "xlsx";
+} from "reactstrap"
+import axios from "axios"
+import moment from "moment" // Import moment.js for handling dates
+import GoogleSheetsImport from "./benificiaryimport"
+import * as XLSX from "xlsx"
 
-import { fetchBenificiarys ,BASE_URL} from "./handle-api";
-import Swal from "sweetalert2";
+import { fetchBenificiarys, BASE_URL, toggleBlockBenificary } from "./handle-api"
+import Swal from "sweetalert2"
 // Function to generate a transaction ID that starts with "TR" followed by 6 digits
 const generateTransactionId = () => {
-  const randomDigits = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit number
-  return `TR${randomDigits}`;
-};
+  const randomDigits = Math.floor(100000 + Math.random() * 900000) // Generate a 6-digit number
+  return `TR${randomDigits}`
+}
 
 function Beneficiary() {
-  const [benificiarys, setBenificiarys] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // New state for search input
-  const [modal, setModal] = useState(false);
-  const [selectedBenificiary, setSelectedBenificiary] = useState(null);
-  const [spendAmount, setSpendAmount] = useState("");
-  const [transactionId, setTransactionId] = useState("");
-  const [transactionDate, setTransactionDate] = useState(moment().format('YYYY-MM-DD')); // Default to today's date
+  const [benificiarys, setBenificiarys] = useState([])
+  const [searchTerm, setSearchTerm] = useState("") // New state for search input
+  const [modal, setModal] = useState(false)
+  const [selectedBenificiary, setSelectedBenificiary] = useState(null)
+  const [spendAmount, setSpendAmount] = useState("")
+  const [transactionId, setTransactionId] = useState("")
+  const [transactionDate, setTransactionDate] = useState(
+    moment().format("YYYY-MM-DD")
+  ) // Default to today's date
 
-  const [importModal, setImportModal] = useState(false);
+  const [importModal, setImportModal] = useState(false)
   useEffect(() => {
-    loadData();
-  }, []);
+    loadData()
+  }, [])
 
   // Fetch charity organization details
   const loadData = async () => {
     try {
-      const respond = await fetchBenificiarys();
-      setBenificiarys(respond);
+      const respond = await fetchBenificiarys()
+      setBenificiarys(respond)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
-  const toggleModal = () => setModal(!modal);
+  const toggleModal = () => setModal(!modal)
 
-  const handlePayNowClick = (benificiary) => {
-    setSelectedBenificiary(benificiary);
-    setTransactionId(generateTransactionId()); // Generate custom transaction ID starting with "TR"
-    setSpendAmount(""); // Clear the spend amount field
-    setTransactionDate(moment().format('YYYY-MM-DD')); // Default to today's date
-    toggleModal(); // Open the modal
-  };
+  const handlePayNowClick = benificiary => {
+    setSelectedBenificiary(benificiary)
+    setTransactionId(generateTransactionId()) // Generate custom transaction ID starting with "TR"
+    setSpendAmount("") // Clear the spend amount field
+    setTransactionDate(moment().format("YYYY-MM-DD")) // Default to today's date
+    toggleModal() // Open the modal
+  }
 
-  const handleSpendAmountChange = (e) => {
-    setSpendAmount(e.target.value);
-  };
+  const handleSpendAmountChange = e => {
+    setSpendAmount(e.target.value)
+  }
 
-  const handleTransactionDateChange = (e) => {
-    setTransactionDate(e.target.value);
-  };
+  const handleTransactionDateChange = e => {
+    setTransactionDate(e.target.value)
+  }
 
   const handleSubmit = async () => {
     if (!selectedBenificiary || !selectedBenificiary._id) {
-      alert('Invalid beneficiary selected.');
-      return;
+      alert("Invalid beneficiary selected.")
+      return
     }
 
     try {
@@ -79,7 +81,7 @@ function Beneficiary() {
         debitedAmount: parseFloat(spendAmount),
         debitedDate: new Date(transactionDate),
         Balance: selectedBenificiary.Balance - parseFloat(spendAmount),
-      });
+      })
 
       // Save the debited history
       await saveDebitedHistory({
@@ -87,96 +89,154 @@ function Beneficiary() {
         debitedDate: new Date(transactionDate),
         transactionId,
         beneficiary: selectedBenificiary._id,
-      });
+      })
 
-      await loadData();
-      toggleModal();
+      await loadData()
+      toggleModal()
     } catch (err) {
-      console.error('Error processing transaction:', err);
-      alert('Failed to process transaction. Please check the server logs for details.');
+      console.error("Error processing transaction:", err)
+      alert(
+        "Failed to process transaction. Please check the server logs for details."
+      )
     }
-  };
+  }
 
   // Function to update beneficiary in the database
   const updateBeneficiaryInDatabase = async (id, data) => {
     try {
-      await axios.put(`${BASE_URL}/benificiary/beneficiaries/${id}`, data);
+      await axios.put(`${BASE_URL}/benificiary/beneficiaries/${id}`, data)
     } catch (err) {
-      console.error('Error updating beneficiary:', err);
-      throw err;
+      console.error("Error updating beneficiary:", err)
+      throw err
     }
-  };
-
-  // Function to save debited history
-  const saveDebitedHistory = async (data) => {
-    try {
-      await axios.post(`${BASE_URL}/benificiary/debited`, data);
-    } catch (err) {
-      console.error('Error saving debited history:', err);
-      throw err;
-    }
-  };
-  
-  const handleView = (beneficiaryId) => {
-    window.location.href=`/beneficiarydetails/${beneficiaryId}`
   }
 
-    // Filter beneficiaries based on the search term
-    const filteredBeneficiaries = benificiarys.filter(benificiary =>
-      benificiary.benificiary_name.toLowerCase().includes(searchTerm.toLowerCase())||
-      benificiary.charity_name.toLowerCase().includes(searchTerm.toLowerCase())||
-      benificiary.benificiary_id.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  // Function to save debited history
+  const saveDebitedHistory = async data => {
+    try {
+      await axios.post(`${BASE_URL}/benificiary/debited`, data)
+    } catch (err) {
+      console.error("Error saving debited history:", err)
+      throw err
+    }
+  }
 
-    const handleExport = () => {
-      if (benificiarys.length === 0) {
-        Swal.fire({
-          icon: 'error',
-          title: 'No data available to export.',
-          showConfirmButton: false,
-          timer: 1500
-        })
-        return;
+  const handleView = beneficiaryId => {
+    window.location.href = `/beneficiarydetails/${beneficiaryId}`
+  }
+
+  // Filter beneficiaries based on the search term
+  const filteredBeneficiaries = benificiarys.filter(
+    benificiary =>
+      benificiary.benificiary_name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      benificiary.charity_name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      benificiary.benificiary_id
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+  )
+
+  const handleExport = () => {
+    if (benificiarys.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "No data available to export.",
+        showConfirmButton: false,
+        timer: 1500,
+      })
+      return
+    }
+
+    // Format data for Excel with all required fields
+    const exportData = benificiarys.map(benificiary => ({
+      "Beneficiary ID": benificiary.benificiary_id,
+      "Beneficiary Name": benificiary.benificiary_name,
+      "Phone Number": benificiary.number,
+      Email: benificiary.email_id,
+      "Charity Name": benificiary.charity_name,
+      Nationality: benificiary.nationality,
+      Sex: benificiary.sex,
+      "Health Status": benificiary.health_status,
+      "Marital Status": benificiary.marital,
+      "Navision Linked No": benificiary.navision_linked_no,
+      "Physically Challenged": benificiary.physically_challenged,
+      "Family Members": benificiary.family_members,
+      "Account Status": benificiary.account_status,
+      Balance: benificiary.Balance || 0,
+      Category: benificiary.category,
+      Age: benificiary.age,
+    }))
+
+    // Create a worksheet
+    const ws = XLSX.utils.json_to_sheet(exportData)
+
+    // Create a workbook and append the worksheet
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, "Beneficiaries")
+
+    // Generate and download the Excel file
+    XLSX.writeFile(wb, "Beneficiaries.xlsx")
+  }
+
+  const handleBlock = async (id, currentStatus) => {
+
+      const { isConfirmed } = await Swal.fire({
+        title: "Are you sure?",
+        text: `Do you want to ${currentStatus ? "unblock" : "block"} this staff?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, ${currentStatus ? "unblock" : "block"} it!`,
+        cancelButtonText: "Cancel",
+      })
+
+      if (isConfirmed) {
+        try {
+          const updatedBeneficiary = await toggleBlockBenificary(id)
+          console.log(updatedBeneficiary)
+
+          setBenificiarys(prevBenfi =>
+            prevBenfi.map(s =>
+              s._id === id ? { ...s, isBlocked: !currentStatus } : s
+            )
+          )
+
+          await Swal.fire({
+            title: "Success!",
+            text: `Staff ${currentStatus ? "unblocked" : "blocked"} successfully`,
+            icon: "success",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK",
+          })
+        } catch (err) {
+          console.error(
+            `Error ${currentStatus ? "unblocking" : "blocking"} staff:`,
+            err
+          )
+
+          await Swal.fire({
+            title: "Error!",
+            text: `Failed to ${
+              currentStatus ? "unblock" : "block"
+            } staff. Please try again.`,
+            icon: "error",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK",
+          })
+        }
       }
-    
-      // Format data for Excel with all required fields
-      const exportData = benificiarys.map(benificiary => ({
-        "Beneficiary ID": benificiary.benificiary_id,
-        "Beneficiary Name": benificiary.benificiary_name,
-        "Phone Number": benificiary.number,
-        "Email": benificiary.email_id,
-        "Charity Name": benificiary.charity_name,
-        "Nationality": benificiary.nationality,
-        "Sex": benificiary.sex,
-        "Health Status": benificiary.health_status,
-        "Marital Status": benificiary.marital,
-        "Navision Linked No": benificiary.navision_linked_no,
-        "Physically Challenged": benificiary.physically_challenged,
-        "Family Members": benificiary.family_members,
-        "Account Status": benificiary.account_status,
-        "Balance": benificiary.Balance || 0,
-        "Category": benificiary.category,
-        "Age": benificiary.age,
-      }));
-    
-      // Create a worksheet
-      const ws = XLSX.utils.json_to_sheet(exportData);
-    
-      // Create a workbook and append the worksheet
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Beneficiaries");
-    
-      // Generate and download the Excel file
-      XLSX.writeFile(wb, "Beneficiaries.xlsx");
-    };
-    
-    
+    }
+
   return (
     <React.Fragment>
       <div style={{ textAlign: "center" }}>
         <Card>
           <CardBody>
-          <div
+            <div
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -188,15 +248,18 @@ function Beneficiary() {
                 type="text"
                 placeholder="Search Beneficiaries..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 style={{ width: "300px" }} // Adjust the width of the search bar as needed
               />
-<button className="btn btn-primary" onClick={handleExport}>
-  EXPORT BENEFICIARY
-</button>
+              <button className="btn btn-primary" onClick={handleExport}>
+                EXPORT BENEFICIARY
+              </button>
               <button
-                className="btn btn-primary"  onClick={() => setImportModal(true)}>IMPORT BENEFICIARYS</button>
-
+                className="btn btn-primary"
+                onClick={() => setImportModal(true)}
+              >
+                IMPORT BENEFICIARYS
+              </button>
             </div>
           </CardBody>
         </Card>
@@ -217,15 +280,31 @@ function Beneficiary() {
                 </tr>
               </thead>
               <tbody>
-                {filteredBeneficiaries.map((benificiary) => (
+                {filteredBeneficiaries.map(benificiary => (
                   <tr key={benificiary.id}>
                     <td>{benificiary.benificiary_name}</td>
                     <td>{benificiary.benificiary_id}</td>
                     <td>{benificiary.charity_name}</td>
                     <td>{benificiary.email_id}</td>
                     <td>{benificiary.number}</td>
-                    <td>{benificiary.Balance ||0}</td>
+                    <td>{benificiary.Balance || 0}</td>
                     <td style={{ justifyContent: "center", display: "flex" }}>
+                      <Button
+                        style={{
+                          paddingInline: "10px",
+                          width: "75px",
+                          backgroundColor: "transparent",
+                          color: "black",
+                          marginRight: "10px",
+                        }}
+
+                        className="waves-effect waves-light"
+                        onClick={() =>
+                          handleBlock(benificiary._id, benificiary.isBlocked)
+                        }
+                      >
+                        {benificiary.isBlocked ? "Unblock" : "Block"}
+                      </Button>
                       <Button
                         style={{
                           paddingInline: "10px",
@@ -239,7 +318,15 @@ function Beneficiary() {
                       >
                         PAY NOW
                       </Button>
-                      <Button style={{backgroundColor: "transparent",color: "black",}} onClick={()=>handleView(benificiary._id)}>VIEW</Button>
+                      <Button
+                        style={{
+                          backgroundColor: "transparent",
+                          color: "black",
+                        }}
+                        onClick={() => handleView(benificiary._id)}
+                      >
+                        VIEW
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -285,22 +372,26 @@ function Beneficiary() {
             <Button color="primary" onClick={handleSubmit}>
               Submit
             </Button>
-            <Button color="secondary" onClick={toggleModal} style={{ marginLeft: '10px' }}>
+            <Button
+              color="secondary"
+              onClick={toggleModal}
+              style={{ marginLeft: "10px" }}
+            >
               Cancel
             </Button>
           </Form>
         </ModalBody>
       </Modal>
       <GoogleSheetsImport
-  isOpen={importModal}
-  toggle={() => setImportModal(false)}
-  onImportSuccess={(data) => {
-    // Handle the imported data here
-    loadData(); // Refresh the charity list
-  }}
-/>
+        isOpen={importModal}
+        toggle={() => setImportModal(false)}
+        onImportSuccess={data => {
+          // Handle the imported data here
+          loadData() // Refresh the charity list
+        }}
+      />
     </React.Fragment>
-  );
+  )
 }
 
-export default Beneficiary;
+export default Beneficiary

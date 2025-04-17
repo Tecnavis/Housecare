@@ -12,14 +12,21 @@ const SplitedDetails = () => {
   const charitydetails = JSON.parse(localStorage.getItem("charitydetails"));
   const charityName = charitydetails?.charity;
 
+  console.log(charityName, "bamS");
+  
+
   useEffect(() => {
     const fetchSplits = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/splits`);
-  
+
+        
+        
+        console.log(response?.data, "data");
+
         const filteredSplits = response?.data
-          .filter(
-            split => split.beneficiary && split.beneficiary.charity_name === charityName
+        .filter(
+            split => split?.beneficiary && split.beneficiary.charity_name   === charityName
           )
           .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date in descending order
   
@@ -28,7 +35,7 @@ const SplitedDetails = () => {
         console.error("Error fetching splits:", error);
       }
     };
-  
+    
     fetchSplits();
   }, [charityName]);
   

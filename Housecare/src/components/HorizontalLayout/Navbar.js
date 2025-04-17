@@ -173,13 +173,25 @@ const Navbar = props => {
                     to="/email-sender"
                     className="nav-link"
                     >
-                 <i class="mdi mdi-email"></i>
+                 <i className="mdi mdi-email"></i>
                
                     <span>{props.t("Mail")}</span>
                   </Link>
                 </li>
                   }
-                  
+                     {
+                  HomecareAdmin.role !== "staff" &&
+                  <li className="nav-item">
+                  <Link
+                    to="/sms-sender"
+                    className="nav-link"
+                    >
+                 <i className="mdi mdi-phone"></i>
+               
+                    <span>{props.t("SMS")}</span>
+                  </Link>
+                </li>
+                  }
                 {/* <li className="nav-item">
                 <Link to="/splithistory" className="nav-link" >
                 <i className="mdi mdi-view-dashboard"></i>

@@ -25,6 +25,7 @@ import {
   benificiaryEdit,
   benificiaryUpdate,
   BASE_URL,
+  toggleBlockBenificary,
 } from "../Authentication/handle-api"
 import Navbar from "./Navbars"
 const Beneficiary = () => {
@@ -248,9 +249,14 @@ const Beneficiary = () => {
   }
   //search
   const filteredBen = filteredBenificiarys.filter(
-    ben =>
-      ben?.benificiary_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ben?.benificiary_id?.toLowerCase().includes(searchTerm.toLowerCase())
+    benfi =>
+      benfi?.benificiary_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  benfi?.benificiary_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  benfi?.nationality?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  benfi?.sex?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  benfi?.email_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  String(benfi?.number || "").includes(searchTerm) ||
+  String(benfi?.Balance || "").includes(searchTerm)
   )
 
   const handleExport = async () => {
@@ -311,6 +317,56 @@ const Beneficiary = () => {
     }
   }
   const toggleImportModal = () => setImportModalOpen(!importModalOpen)
+
+  const handleBlock = async (id, currentStatus) => {
+    const { isConfirmed } = await Swal.fire({
+      title: "Are you sure?",
+      text: `Do you want to ${currentStatus ? "unblock" : "block"} this staff?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, ${currentStatus ? "unblock" : "block"} it!`,
+      cancelButtonText: "Cancel",
+    })
+
+    if (isConfirmed) {
+      try {
+        const updatedBeneficiary = await toggleBlockBenificary(id)
+        console.log(updatedBeneficiary)
+
+        setBenificiarys(prevBenfi =>
+          prevBenfi.map(s =>
+            s._id === id ? { ...s, isBlocked: !currentStatus } : s
+          )
+        )
+
+        await Swal.fire({
+          title: "Success!",
+          text: `Staff ${currentStatus ? "unblocked" : "blocked"} successfully`,
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        })
+      } catch (err) {
+        console.error(
+          `Error ${currentStatus ? "unblocking" : "blocking"} staff:`,
+          err
+        )
+
+        await Swal.fire({
+          title: "Error!",
+          text: `Failed to ${
+            currentStatus ? "unblock" : "block"
+          } staff. Please try again.`,
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        })
+      }
+    }
+  }
+
   return (
     <div>
       <Navbar />
@@ -720,6 +776,25 @@ const Beneficiary = () => {
                         >
                           <Button
                             style={{
+                              paddingInline: "10px",
+                              width: "75px",
+                              backgroundColor: "transparent",
+                              color: "black",
+                              marginRight: "10px",
+                            }}
+                            className="waves-effect waves-light"
+                            onClick={() =>
+                              handleBlock(
+                                benificiary._id,
+                                benificiary.isBlocked
+                              )
+                            }
+                          >
+                            {benificiary.isBlocked ? "Unblock" : "Block"}
+                          </Button>
+
+                          <Button
+                            style={{
                               backgroundColor: "transparent",
                               border: "none",
                             }}
@@ -1120,6 +1195,7 @@ const Beneficiary = () => {
         isOpen={importModalOpen}
         toggle={toggleImportModal}
         onImportSuccess={fetchDatas}
+        data={filteredBen}
       />
     </div>
   )

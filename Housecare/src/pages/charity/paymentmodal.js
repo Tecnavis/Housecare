@@ -1,57 +1,73 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react"
+import PropTypes from "prop-types"
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter, Button, Input, FormFeedback
-} from 'reactstrap';
-import axios from 'axios';
-import { BASE_URL} from "pages/Authentication/handle-api"
-
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+  FormFeedback,
+} from "reactstrap"
+import axios from "axios"
+import { BASE_URL } from "pages/Authentication/handle-api"
 
 const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
-  const [amount, setAmount] = useState('');
-  const [isInvalid, setIsInvalid] = useState(false);
+  const [amount, setAmount] = useState("")
+  const [isInvalid, setIsInvalid] = useState(false)
 
   const handleSave = async () => {
     if (amount >= 1) {
-
       try {
-        const response =  await axios.post(`${BASE_URL}/amount`, {amount})
-        localStorage.setItem("amountId", response.data?.newAmount._id);
+        const response = await axios.post(`${BASE_URL}/amount`, { amount })
+        localStorage.setItem("amountId", response.data?.newAmount._id)
+        // 1. Get data from localStorage
+        const raw = localStorage.getItem("data")
+        const parsedData = raw ? JSON.parse(raw) : []
+
+        // 2. Set amount = 0 for all items, keep rest unchanged
+        const updatedData = parsedData.map(item => ({
+          ...item,
+          amount: 0,
+        }))
+
+        // 3. Update localStorage
+        localStorage.setItem("data", JSON.stringify(updatedData))
       } catch (error) {
         console.error(error)
       }
-      
-      saveAmount(amount);
-      toggle();
-    } else {
-      setIsInvalid(true);
-    }
-  };
 
-  const handleChange = (e) => {
-    let value = e.target.value;
-  
+      saveAmount(amount)
+      toggle()
+    } else {
+      setIsInvalid(true)
+    }
+  }
+
+  const handleChange = e => {
+    let value = e.target.value
+
     // Convert to a number, and if the value is not a valid number, set it to an empty string
-    const numericValue = parseInt(value, 10);
-    
+    const numericValue = parseInt(value, 10)
+
     if (!isNaN(numericValue)) {
-      setAmount(numericValue);
+      setAmount(numericValue)
       if (numericValue >= 1) {
-        setIsInvalid(false);
+        setIsInvalid(false)
       } else {
-        setIsInvalid(true);
+        setIsInvalid(true)
       }
     } else {
-      setAmount('');  // Reset amount if input is not a valid number
-      setIsInvalid(true);
+      setAmount("") // Reset amount if input is not a valid number
+      setIsInvalid(true)
     }
-  };
-  
-  
+  }
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
-      <ModalHeader toggle={toggle}>BENEFICIARY PAYMENT DISTRIBUTION</ModalHeader>
+      <ModalHeader toggle={toggle}>
+        BENEFICIARY PAYMENT DISTRIBUTION
+      </ModalHeader>
       <ModalBody>
         <p>Enter your limited amount:</p>
         <Input
@@ -61,24 +77,26 @@ const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
           placeholder="Enter amount"
           min="1"
           required
-          invalid={isInvalid}  // This adds visual feedback if the value is invalid
+          invalid={isInvalid} // This adds visual feedback if the value is invalid
         />
-        <FormFeedback>
-          Please enter an amount of at least SAR 1.
-        </FormFeedback>
+        <FormFeedback>Please enter an amount of at least SAR 1.</FormFeedback>
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={handleSave}>OK</Button>{' '}
-        <Button color="secondary" onClick={toggle}>Cancel</Button>
+        <Button color="primary" onClick={handleSave}>
+          OK
+        </Button>{" "}
+        <Button color="secondary" onClick={toggle}>
+          Cancel
+        </Button>
       </ModalFooter>
     </Modal>
-  );
-};
+  )
+}
 
 PaymentModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
   saveAmount: PropTypes.func.isRequired,
-};
+}
 
-export default PaymentModal;
+export default PaymentModal

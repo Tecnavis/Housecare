@@ -129,6 +129,8 @@ export const toggleBlockStaff = async id => {
   return response.json()
 }
 
+
+
 //charity organaization listing
 
 export const fetchCharity = async () => {
@@ -441,6 +443,24 @@ export const benificiaryEdit = async id => {
     console.log("an error occured in benificiary Fetching", err)
   }
 }
+
+// benificary id block
+
+ export const toggleBlockBenificary = async id => {
+    const response = await fetch(`${BASE_URL}/benificiary/block/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  
+    if (!response.ok) {
+      throw new Error("Failed to toggle block status")
+    }
+  
+    return response.json()
+  }
+
 
 //benificiary update
 export const benificiaryUpdate = async (id, formData) => {

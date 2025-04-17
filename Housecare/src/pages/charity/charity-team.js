@@ -11,6 +11,7 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  Input,
 } from "reactstrap"
 
 import axios from "axios"
@@ -30,10 +31,11 @@ import {
   benificiaryEdit,
   benificiaryUpdate,
   BASE_URL,
+  toggleBlockBenificary,
 } from "../Authentication/handle-api"
 import Navbar from "./Navbars"
 function CharityDetails() {
-  const IMAGE = "https://cdn-icons-png.flaticon.com/512/2922/2922510.png";
+  const IMAGE = "https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
   const [datas, handleChanges, setDatas] = useForm({
     benificiary_name: "",
     category: "",
@@ -75,6 +77,9 @@ function CharityDetails() {
   const [charitystaffs, setCharitystaffs] = useState([])
   const [editId, setEditId] = useState(null)
   const [validationErrors, setValidationErrors] = useState({})
+  const [searchTerm, setSearchTerm] = useState("")
+  const [searchQuery, setSearchQuery] = useState("")
+
   const navigate = useNavigate()
 
   //charity details
@@ -118,8 +123,13 @@ function CharityDetails() {
   }
   // Filter charity staffs based on the selected charity
   const filteredCharityStaffs = charitystaffs.filter(
-    staff => staff.charity === charitys.charity
+    staff =>
+      // staff.charity === charitys.charity
+      staff?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      staff?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(staff?.phone || "").includes(searchQuery)
   )
+
   //passwordd strong
   const [passwordError, setPasswordError] = useState("")
   const validatePassword = password => {
@@ -256,7 +266,7 @@ function CharityDetails() {
   const benificiaryCreate = async e => {
     e.preventDefault()
     const errors = {}
-    if(!datas.date) errors.date = "Date is required."
+    if (!datas.date) errors.date = "Date is required."
     if (!datas.benificiary_name) errors.benificiary_name = "Name is required."
     if (!datas.category) errors.category = "Category is required."
     if (!datas.age) errors.age = "Age is required."
@@ -319,7 +329,17 @@ function CharityDetails() {
   }
   // filter benificiarys based on the selected charity
   const filteredBenificiarys = benificiarys.filter(
-    benificiary => benificiary.charity_name === charitys.charity
+    benfi =>
+      //  benfi.charity_name === charitys.charity ||
+      benfi?.benificiary_name
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      benfi?.benificiary_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      benfi?.nationality?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      benfi?.sex?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      benfi?.email_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(benfi?.number || "").includes(searchTerm) ||
+      String(benfi?.Balance || "").includes(searchTerm)
   )
   //benificiary delete
   const deleteBenificiary = async id => {
@@ -360,7 +380,7 @@ function CharityDetails() {
   const handleBenificiaryUpdate = async e => {
     e.preventDefault()
     const errors = {}
-    if(!datas.date) errors.date = "Date is required."
+    if (!datas.date) errors.date = "Date is required."
     if (!datas.benificiary_name) errors.benificiary_name = "Name is required."
     if (!datas.category) errors.category = "Category is required."
     if (!datas.age) errors.age = "Age is required."
@@ -417,6 +437,55 @@ function CharityDetails() {
     navigate(`/beneficiariesdetails/${_id}`)
   }
 
+  const handleBlock = async (id, currentStatus) => {
+    const { isConfirmed } = await Swal.fire({
+      title: "Are you sure?",
+      text: `Do you want to ${currentStatus ? "unblock" : "block"} this staff?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, ${currentStatus ? "unblock" : "block"} it!`,
+      cancelButtonText: "Cancel",
+    })
+
+    if (isConfirmed) {
+      try {
+        const updatedBeneficiary = await toggleBlockBenificary(id)
+        console.log(updatedBeneficiary)
+
+        setBenificiarys(prevBenfi =>
+          prevBenfi.map(s =>
+            s._id === id ? { ...s, isBlocked: !currentStatus } : s
+          )
+        )
+
+        await Swal.fire({
+          title: "Success!",
+          text: `Staff ${currentStatus ? "unblocked" : "blocked"} successfully`,
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        })
+      } catch (err) {
+        console.error(
+          `Error ${currentStatus ? "unblocking" : "blocking"} staff:`,
+          err
+        )
+
+        await Swal.fire({
+          title: "Error!",
+          text: `Failed to ${
+            currentStatus ? "unblock" : "block"
+          } staff. Please try again.`,
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        })
+      }
+    }
+  }
+
   return (
     <React.Fragment>
       <Navbar />
@@ -432,7 +501,11 @@ function CharityDetails() {
 
         <div className="card-body">
           <img
-       src={charitys.image?.includes("http") ? charitys.image : `${BASE_URL}/upload/${charitys.image}`}
+            src={
+              charitys.image?.includes("http")
+                ? charitys.image
+                : `${BASE_URL}/upload/${charitys.image}`
+            }
             alt="user"
             className="avatar-xs me-2 rounded-circle"
           />{" "}
@@ -474,6 +547,17 @@ function CharityDetails() {
                   <CardBody>
                     <div style={{ display: "flex", alignItems: "baseline" }}>
                       ADMINS
+                      <Input
+                        type="text"
+                        placeholder="Search Admins..."
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                        style={{
+                          flex: 1,
+                          padding: "10px",
+                          marginInline: "30px",
+                        }}
+                      />
                       <Button
                         style={{
                           marginLeft: "auto",
@@ -701,7 +785,8 @@ function CharityDetails() {
                         <td>
                           <img
                             src={
-                              charitystaff.image && charitystaff.image.includes("http")
+                              charitystaff.image &&
+                              charitystaff.image.includes("http")
                                 ? charitystaff.image
                                 : charitystaff.image
                                 ? `${BASE_URL}/upload/${charitystaff.image}`
@@ -987,6 +1072,17 @@ function CharityDetails() {
                   <CardBody>
                     <div style={{ display: "flex", alignItems: "baseline" }}>
                       BENIFICIARIES
+                      <Input
+                        type="text"
+                        placeholder="Search Benificiaries..."
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                        style={{
+                          flex: 1,
+                          padding: "10px",
+                          marginInline: "40px",
+                        }}
+                      />
                       <Button
                         style={{
                           marginLeft: "auto",
@@ -1374,6 +1470,25 @@ function CharityDetails() {
                         >
                           <Button
                             style={{
+                              paddingInline: "10px",
+                              width: "75px",
+                              backgroundColor: "transparent",
+                              color: "black",
+                              marginRight: "10px",
+                            }}
+                            className="waves-effect waves-light"
+                            onClick={() =>
+                              handleBlock(
+                                benificiary._id,
+                                benificiary.isBlocked
+                              )
+                            }
+                          >
+                            {benificiary.isBlocked ? "Unblock" : "Block"}
+                          </Button>
+
+                          <Button
+                            style={{
                               backgroundColor: "transparent",
                               border: "none",
                             }}
@@ -1715,25 +1830,25 @@ function CharityDetails() {
                                       )}
                                     </div>
                                   </Col>
-                                 
+
                                   <Col lg={4}>
-                              <div className="mb-3">
-                                <label htmlFor="Date">Date</label>
-                                <input
-                                  className="form-control"
-                                  name="date"
-                                  value={datas.date}
-                                  onChange={handleChanges}
-                                  placeholder="Date"
-                                  type="date"
-                                />
-                                {validationErrors.date && (
-                                  <small className="text-danger">
-                                    {validationErrors.date}
-                                  </small>
-                                )}
-                              </div>
-                            </Col>
+                                    <div className="mb-3">
+                                      <label htmlFor="Date">Date</label>
+                                      <input
+                                        className="form-control"
+                                        name="date"
+                                        value={datas.date}
+                                        onChange={handleChanges}
+                                        placeholder="Date"
+                                        type="date"
+                                      />
+                                      {validationErrors.date && (
+                                        <small className="text-danger">
+                                          {validationErrors.date}
+                                        </small>
+                                      )}
+                                    </div>
+                                  </Col>
                                 </Row>
                                 <Row>
                                   <Col lg={12}>
