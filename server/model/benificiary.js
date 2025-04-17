@@ -20,6 +20,7 @@ const benificiarySchema = mongoose.Schema(
     Balance: { type: Number },
     category: { type: String, },
     age: { type: Number,  },
+    isBlocked: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

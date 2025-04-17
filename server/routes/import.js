@@ -29,4 +29,3 @@ router.post("/import", upload.single("file"),Controller.importCharityFromExcel);
 router.post('/importbeneficiaries', upload.single('file'), Controller1.importBenificiariesFromExcel);
 router.post('/importbenificiaybasedoncharity', upload.single('file'), Controller1.importFromExcel);
 module.exports = router;
-

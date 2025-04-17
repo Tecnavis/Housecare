@@ -2,22 +2,26 @@ const Splits = require("../model/split");
 const Debited = require("../model/debited");
 const Benificiary = require("../model/benificiary");
 const Notifications = require("../model/notification");
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 const Staffs = require("../model/housecare-model");
-const fs = require('fs');
-require('dotenv').config();  // Load environment variables
+const crypto = require("crypto");
+const Charity = require("../model/charity");
+const fs = require("fs");
+const expressAsyncHandler = require("express-async-handler");
+require("dotenv").config(); // Load environment variables
+const Smssender = require("../model/smssender");
+const client = require("twilio")(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 
 // exports.sendPdf =async (req, res) => {
 //   try {
 //     const { filename, path: filePath } = req.file;
-//    
-    
+//
 
 //     // Set up Nodemailer
 //     const transporter = nodemailer.createTransport({
 //       service: 'gmail',
 //       auth: {
-//         user: process.env.EMAIL_USER, 
+//         user: process.env.EMAIL_USER,
 //         pass: process.env.EMAIL_PASS,
 //       },
 //     });
@@ -36,7 +40,6 @@ require('dotenv').config();  // Load environment variables
 //       ],
 //     });
 
-
 //     // Clean up the uploaded file
 //     fs.unlinkSync(filePath);
 
@@ -47,14 +50,12 @@ require('dotenv').config();  // Load environment variables
 //   }
 // };
 
-
-
 exports.saveSplits = async (req, res) => {
   try {
     const { splits } = req.body;
-    
+
     await Splits.insertMany(splits);
-        
+
     res.status(200).json({ message: "Splits saved successfully" });
   } catch (error) {
     res.status(500).json({ error: "Failed to save splits" });
@@ -63,8 +64,8 @@ exports.saveSplits = async (req, res) => {
 
 exports.getSplits = async (req, res) => {
   try {
-    const splits = await Splits.find().populate("beneficiary"); 
-    
+    const splits = await Splits.find().populate("beneficiary");
+
     res.status(200).json(splits);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch splits" });
@@ -73,21 +74,21 @@ exports.getSplits = async (req, res) => {
 
 // Controller function to delete a split by ID
 exports.deleteSplit = async (req, res) => {
-    const { id } = req.params;
-    
-    try {
-      const result = await Splits.findByIdAndDelete(id);
-  
-      if (!result) {
-        return res.status(404).json({ message: 'Split not found' });
-      }
-  
-      res.status(200).json({ message: 'Split deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting split:', error);
-      res.status(500).json({ message: 'Internal server error' });
+  const { id } = req.params;
+
+  try {
+    const result = await Splits.findByIdAndDelete(id);
+
+    if (!result) {
+      return res.status(404).json({ message: "Split not found" });
     }
-  };
+
+    res.status(200).json({ message: "Split deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting split:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 // upload
 
@@ -97,28 +98,33 @@ exports.updateSplitById = async (req, res) => {
     const { beneficiary, ...splitData } = req.body;
 
     // Update the Split
-    const updatedSplit = await Splits.findByIdAndUpdate(id, splitData, { new: true });
-    
+    const updatedSplit = await Splits.findByIdAndUpdate(id, splitData, {
+      new: true,
+    });
+
     if (!updatedSplit) {
-      return res.status(404).send('Split not found');
+      return res.status(404).send("Split not found");
     }
-    
+
     // Update the Benificiary
     const benfID = await Splits.findById(id).populate("beneficiary");
     const beneficiar = await Benificiary.findById(benfID.beneficiary);
-    const updatedBeneficiary = await Benificiary.findByIdAndUpdate(beneficiar._id, beneficiary);
+    const updatedBeneficiary = await Benificiary.findByIdAndUpdate(
+      beneficiar._id,
+      beneficiary
+    );
 
     if (!updatedBeneficiary) {
-      return res.status(404).send('Beneficiary not found');
+      return res.status(404).send("Beneficiary not found");
     }
 
     res.json({
       split: updatedSplit,
-      beneficiary: updatedBeneficiary
+      beneficiary: updatedBeneficiary,
     });
   } catch (error) {
     console.error("Error updating split and beneficiary:", error);
-    res.status(500).send('Server Error');
+    res.status(500).send("Server Error");
   }
 };
 //split status
@@ -127,23 +133,21 @@ exports.updateSplitStatus = async (req, res) => {
   const { status } = req.body;
 
   try {
-      const split = await Splits.findById(id);
+    const split = await Splits.findById(id);
 
-      if (!split) {
-          return res.status(404).json({ message: 'Split not found' });
-      }
+    if (!split) {
+      return res.status(404).json({ message: "Split not found" });
+    }
 
-      split.status = status;
-      await split.save();
+    split.status = status;
+    await split.save();
 
-      res.json({ message: 'Status updated successfully', split });
+    res.json({ message: "Status updated successfully", split });
   } catch (error) {
-    console.error("Error updating split status:", error); 
-      res.status(500).json({ message: 'Server error', error });
+    console.error("Error updating split status:", error);
+    res.status(500).json({ message: "Server error", error });
   }
 };
-
-
 
 //pending approvals
 exports.getPendingApprovalsCount = async (req, res) => {
@@ -151,7 +155,9 @@ exports.getPendingApprovalsCount = async (req, res) => {
     const count = await Splits.countDocuments({ status: "Pending" });
     res.json({ count });
   } catch (err) {
-    res.status(500).json({ message: "Error fetching pending approvals", error: err });
+    res
+      .status(500)
+      .json({ message: "Error fetching pending approvals", error: err });
   }
 };
 
@@ -159,10 +165,14 @@ exports.getPendingApprovalsCount = async (req, res) => {
 exports.getSplitDetailsByBeneficiary = async (req, res) => {
   try {
     const beneficiaryId = req.params.id;
-    const splitDetails = await Splits.find({ beneficiary: beneficiaryId }).populate("beneficiary");
+    const splitDetails = await Splits.find({
+      beneficiary: beneficiaryId,
+    }).populate("beneficiary");
 
     if (!splitDetails || splitDetails.length === 0) {
-      return res.status(404).json({ message: "No split details found for this beneficiary" });
+      return res
+        .status(404)
+        .json({ message: "No split details found for this beneficiary" });
     }
 
     res.status(200).json(splitDetails);
@@ -171,7 +181,6 @@ exports.getSplitDetailsByBeneficiary = async (req, res) => {
   }
 };
 //////////////
-
 
 // Increment notification count
 exports.incrementNotification = async (req, res) => {
@@ -185,9 +194,17 @@ exports.incrementNotification = async (req, res) => {
     notification.notificationcount += 1;
     await notification.save();
 
-    res.status(200).json({ success: true, count: notification.notificationcount });
+    res
+      .status(200)
+      .json({ success: true, count: notification.notificationcount });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error incrementing notification count", error });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error incrementing notification count",
+        error,
+      });
   }
 };
 
@@ -200,9 +217,17 @@ exports.getNotificationCount = async (req, res) => {
       return res.status(200).json({ success: true, count: 0 });
     }
 
-    res.status(200).json({ success: true, count: notification.notificationcount });
+    res
+      .status(200)
+      .json({ success: true, count: notification.notificationcount });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error getting notification count", error });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error getting notification count",
+        error,
+      });
   }
 };
 
@@ -218,9 +243,21 @@ exports.resetNotificationCount = async (req, res) => {
     notification.notificationcount = 0;
     await notification.save();
 
-    res.status(200).json({ success: true, message: "Notification count reset", count: notification.notificationcount });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Notification count reset",
+        count: notification.notificationcount,
+      });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error resetting notification count", error });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error resetting notification count",
+        error,
+      });
   }
 };
 //send a  email to charity
@@ -233,7 +270,7 @@ exports.resetNotificationCount = async (req, res) => {
 //     const transporter = nodemailer.createTransport({
 //       service: 'gmail',
 //       auth: {
-//         user: process.env.EMAIL_USER, 
+//         user: process.env.EMAIL_USER,
 //         pass: process.env.EMAIL_PASS,
 //       },
 //     });
@@ -265,36 +302,34 @@ exports.resetNotificationCount = async (req, res) => {
 ////transactions
 exports.getTransactions = async (req, res) => {
   try {
-      const beneficiaryId = req.params.id;
+    const beneficiaryId = req.params.id;
 
-      // Fetch credited details
-      const creditedDetails = await Splits.find({ beneficiary: beneficiaryId });
+    // Fetch credited details
+    const creditedDetails = await Splits.find({ beneficiary: beneficiaryId });
 
-      // Fetch debited details
-      const debitedDetails = await Debited.find({ beneficiary: beneficiaryId });
+    // Fetch debited details
+    const debitedDetails = await Debited.find({ beneficiary: beneficiaryId });
 
-      res.json({
-          creditedDetails,
-          debitedDetails
-      });
+    res.json({
+      creditedDetails,
+      debitedDetails,
+    });
   } catch (error) {
-      res.status(500).json({ message: "Error fetching transaction details", error });
+    res
+      .status(500)
+      .json({ message: "Error fetching transaction details", error });
   }
 };
 
-
-
 //send a  email to charity
-
 
 const sendEmailWithAttachment = async (file, recipients, subject, text) => {
   try {
     const { path: filePath, originalname } = file;
-    
 
     // Set up Nodemailer
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -304,12 +339,12 @@ const sendEmailWithAttachment = async (file, recipients, subject, text) => {
     // Send email with the attachment
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: recipients, 
+      to: recipients,
       subject,
       text,
       attachments: [
         {
-          filename: originalname, 
+          filename: originalname,
           path: filePath,
         },
       ],
@@ -318,41 +353,40 @@ const sendEmailWithAttachment = async (file, recipients, subject, text) => {
     // Clean up the uploaded file
     fs.unlinkSync(filePath);
 
-    return { success: true, message: 'Email sent successfully!' };
+    return { success: true, message: "Email sent successfully!" };
   } catch (error) {
-    console.error('Error sending email:', error);
-    return { success: false, message: 'Failed to send email.' };
+    console.error("Error sending email:", error);
+    return { success: false, message: "Failed to send email." };
   }
 };
-
-
-
 
 exports.sendEmail = async (req, res) => {
   try {
     let recipients = req.body.recipients;
-  
+
     if (typeof recipients === "string") {
       try {
-        recipients = JSON.parse(recipients); 
+        recipients = JSON.parse(recipients);
       } catch (error) {
-        return res.status(400).json({ message: "Invalid recipients format. Must be an array." });
+        return res
+          .status(400)
+          .json({ message: "Invalid recipients format. Must be an array." });
       }
     }
 
     if (!Array.isArray(recipients) || recipients.length === 0) {
-      return res.status(400).json({ message: "Recipients are required and should be an array." });
+      return res
+        .status(400)
+        .json({ message: "Recipients are required and should be an array." });
     }
 
+    // Fetch only emails from Staffs collection
+    const staffEmails = await Staffs.find().select("email -_id");
 
-  // Fetch only emails from Staffs collection
-  const staffEmails = await Staffs.find().select("email -_id");
+    // Staff emil map to push in recipients array
 
-  // Staff emil map to push in recipients array
-
-  const staffEmailList = staffEmails.map((staff) => staff.email);
-  recipients.push(...staffEmailList);
-    
+    const staffEmailList = staffEmails.map((staff) => staff.email);
+    recipients.push(...staffEmailList);
 
     const result = await sendEmailWithAttachment(
       req.file,
@@ -366,26 +400,51 @@ exports.sendEmail = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
-
-
 
 exports.sendPdf = async (req, res) => {
   try {
-    let recipients = req.body.recipients;
-  
+    let { recipients, email, otp } = req.body;
+
+    if (!otp || !email) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const charity = await Charity.findOne({ email: email });
+
+    
+
+    if (!charity) {
+      return res.status(400).json({ message: "Charity not found" });
+    }
+
+    if (charity.otp !== parseInt(otp) || charity.otpExpires < Date.now()) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
     if (typeof recipients === "string") {
       try {
-        recipients = JSON.parse(recipients); 
+        recipients = JSON.parse(recipients);
       } catch (error) {
-        return res.status(400).json({ message: "Invalid recipients format. Must be an array." });
+        return res
+          .status(400)
+          .json({ message: "Invalid recipients format. Must be an array." });
       }
     }
 
     if (!Array.isArray(recipients) || recipients.length === 0) {
-      return res.status(400).json({ message: "Recipients are required and should be an array." });
+      return res
+        .status(400)
+        .json({ message: "Recipients are required and should be an array." });
     }
 
-  
+    // Fetch only emails from Staffs collection
+    const staffEmails = await Staffs.find().select("email -_id");
+
+    // Staff emil map to push in recipients array
+
+    const staffEmailList = staffEmails.map((staff) => staff.email);
+    recipients.push(...staffEmailList);
+
     const result = await sendEmailWithAttachment(
       req.file,
       recipients,
@@ -393,8 +452,75 @@ exports.sendPdf = async (req, res) => {
       "Please find the attached PDF document."
     );
 
+    const phoneNumbers =  await Smssender.find();
+    const onlyPhones = phoneNumbers.map(item => item.phone.toString()); 
+
+    const messageBody = `${charity.charity} new Beneficiary added`;
+    
+    
+    for (const number of onlyPhones) {
+      try {
+        const smsMessage = await client.messages.create({
+          from: process.env.TWLIO_NUMBER, 
+          to: `+${number}`,
+          body: messageBody
+        });
+    
+        console.log(`SMS sent succesfully`);
+      } catch (error) {
+        console.error(`Failed to send SMS to ${number}:`, error.message);
+      }
+    }
+    
+
     res.status(200).json({ message: result.message });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+// S@GMAIL.COM
+exports.requestOtp = expressAsyncHandler(async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const charity = await Charity.findOne({ email: email });
+
+    if (!charity) {
+      return res.status(400).json({ message: "Charity not found" });
+    }
+
+    const otp = crypto.randomInt(100000, 999999); // Generate a 6-digit OTP
+    charity.otp = otp;
+    charity.otpExpires = Date.now() + 10 * 60 * 1000; // OTP expires in 10 minutes
+
+    await charity.save();
+
+    // Send OTP to user's email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: charity.email,
+      subject: "Your OTP for Password Reset",
+      text: `Your OTP is ${otp}. It will expire in 10 minutes.`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return console.log(error);
+      }
+      console.log("Email sent: " + info.response);
+      res.status(200).json({ message: "OTP sent to your email." });
+    });
+    res.status(200).json({ message: "OTP sent to your email." });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});

@@ -392,7 +392,7 @@ exports.importBenificiariesFromExcel = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
-
+    
     const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0];
     const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
@@ -510,5 +510,29 @@ exports.importBenificiariesFromExcel = async (req, res) => {
   } catch (error) {
     console.error('Error importing beneficiaries:', error);
     return res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  }
+};
+
+// block benificary
+
+exports.block = async (req, res) => {
+  const {id} = req.params;
+  try {
+
+    console.log(id);
+    
+    const benificiary = await Benificiaries.findById(id);
+    console.log(benificiary, "benif");
+    
+    if (!benificiary) {
+      return res.status(404).json({ message: "Benificary not found" });
+    }
+
+    benificiary.isBlocked = !benificiary.isBlocked; 
+    await benificiary.save();
+    res.json(benificiary);
+  } catch (error) {
+    console.error("Error in Block benificary:", error);
+    res.status(500).json({ message: "Server Error" });
   }
 };

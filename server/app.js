@@ -16,6 +16,7 @@ var charitystaffRouter = require("./routes/charitystaff")
 var benificiaryRouter = require("./routes/benificiary")
 var emailRouter = require("./routes/email")
 var emailsenderRouter = require("./routes/emailsender")
+var smssenderRouter = require("./routes/smssender")
 var approvalsRouter = require("./routes/approvals")
 var notifications=require('./routes/notification')
 var imports = require("./routes/import")
@@ -51,6 +52,7 @@ app.use('/charitystaff',charitystaffRouter);
 app.use('/benificiary',benificiaryRouter);
 app.use('/email',emailRouter);
 app.use('/emailsender', emailsenderRouter);
+app.use('/smssender', smssenderRouter);
 app.use('/approvals',approvalsRouter);
 app.use('/notification',notifications);
 app.use('/imports',imports)

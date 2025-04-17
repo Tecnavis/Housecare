@@ -16,6 +16,8 @@ const charitySchema = mongoose.Schema({
   roles: { type: String, required: true },
   password: { type: String, required: true },
   tokens: { type: String, default: "" },
+  otp: { type: Number, default: null }, // OTP for password reset
+  otpExpires: { type: Date, default: null } // OTP expiration time
 });
 
 charitySchema.pre("save", async function (next) {

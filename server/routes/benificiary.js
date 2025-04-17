@@ -25,5 +25,7 @@ router.post('/debited', Controller.createDebitedRecord);
 
 router.put('/beneficiaries/:id', Controller.updateBeneficiary);
 router.post('/update-balances',Controller.updateBalances);
+router.patch("/block/:id",Controller.block)
+
 
 module.exports = router;

@@ -20,7 +20,11 @@ const createNotification = async (req, res) => {
 // Get all notifications for a specific charity
 const getNotificationsForCharity = async (req, res) => {
   try {
-    const notifications = await Notification.find();
+    const { charity } = req.query; // Get charity name from query parameters
+
+    const notifications = await Notification.find({ charityName: charity, isRead: false })
+    .sort({ createdAt: -1 });
+
     
     res.status(200).json(notifications);
   } catch (error) {
@@ -30,7 +34,7 @@ const getNotificationsForCharity = async (req, res) => {
 
 // Mark notifications as read
 const markNotificationsAsRead = async (req, res) => {
-  const { charityName } = req.params;
+  const { charityName } = req.params;  
 
   try {
     await Notification.updateMany(

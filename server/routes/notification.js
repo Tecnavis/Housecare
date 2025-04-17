@@ -15,4 +15,8 @@ router.patch('/notifications/:charityName/read', notificationController.markNoti
 // Delete a notification
 router.delete('/:id', notificationController.deleteNotification);
 
+
+
+// /notification/mark-as-seen
+
 module.exports = router;
