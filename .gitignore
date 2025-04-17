@@ -37,3 +37,6 @@ yarn-error.log*
 /server/package-lock.json
 /Housecare/.eslintcache
 /server/.eslintcache
+
+# Environment
+.env
