@@ -17,6 +17,7 @@ const NotificationDropdown = (props) => {
 
   const charityDetails = JSON.parse(localStorage.getItem("charitydetails"));
   const charityName = charityDetails?.charity;
+  
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -31,9 +32,9 @@ const NotificationDropdown = (props) => {
         // }
 
        
-          const response = await axios.get(`${BASE_URL}/notification/notifications`, {
-            params: { charity: charityName }, // Fetch only unseen notifications
-          });
+          const response = await axios.get(`${BASE_URL}/notification/notifications`);
+
+          
           setNotifications(response.data);
           
           const unread = response.data.filter(notification => !notification.isRead).length;

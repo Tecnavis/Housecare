@@ -54,6 +54,9 @@ exports.saveSplits = async (req, res) => {
   try {
     const { splits } = req.body;
 
+    console.log(splits, "splits");
+    
+
     await Splits.insertMany(splits);
 
     res.status(200).json({ message: "Splits saved successfully" });

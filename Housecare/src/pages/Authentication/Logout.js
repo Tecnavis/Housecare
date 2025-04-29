@@ -14,6 +14,7 @@ const Logout = () => {
     localStorage.removeItem("Superadmin");
     localStorage.removeItem("token");
     localStorage.removeItem("charitydetails")
+    localStorage.removeItem("data")
 
     // Dispatch logout action
     dispatch(logoutUser());

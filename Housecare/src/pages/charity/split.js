@@ -255,6 +255,9 @@ const App = () => {
       // Save splits to the backend
       await axios.post(`${BASE_URL}/api/splits`, { splits })
 
+      console.log(splits, "split");
+      
+
       // Update beneficiaries' balances
       const balanceUpdates = splits.map(split => ({
         beneficiaryId: split.beneficiary,
@@ -264,6 +267,9 @@ const App = () => {
       await axios.post(`${BASE_URL}/benificiary/update-balances`, {
         balanceUpdates,
       })
+
+      console.log(balanceUpdates, "balance");
+      
 
       await Swal.fire({
         title: "Success",
@@ -417,6 +423,7 @@ const App = () => {
 
 
 
+  
   return (
     <>
       <Navbar />

@@ -141,6 +141,8 @@ const Beneficiary = () => {
   const fetchDatas = async () => {
     try {
       const response = await fetchBenificiarys()
+
+      
       setBenificiarys(response)
     } catch (error) {
       console.error("Error fetching benificiary details:", error)
@@ -152,6 +154,8 @@ const Beneficiary = () => {
   const filteredBenificiarys = benificiarys.filter(
     benificiary => benificiary.charity_name === charitydetails.charity
   )
+
+  
   //benificiary delete
   const deleteBenificiary = async id => {
     try {

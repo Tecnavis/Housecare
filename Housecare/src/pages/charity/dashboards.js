@@ -4,6 +4,9 @@ import Navbar from "./Navbars"
 import axios from "axios"
 import { fetchBenificiarys , BASE_URL} from "pages/Authentication/handle-api"
 import Graf from "./Navbars/graf"
+const BENIFICIARY_URL = `${process.env.REACT_APP_BASE_URL}/benificiary`;
+
+
 const Dashboards = () => {
   //benificiarys list
   const [benificiarys, setBenificiarys] = useState([])
@@ -64,6 +67,10 @@ const Dashboards = () => {
   // }, []);
   
 //fetch splits data for find out the pending approvals
+
+
+
+
 const [splits, setSplits] = useState([]);
 const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
   const charityName = charitydetails?.charity;
@@ -98,6 +105,45 @@ const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
     }
   }
 
+  useEffect(() => {
+    const fetchAndStoreBeneficiaries = async () => {
+      try {
+        const charityFromStorage = JSON.parse(localStorage.getItem("charitydetails"));
+        if (!charityFromStorage?.charity) {
+          console.error("Charity details missing.");
+          return;
+        }
+
+        const { data } = await axios.get(`${BENIFICIARY_URL}`);
+        const filtered = data.filter(
+          ben => ben.charity_name === charityFromStorage.charity
+        );
+
+        const simplified = filtered.map(ben => ({
+          Name: ben.benificiary_name,
+          id: ben._id,
+          BEN_ID: ben.benificiary_id,
+          Number: ben.number,
+          category: ben.category,
+          age: ben.age,
+          amount: 0,
+        }));
+
+        localStorage.setItem("data", JSON.stringify(simplified));
+        console.log("Beneficiary data stored.");
+      } catch (err) {
+        console.error("Error fetching beneficiaries:", err);
+      }
+    };
+
+    // Call it with delay if needed
+    setTimeout(() => {
+      fetchAndStoreBeneficiaries();
+    }, 1000); // optional 1-second delay after mount
+  }, []);
+
+
+  
   return (
     <>
       <Navbar />
