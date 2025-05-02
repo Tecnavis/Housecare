@@ -7,7 +7,7 @@ import { fetchBenificiarys } from "../../Authentication/handle-api";
 
 const MonthlyEarnings = () => {
   const [benificiarys, setBenificiarys] = useState([]);
-  const [splits, setSplits] = useState([]);
+  const [, setSplits] = useState([]);
   const [series, setSeries] = useState([
     { name: "APPROVED", data: Array(12).fill(0) },
     { name: "PENDING", data: Array(12).fill(0) },

@@ -11,7 +11,6 @@ exports.create = asyncHandler(async (req, res) => {
     }
     
     Number(amount);
-    console.log(amount);
     
     const newAmount = new Amount({ amount });
     await newAmount.save();

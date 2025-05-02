@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Dropdown, DropdownToggle, DropdownMenu, Row, Col, Button } from "reactstrap";
+import { Dropdown, DropdownToggle, DropdownMenu, Row, Col } from "reactstrap";
 import SimpleBar from "simplebar-react";
 import axios from "axios";
 import { BASE_URL } from "pages/Authentication/handle-api";

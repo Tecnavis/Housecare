@@ -81,7 +81,7 @@ const Navbar = props => {
     return false
   }
 
-  const [notificationCount, setNotificationCount] = useState(0)
+  const [, setNotificationCount] = useState(0)
 
   useEffect(() => {
     const fetchNotificationCount = async () => {

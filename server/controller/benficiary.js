@@ -519,16 +519,17 @@ exports.block = async (req, res) => {
   const {id} = req.params;
   try {
 
-    console.log(id);
     
     const benificiary = await Benificiaries.findById(id);
-    console.log(benificiary, "benif");
     
     if (!benificiary) {
       return res.status(404).json({ message: "Benificary not found" });
     }
 
     benificiary.isBlocked = !benificiary.isBlocked; 
+    benificiary.account_status = benificiary.isBlocked ? "Inactive" : "Active";
+    
+   
     await benificiary.save();
     res.json(benificiary);
   } catch (error) {

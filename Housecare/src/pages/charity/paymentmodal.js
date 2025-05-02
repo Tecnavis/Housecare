@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 import {
   Modal,
@@ -10,38 +10,82 @@ import {
   FormFeedback,
 } from "reactstrap"
 import axios from "axios"
-import { BASE_URL } from "pages/Authentication/handle-api"
+import { BASE_URL, fetchBenificiarys } from "pages/Authentication/handle-api"
+const BENIFICIARY_URL = `${process.env.REACT_APP_BASE_URL}/benificiary`;
+
 
 const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
   const [amount, setAmount] = useState("")
   const [isInvalid, setIsInvalid] = useState(false)
+    const [benificiarys, setBenificiarys] = useState([])
+  
 
-  const handleSave = async () => {
-    if (amount >= 1) {
+  useEffect(() => {
+
+    const FetchBenfi = async () => {
       try {
-        const response = await axios.post(`${BASE_URL}/amount`, { amount })
-        localStorage.setItem("amountId", response.data?.newAmount._id)
-        // 1. Get data from localStorage
-        const raw = localStorage.getItem("data")
-        const parsedData = raw ? JSON.parse(raw) : []
+        const response = await fetchBenificiarys()
 
-        // 2. Set amount = 0 for all items, keep rest unchanged
-        const updatedData = parsedData.map(item => ({
-          ...item,
-          amount: 0,
-        }))
+        const charityFromStorage = JSON.parse(localStorage.getItem("charitydetails"));
+        if (!charityFromStorage?.charity) {
+          console.error("Charity details missing.");
+          return;
+        }
 
-        // 3. Update localStorage
-        localStorage.setItem("data", JSON.stringify(updatedData))
+        const filtered = response.filter(
+          ben => ben.charity_name === charityFromStorage.charity
+        );
+        setBenificiarys(filtered);
       } catch (error) {
         console.error(error)
       }
-
-      saveAmount(amount)
-      toggle()
-    } else {
-      setIsInvalid(true)
     }
+
+    FetchBenfi()
+
+  }, [])
+  
+  
+
+
+  
+
+  const handleSave = async () => {
+    var raw = localStorage.getItem("data")
+    const parsed = JSON.parse(raw || "[]"); 
+
+    if(benificiarys.length !== 0 || parsed.length !== 0 )  {    
+        if (amount >= 1) {
+        try {
+          // const response = await axios.post(`${BASE_URL}/amount`, { amount })
+          fetchAndStoreBeneficiaries();
+
+          localStorage.setItem("amountId", amount)
+          // 1. Get data from localStorage
+          const raw = localStorage.getItem("data")
+          const parsedData = raw ? JSON.parse(raw) : []
+  
+          // 2. Set amount = 0 for all items, keep rest unchanged
+          const updatedData = parsedData.map(item => ({
+            ...item,
+            amount: 0,
+          }))
+  
+          // 3. Update localStorage
+          localStorage.setItem("data", JSON.stringify(updatedData))
+        } catch (error) {
+          console.error(error)
+        }
+  
+        saveAmount(amount)
+        toggle()
+      } else {
+        setIsInvalid(true)
+      }
+    }else{
+      alert("No benficary please adde")
+    }
+   
   }
 
   const handleChange = e => {
@@ -62,6 +106,45 @@ const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
       setIsInvalid(true)
     }
   }
+
+
+
+  const fetchAndStoreBeneficiaries = async () => {
+    try {
+      const charityFromStorage = JSON.parse(localStorage.getItem("charitydetails"));
+      if (!charityFromStorage?.charity) {
+        console.error("Charity details missing.");
+        return;
+      }
+  
+      const { data } = await axios.get(`${BENIFICIARY_URL}`);
+      const filtered = data.filter(
+        ben => ben.charity_name === charityFromStorage.charity
+      );
+  
+      const simplified = filtered.map(ben => ({
+        Name: ben.benificiary_name,
+        id: ben._id,
+        BEN_ID: ben.benificiary_id,
+        Number: ben.number,
+        category: ben.category,
+        age: ben.age,
+        amount: 0,
+      }));
+  
+      localStorage.setItem("data", JSON.stringify(simplified));
+      console.log("Beneficiary data stored.");
+    } catch (err) {
+      console.error("Error fetching beneficiaries:", err);
+    }
+  };
+  
+  // Initial fetch
+  useEffect(() => {
+    // setTimeout(() => {
+      fetchAndStoreBeneficiaries();
+    // }, 1000);
+  }, []);
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>

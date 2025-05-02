@@ -1,19 +1,15 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
 import { CardBody, Form, Input, Row, Col, Button } from "reactstrap";
 import Swal from "sweetalert2";
-import logoDark from "../../assets/images/logo-dark.png";
 import { useForm } from "helpers/useForms";
 import { handleCharitySignin } from "../Authentication/handle-api";
 import "./LoginPage.css"
 const CharityLoginPanel = () => {
   const [values, handleChange] = useForm({ email: "", password: "" });
-  const [loginStatus, setLoginStatus] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     handleCharitySignin(e, values, (status) => {
-      setLoginStatus(status);
       if (status === "success") {
         Swal.fire({
           icon: "success",

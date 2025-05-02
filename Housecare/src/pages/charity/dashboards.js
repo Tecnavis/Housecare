@@ -71,7 +71,7 @@ const Dashboards = () => {
 
 
 
-const [splits, setSplits] = useState([]);
+const [, setSplits] = useState([]);
 const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
   const charityName = charitydetails?.charity;
   const fetchSplits = async () => {

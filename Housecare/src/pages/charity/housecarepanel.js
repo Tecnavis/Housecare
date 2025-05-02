@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { CardBody, Form, Input, Row, Col, Button } from "reactstrap";
 import Swal from "sweetalert2";
@@ -7,12 +7,10 @@ import { handleLogin } from "../Authentication/handle-api";
 import "./LoginPage.css"
 const HousecareLoginPanel = () => {
   const [values, handleChange] = useForm({ email: "", password: "" });
-  const [loginStatus, setLoginStatus] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     handleLogin(e, values, (status) => {
-      setLoginStatus(status);
       if (status === "success") {
         Swal.fire({
           icon: "success",

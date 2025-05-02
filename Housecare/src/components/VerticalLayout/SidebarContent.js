@@ -138,7 +138,7 @@ const SidebarContent = props => {
     }
   }
 
-  const [notificationCount, setNotificationCount] = useState(0)
+  const [, setNotificationCount] = useState(0)
 
   useEffect(() => {
     const fetchNotificationCount = async () => {

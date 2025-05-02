@@ -28,6 +28,10 @@ import {
   toggleBlockBenificary,
 } from "../Authentication/handle-api"
 import Navbar from "./Navbars"
+
+const BENIFICIARY_URL = `${process.env.REACT_APP_BASE_URL}/benificiary`;
+
+
 const Beneficiary = () => {
   const [datas, handleChanges, setDatas] = useForm({
     benificiary_name: "",
@@ -48,7 +52,7 @@ const Beneficiary = () => {
     date: "",
   })
 
-  const [charitys, setCharitys] = useState([])
+  const [, setCharitys] = useState([])
   // const [showPassword, setShowPassword] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const { id } = useParams()
@@ -126,6 +130,7 @@ const Beneficiary = () => {
         icon: "success",
         confirmButtonText: "OK",
       })
+      await fetchAndStoreBeneficiaries()
       setmodals(false)
     } catch (err) {
       console.log(err, "benificiary adding failed")
@@ -161,6 +166,7 @@ const Beneficiary = () => {
     try {
       await benificiaryDelete(id)
       fetchDatas()
+      await fetchAndStoreBeneficiaries()
     } catch (err) {
       console.log(err, "delete failed")
     }
@@ -187,6 +193,7 @@ const Beneficiary = () => {
         category: benificiaryDetails.category,
         age: benificiaryDetails.age,
       })
+      await fetchAndStoreBeneficiaries()
     } catch (err) {
       console.log("an error occured", err)
     }
@@ -236,6 +243,7 @@ const Beneficiary = () => {
         icon: "success",
         confirmButtonText: "OK",
       })
+      await fetchAndStoreBeneficiaries()
       setEdits(false)
     } catch (err) {
       console.error("Error updating benificiary:", err)
@@ -370,6 +378,49 @@ const Beneficiary = () => {
       }
     }
   }
+
+
+ const fetchAndStoreBeneficiaries = async () => {
+  try {
+    const charityFromStorage = JSON.parse(localStorage.getItem("charitydetails"));
+    if (!charityFromStorage?.charity) {
+      console.error("Charity details missing.");
+      return;
+    }
+
+    const { data } = await axios.get(`${BENIFICIARY_URL}`);
+    const filtered = data.filter(
+      ben => ben.charity_name === charityFromStorage.charity
+    );
+
+    const simplified = filtered.map(ben => ({
+      Name: ben.benificiary_name,
+      id: ben._id,
+      BEN_ID: ben.benificiary_id,
+      Number: ben.number,
+      category: ben.category,
+      age: ben.age,
+      amount: 0,
+    }));
+
+    localStorage.setItem("data", JSON.stringify(simplified));
+    console.log("Beneficiary data stored.");
+  } catch (err) {
+    console.error("Error fetching beneficiaries:", err);
+  }
+};
+
+// Initial fetch
+useEffect(() => {
+  // setTimeout(() => {
+    fetchAndStoreBeneficiaries();
+  // }, 1000);
+}, []);
+
+// After adding a new beneficiary, call this again:
+// await addNewBeneficiary(...);
+// await fetchAndStoreBeneficiaries();
+
 
   return (
     <div>

@@ -123,7 +123,9 @@ const Profile = () => {
     // }
 
     try {
-      const response = await axios.put(`${BASE_URL}/charity/${id}`, formData, {
+       await axios.put(`${BASE_URL}/charity/${id}`, formData, {
+        
+        
         headers: {
           "Content-Type": "multipart/form-data",
         },

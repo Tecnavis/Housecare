@@ -5,18 +5,13 @@ import { connect } from "react-redux"
 
 import { Link } from "react-router-dom"
 
-// Reactstrap
-import { Dropdown, Button } from "reactstrap"
-
 // Import menuDropdown
 // import LanguageDropdown from "../CommonForBoth/TopbarDropdown/LanguageDropdown"
 import NotificationDropdown from "../CommonForBoth/TopbarDropdown/NotificationDropdown"
 import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu"
 
 // import megamenuImg from "../../assets/images/megamenu-img.png"
-import logo from "../../assets/images/logo-sm.png"
 import logoLightPng from "../../assets/images/logoo.png"
-import logoDark from "../../assets/images/logo-dark.png"
 
 //i18n
 import { withTranslation } from "react-i18next"
@@ -30,7 +25,6 @@ import {
 
 const Header = props => {
   const [search, setsearch] = useState(false)
-  const [createmenu, setCreateMenu] = useState(false)
 
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
@@ -47,7 +41,7 @@ const Header = props => {
         document.documentElement.mozRequestFullScreen()
       } else if (document.documentElement.webkitRequestFullscreen) {
         document.documentElement.webkitRequestFullscreen(
-          Element.ALLOW_KEYBOARD_INPUT,
+          Element.ALLOW_KEYBOARD_INPUT
         )
       }
     } else {
@@ -67,9 +61,11 @@ const Header = props => {
     body.classList.toggle("sidebar-enable")
   }
   const isRoleStaff = () => {
-    const HomecareAdmin = JSON.parse(localStorage.getItem("HomecareAdmin"));
-    return HomecareAdmin && HomecareAdmin.roles === "staff";
-  };
+    const HomecareAdmin = JSON.parse(localStorage.getItem("HomecareAdmin"))
+    return HomecareAdmin && HomecareAdmin.roles === "staff"
+  }
+  console.log(isRoleStaff)
+
   return (
     <React.Fragment>
       <header id="page-topbar">
@@ -90,14 +86,20 @@ const Header = props => {
                   <img src={logoLightPng} alt="" height="50" />
                 </span>
                 <span className="logo-lg">
-                  <img src={logoLightPng} alt="" height="80" width={"80"} style={{marginTop:"15px"}} />
+                  <img
+                    src={logoLightPng}
+                    alt=""
+                    height="80"
+                    width={"80"}
+                    style={{ marginTop: "15px" }}
+                  />
                 </span>
               </Link>
             </div>
 
             <button
               type="button"
-              style={{marginTop:"10px"}}
+              style={{ marginTop: "10px" }}
               onClick={() => {
                 tToggle()
               }}

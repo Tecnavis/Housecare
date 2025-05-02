@@ -10,7 +10,7 @@ import * as XLSX from "xlsx"
 import Navbar from "./Navbars"
 import { BASE_URL } from "../Authentication/handle-api"
 import { fetchBenificiarys } from "pages/Authentication/handle-api"
-import Otpsender from "./Otpsender"
+
 const App = () => {
   const [benificiarys, setBenificiarys] = useState([])
   const [data, setData] = useState([])
@@ -124,17 +124,18 @@ const App = () => {
 
   const handleLimitedAmountSave = async () => {
     const updatedLimitedAmount = parseFloat(newLimitedAmount)
-    const id = localStorage.getItem("amountId")
-    try {
-      await axios.patch(`${BASE_URL}/amount/${id}`, {
-        amount: updatedLimitedAmount,
-      })
-    } catch (error) {
-      console.error(error)
-    }
+    // const id = localStorage.getItem("amountId")
+    // try {
+    //   await axios.patch(`${BASE_URL}/amount/${id}`, {
+    //     amount: updatedLimitedAmount,
+    //   })
+    // } catch (error) {
+    //   console.error(error)
+    // }
     setLimitedAmount(updatedLimitedAmount)
     localStorage.setItem("limitedamount", updatedLimitedAmount)
     setIsEditingLimitedAmount(false)
+    window.location.reload()
   }
 
   const handleLimitedAmountCancel = () => {
@@ -254,8 +255,6 @@ const App = () => {
 
       // Save splits to the backend
       await axios.post(`${BASE_URL}/api/splits`, { splits })
-
-      console.log(splits, "split");
       
 
       // Update beneficiaries' balances

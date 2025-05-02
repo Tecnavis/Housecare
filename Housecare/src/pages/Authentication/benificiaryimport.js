@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect,  useState } from 'react';
 import { Modal, ModalHeader, ModalBody, Button, Alert } from 'reactstrap';
 import { BASE_URL, fetchBenificiarys } from './handle-api';
 import img1 from '../../assets/images/benificiary.png';
@@ -12,7 +12,7 @@ const ExcelImport = ({ isOpen, toggle, onImportSuccess }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
      const [emailList, setEmailList] = useState([]);
-         const [benificiarys, setBenificiarys] = useState([])
+         const [, setBenificiarys] = useState([])
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];

@@ -1,37 +1,37 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { BASE_URL, fetchBenificiarys } from "./handle-api";
-import styles from "../charity/split.module.css";
-import { Button, Card } from "reactstrap";
-import Swal from "sweetalert2";
+import React, { useEffect, useState } from "react"
+import axios from "axios"
+import { BASE_URL, fetchBenificiarys } from "./handle-api"
+import styles from "../charity/split.module.css"
+import { Card } from "reactstrap"
+import Swal from "sweetalert2"
 
 function Allsplit() {
-  const [splits, setSplits] = useState([]);
-  const [benificiarys, setBenificiarys] = useState([]);
+  const [splits, setSplits] = useState([])
+  const [, setBenificiarys] = useState([])
 
   useEffect(() => {
-    loadData();
+    loadData()
     const fetchSplits = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/splits`);
-        setSplits(response.data);
+        const response = await axios.get(`${BASE_URL}/api/splits`)
+        setSplits(response.data)
       } catch (error) {
-        console.error("Error fetching splits:", error);
+        console.error("Error fetching splits:", error)
       }
-    };
+    }
 
-    fetchSplits();
-  }, []);
+    fetchSplits()
+  }, [])
 
   const loadData = async () => {
     try {
-      const respond = await fetchBenificiarys();
-      setBenificiarys(respond);
+      const respond = await fetchBenificiarys()
+      setBenificiarys(respond)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
-  const handleDelete = async (id) => {
+  }
+  const handleDelete = async id => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -40,25 +40,34 @@ function Allsplit() {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
+    }).then(async result => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`${BASE_URL}/${id}`);
-          setSplits(splits.filter((split) => split._id !== id));
-          Swal.fire("Deleted!", "Your split has been deleted.", "success");
+          await axios.delete(`${BASE_URL}/${id}`)
+          setSplits(splits.filter(split => split._id !== id))
+          Swal.fire("Deleted!", "Your split has been deleted.", "success")
         } catch (error) {
-          console.error("Error deleting split:", error);
-          Swal.fire("Error!", "There was a problem deleting the split.", "error");
+          console.error("Error deleting split:", error)
+          Swal.fire(
+            "Error!",
+            "There was a problem deleting the split.",
+            "error"
+          )
         }
       }
-    });
-  };
+    })
+  }
   return (
     <React.Fragment>
       <br />
       <Card className="container">
-        <div className="card-body" style={{ display: "flex", justifyContent: "center" }}>
-          <h5 style={{ textAlign: "center", marginLeft: "20px" }}>VIEW COMPLETE SPLIT HISTORY</h5>
+        <div
+          className="card-body"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <h5 style={{ textAlign: "center", marginLeft: "20px" }}>
+            VIEW COMPLETE SPLIT HISTORY
+          </h5>
         </div>
       </Card>
       <div className={styles.table_container}>
@@ -81,10 +90,18 @@ function Allsplit() {
               <tr>
                 <td>{new Date(split.date).toLocaleDateString()}</td>
                 {/* <td>{split._id}</td> */}
-                <td>{split.beneficiary ? split.beneficiary.benificiary_id : "N/A"}</td>
-                <td>{split.beneficiary ? split.beneficiary.benificiary_name : "N/A"}</td>
+                <td>
+                  {split.beneficiary ? split.beneficiary.benificiary_id : "N/A"}
+                </td>
+                <td>
+                  {split.beneficiary
+                    ? split.beneficiary.benificiary_name
+                    : "N/A"}
+                </td>
                 <td>{split.beneficiary ? split.beneficiary.number : "N/A"}</td>
-                <td>{split.beneficiary ? split.beneficiary.category : "N/A"}</td>
+                <td>
+                  {split.beneficiary ? split.beneficiary.category : "N/A"}
+                </td>
                 <td>{split.beneficiary ? split.beneficiary.age : "N/A"}</td>
                 <td>{split.splitamount}</td>
                 <td>{split.status}</td>
@@ -111,7 +128,7 @@ function Allsplit() {
         </table>
       </div>
     </React.Fragment>
-  );
+  )
 }
 
-export default Allsplit;
+export default Allsplit

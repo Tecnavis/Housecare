@@ -102,7 +102,7 @@ function Staff() {
   }
 
   //password validation
-  const [passwordError, setPasswordError] = useState("")
+  const [, setPasswordError] = useState("")
   const validatePassword = password => {
     if (password.length < 6) {
       setPasswordError("Password must be at least 6 characters long.")

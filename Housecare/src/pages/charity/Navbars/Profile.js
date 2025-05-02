@@ -40,7 +40,7 @@ const ProfileMenu = props => {
       tag="button"
       style={{
         display: 'flex',
-        alignItems: 'stretch',
+        // alignItems: 'stretch',
         backgroundColor: 'transparent',
         borderRadius: '10px',
         padding: '10px',

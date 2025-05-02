@@ -8,7 +8,7 @@ import { BASE_URL } from "../Authentication/handle-api";
 const MonthlyEarnings = () => {
     const [charitys, setCharitys] = useState([]);
     const [benificiarys, setBenificiarys] = useState([]);
-    const [splits, setSplits] = useState([]);
+    const [, setSplits] = useState([]);
     const [acceptedAmount, setAcceptedAmount] = useState(0);
 
     const [series, setSeries] = useState([

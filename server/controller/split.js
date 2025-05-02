@@ -11,6 +11,8 @@ const expressAsyncHandler = require("express-async-handler");
 require("dotenv").config(); // Load environment variables
 const Smssender = require("../model/smssender");
 const client = require("twilio")(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
+const Amount = require("../model/amount");
+
 
 // exports.sendPdf =async (req, res) => {
 //   try {
@@ -52,10 +54,7 @@ const client = require("twilio")(process.env.TWILIO_SID, process.env.TWILIO_TOKE
 
 exports.saveSplits = async (req, res) => {
   try {
-    const { splits } = req.body;
-
-    console.log(splits, "splits");
-    
+    const { splits } = req.body;    
 
     await Splits.insertMany(splits);
 
@@ -135,14 +134,24 @@ exports.updateSplitStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
+
   try {
     const split = await Splits.findById(id);
 
     if (!split) {
       return res.status(404).json({ message: "Split not found" });
     }
-
+        
     split.status = status;
+
+       if ( status === "Accepted") {
+          await Amount.findOneAndUpdate(
+          {}, 
+          { $inc: { amount: split.splitamount } },
+          { upsert: true, new: true } 
+        );
+      }
+
     await split.save();
 
     res.json({ message: "Status updated successfully", split });
@@ -151,6 +160,8 @@ exports.updateSplitStatus = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+
 
 //pending approvals
 exports.getPendingApprovalsCount = async (req, res) => {

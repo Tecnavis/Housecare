@@ -1,78 +1,82 @@
-import React, { useEffect, useState } from "react";
-import { Col, Row, Card, CardBody, Button } from "reactstrap";
-import { Link, useParams } from "react-router-dom";
-import { connect } from "react-redux";
-import { setBreadcrumbItems } from "../../store/actions";
-import imgdark from "../../assets/images/1.JPG";
-import { BASE_URL } from "./handle-api";
-import axios from "axios";
+import React, { useEffect, useState } from "react"
+import { Col, Row, Card, CardBody, Button } from "reactstrap"
+import { Link, useParams } from "react-router-dom"
+import { connect } from "react-redux"
+import { setBreadcrumbItems } from "../../store/actions"
+import imgdark from "../../assets/images/1.JPG"
+import { BASE_URL } from "./handle-api"
+import axios from "axios"
 
-const BenificiaryDetails = (props) => {
-  document.title = "Benificiary Details | Housecare";
+const BenificiaryDetails = props => {
+  document.title = "Benificiary Details | Housecare"
 
-  const [beneficiarys, setBeneficiarys] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const { id } = useParams();
+  const [beneficiarys, setBeneficiarys] = useState([])
+  const [transactions, setTransactions] = useState([])
+  const { id } = useParams()
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      axios.defaults.headers.common["Authorization"] = token;
+      const token = localStorage.getItem("token")
+      axios.defaults.headers.common["Authorization"] = token
       try {
-        const response = await axios.get(`${BASE_URL}/benificiary/${id}`);
-        setBeneficiarys(response.data);
+        const response = await axios.get(`${BASE_URL}/benificiary/${id}`)
+        setBeneficiarys(response.data)
       } catch (error) {
-        console.error("Error fetching beneficiary details:", error);
+        console.error("Error fetching beneficiary details:", error)
       }
-    };
+    }
 
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/benificiary/${id}/transactions`);
-        const { creditedDetails, debitedDetails } = response.data;
-    
+        const response = await axios.get(
+          `${BASE_URL}/benificiary/${id}/transactions`
+        )
+        const { creditedDetails, debitedDetails } = response.data
+
         // Combine credited and debited details
         const allTransactions = [
-          ...creditedDetails.map((split) => ({
+          ...creditedDetails.map(split => ({
             date: split.date,
             amount: split.splitamount,
             type: "credit",
             status: split.status,
             beneficiaryId: split.beneficiary,
           })),
-          ...debitedDetails.map((debit) => ({
+          ...debitedDetails.map(debit => ({
             date: debit.debitedDate,
             amount: debit.debitedAmount,
             type: "debit",
             status: "Debited",
             beneficiaryId: debit.beneficiary,
           })),
-        ];
-    
-        // Sort transactions by date in descending order
-        allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-        // Calculate running total balance
-        let runningTotal = 0;
-        const totalBalanceDetails = allTransactions.map((transaction) => {
-          runningTotal += transaction.type === "credit" ? transaction.amount : -transaction.amount;
-          return { ...transaction, runningTotal };
-        });
-    
-        setTransactions(totalBalanceDetails);
-      } catch (error) {
-        console.error("Error fetching transaction details:", error);
-      }
-    };
-    
+        ]
 
-    fetchData();
-    fetchTransactions();
-  }, [id]);
+        // Sort transactions by date in descending order
+        allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date))
+
+        // Calculate running total balance
+        let runningTotal = 0
+        const totalBalanceDetails = allTransactions.map(transaction => {
+          runningTotal +=
+            transaction.type === "credit"
+              ? transaction.amount
+              : -transaction.amount
+          return { ...transaction, runningTotal }
+        })
+
+        setTransactions(totalBalanceDetails)
+      } catch (error) {
+        console.error("Error fetching transaction details:", error)
+      }
+    }
+
+    fetchData()
+    fetchTransactions()
+  }, [id])
 
   const printInvoice = () => {
-    window.print();
-  };
+    window.print()
+  }
 
   return (
     <React.Fragment>
@@ -157,7 +161,10 @@ const BenificiaryDetails = (props) => {
                   <Row>
                     <Col xs="6">
                       <address>
-                        <strong className="text-primary" style={{ fontSize: "large" }}>
+                        <strong
+                          className="text-primary"
+                          style={{ fontSize: "large" }}
+                        >
                           {beneficiarys.benificiary_name}
                         </strong>
                         <br />
@@ -180,44 +187,47 @@ const BenificiaryDetails = (props) => {
                       </address>
                     </Col>
                     <Col xs="12" md="6">
-  <div className="card border-light shadow-sm">
-    <div className="card-body">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <strong className="text-primary">
-          {beneficiarys.charity_name}
-        </strong>
-        {/* <strong className="text-secondary">
-          {beneficiarys.charity_name}
-        </strong> */}
-        <div className="badge-container">
-          {beneficiarys.account_status ? (
-            <span className="badge bg-success">Active</span>
-          ) : (
-            <span className="badge bg-danger">Inactive</span>
-          )}
-        </div>
-      </div>
+                      <div className="card border-light shadow-sm">
+                        <div className="card-body">
+                          <div className="d-flex justify-content-between align-items-center mb-3">
+                            <strong className="text-primary">
+                              {beneficiarys.charity_name}
+                            </strong>
+          
+                            <div className="badge-container">
+                              {beneficiarys?.account_status?.toLowerCase() ==
+                              "active" ? (
+                                <span className="badge bg-success">Active</span>
+                              ) : (
+                                <span className="badge bg-danger">
+                                  Inactive
+                                </span>
+                              )}
+                            </div>
+                          </div>
 
-      <div className="d-flex justify-content-between mb-3">
-        <span>{beneficiarys.email_id}</span>
-        <span>{beneficiarys.number}</span>
-        <span>{beneficiarys.navision_linked_no}</span>
-      </div>
+                          <div className="d-flex justify-content-between mb-3">
+                            <span>{beneficiarys.email_id}</span>
+                            <span>{beneficiarys.number}</span>
+                            <span>{beneficiarys.navision_linked_no}</span>
+                          </div>
 
-      <div className="card-footer d-flex justify-content-between align-items-center" style={{fontSize: "medium"}}>
-        <small className="text-muted">
-          Beneficiary ID: {beneficiarys.benificiary_id}
-        </small>
-        <small className="text-muted">
-          Balance: <strong>SAR {beneficiarys.Balance}</strong>
-        </small>
-      </div>
-    </div>
-  </div>
-</Col>
-
+                          <div
+                            className="card-footer d-flex justify-content-between align-items-center"
+                            style={{ fontSize: "medium" }}
+                          >
+                            <small className="text-muted">
+                              Beneficiary ID: {beneficiarys.benificiary_id}
+                            </small>
+                            <small className="text-muted">
+                              Balance:{" "}
+                              <strong>SAR {beneficiarys.Balance}</strong>
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                    </Col>
                   </Row>
-
                 </Col>
               </Row>
 
@@ -228,7 +238,10 @@ const BenificiaryDetails = (props) => {
                       <h3 className="font-size-16">
                         <strong>Transactions</strong>
                         <div className="float-end">
-                          <Link to="#" className="btn btn-dark waves-effect waves-light">
+                          <Link
+                            to="#"
+                            className="btn btn-dark waves-effect waves-light"
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width="16"
@@ -270,23 +283,31 @@ const BenificiaryDetails = (props) => {
                             </tr>
                           </thead>
                           <tbody>
-                            {transactions.map((transaction) => {
-                              const formattedDate = new Date(transaction.date).toLocaleDateString("en-CA");
+                            {transactions.map((transaction, index) => {
+                              const formattedDate = new Date(
+                                transaction.date
+                              ).toLocaleDateString("en-CA")
 
                               return (
-                                <tr key={transaction._id}>
+                                <tr key={index}>
                                   <td>{formattedDate}</td>
                                   {/* <td className="text-center">{transaction.beneficiaryId}</td> */}
-                                  <td className="text-center">{beneficiarys.benificiary_id}</td>
+                                  <td className="text-center">
+                                    {beneficiarys.benificiary_id}
+                                  </td>
                                   <td className="text-center">
                                     {transaction.type === "credit"
                                       ? `+${transaction.amount}`
                                       : `-${transaction.amount}`}
                                   </td>
-                                  <td className="text-end">{transaction.status}</td>
-                                  <td className="text-end">{transaction.runningTotal}</td>
+                                  <td className="text-end">
+                                    {transaction.status}
+                                  </td>
+                                  <td className="text-end">
+                                    {transaction.runningTotal}
+                                  </td>
                                 </tr>
-                              );
+                              )
                             })}
                           </tbody>
                         </table>
@@ -294,8 +315,15 @@ const BenificiaryDetails = (props) => {
 
                       <div className="d-print-none">
                         <div className="float-end">
-                          
-                          <Button style={{backgroundColor:"transparent",marginRight:"10px",color:"black"}}>Total Amount : {beneficiarys.Balance}</Button>
+                          <Button
+                            style={{
+                              backgroundColor: "transparent",
+                              marginRight: "10px",
+                              color: "black",
+                            }}
+                          >
+                            Total Amount : {beneficiarys.Balance}
+                          </Button>
                           <Link
                             to="#"
                             onClick={printInvoice}
@@ -303,7 +331,10 @@ const BenificiaryDetails = (props) => {
                           >
                             <i className="fa fa-print"></i>
                           </Link>{" "}
-                          <Link to="#" className="btn btn-primary waves-effect waves-light">
+                          <Link
+                            to="#"
+                            className="btn btn-primary waves-effect waves-light"
+                          >
                             Send
                           </Link>
                         </div>
@@ -317,7 +348,7 @@ const BenificiaryDetails = (props) => {
         </Col>
       </Row>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default connect(null, { setBreadcrumbItems })(BenificiaryDetails);
+export default connect(null, { setBreadcrumbItems })(BenificiaryDetails)
