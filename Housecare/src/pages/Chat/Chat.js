@@ -4,7 +4,7 @@ import classnames from "classnames";
 
 //Import Action to copy breadcrumb items from local state to redux state
 import { setBreadcrumbItems } from "../../store/actions";
-import SimpleBar from 'simplebar-react/dist';
+import SimpleBar from 'simplebar-react';
 import user2 from "../../assets/images/users/user-2.jpg";
 import { Card, CardBody, Dropdown, Col, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavLink, NavItem, TabContent, TabPane, Row, UncontrolledDropdown, Button, Input, UncontrolledAlert } from 'reactstrap';
 import { Link } from 'react-router-dom';
