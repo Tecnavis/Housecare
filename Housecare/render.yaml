@@ -1,8 +1,27 @@
 services:
+  - type: web
+    name: housecare-backend
+    env: node
+    plan: free
+    repo: https://github.com/Tecnavis/Housecare
+    branch: main
+    root: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URL
+        sync: false
+
   - type: static
     name: housecare-frontend
     env: static
-    root: Housecare        # or remove this and use repo root patterns
+    plan: free
+    repo: https://github.com/Tecnavis/Housecare
+    branch: main
+    root: Housecare
     installCommand: npm install --legacy-peer-deps
     buildCommand: npm run build
     publishPath: build
+    envVars:
+      - key: REACT_APP_BASE_URL
+        sync: false
