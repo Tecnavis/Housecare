@@ -1,102 +1,116 @@
-import axios from "axios"
+import axios from "axios";
 import Swal from "sweetalert2";
-const HOUSECARE_BASE_URL = `${process.env.REACT_APP_BASE_URL}/housecare`;
-const CHARITY_URL= `${process.env.REACT_APP_BASE_URL}/charity`;
-const ADMIN_URL = `${process.env.REACT_APP_BASE_URL}/admin`;
-const CHARITYSTAFF_URL = `${process.env.REACT_APP_BASE_URL}/charitystaff`;
-const BENIFICIARY_URL = `${process.env.REACT_APP_BASE_URL}/benificiary`;
-const CATEGORY_URL = `${process.env.REACT_APP_BASE_URL}/category`;
-const EMAIL_URL = `${process.env.REACT_APP_BASE_URL}/email`;
-export const BASE_URL = `${process.env.REACT_APP_BASE_URL}`
 
+/*
+  Robust BASE URL handling:
+  - If REACT_APP_BASE_URL is set and non-empty, use it (trim trailing slashes).
+  - Otherwise fall back to a sensible local dev URL: http://localhost:5000/api
+  - We also set axios.defaults.baseURL so axios calls use the same base.
+*/
+const RAW_BASE = process.env.REACT_APP_BASE_URL;
+const BASE = RAW_BASE && RAW_BASE.trim() !== "" ? RAW_BASE.replace(/\/+$/, "") : "http://localhost:5000/api";
+
+const HOUSECARE_BASE_URL = `${BASE}/housecare`;
+const CHARITY_URL = `${BASE}/charity`;
+const ADMIN_URL = `${BASE}/admin`;
+const CHARITYSTAFF_URL = `${BASE}/charitystaff`;
+const BENIFICIARY_URL = `${BASE}/benificiary`;
+const CATEGORY_URL = `${BASE}/category`;
+const EMAIL_URL = `${BASE}/email`;
+export const BASE_URL = BASE;
+
+// Configure axios defaults
+axios.defaults.baseURL = BASE;
+axios.defaults.headers.post = axios.defaults.headers.post || {};
+axios.defaults.headers.post["Content-Type"] = "application/json";
 
 //housecare staff creating
 export const Createstaff = async formData => {
-  const token = localStorage.getItem("token")
-  axios.defaults.headers.common["Authorization"] = token
+  const token = localStorage.getItem("token");
+  if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
     const response = await axios.post(`${HOUSECARE_BASE_URL}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    })
-    return response.data
+    });
+    return response.data;
   } catch (err) {
-    console.log(err, "an error occure in signup")
-    throw err
+    console.log(err, "an error occure in signup");
+    throw err;
   }
-}
+};
 
 //staff signin
 export const handleLogin = async (e, values, setLoginStatus) => {
-  e.preventDefault()
+  e.preventDefault();
   const Data = {
     email: values.email,
     password: values.password,
-  }
+  };
 
-  console.log("Attempting to login with data:")
+  console.log("Attempting to login with data:");
 
   try {
-    const response = await axios.post(`${HOUSECARE_BASE_URL}/signin`, Data)
+    const response = await axios.post(`${HOUSECARE_BASE_URL}/signin`, Data);
     if (response.status === 200) {
-      setLoginStatus("success")
-      const token = response.data.token
-      localStorage.setItem("token", token)
-      const HomecareAdmin = response.data.HomecareAdmin
-      localStorage.setItem("HomecareAdmin", JSON.stringify(HomecareAdmin))
-      console.log("Token and user data stored in Local storage")
-      window.location.href = "/dashboard"
+      setLoginStatus("success");
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      const HomecareAdmin = response.data.HomecareAdmin;
+      localStorage.setItem("HomecareAdmin", JSON.stringify(HomecareAdmin));
+      console.log("Token and user data stored in Local storage");
+      window.location.href = "/dashboard";
       // history.push("/dashboard");
     }
   } catch (err) {
-    setLoginStatus("error")
+    setLoginStatus("error");
     if (err.response && err.response.status === 400) {
-      console.log(err.response.data.message)
+      console.log(err.response.data.message);
     } else {
-      console.log(err.message, "something went wrong in signin")
+      console.log(err.message, "something went wrong in signin");
     }
   }
-}
+};
 
 //Housecare staff details listing
 export const fetchStaff = async () => {
-  const token = localStorage.getItem("token")
-  axios.defaults.headers.common["Authorization"] = token
+  const token = localStorage.getItem("token");
+  if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios.get(`${HOUSECARE_BASE_URL}`)
-    return response.data
+    const response = await axios.get(`${HOUSECARE_BASE_URL}`);
+    return response.data;
   } catch (err) {
-    console.error("staff list failed: internal error", err)
-    throw err
+    console.error("staff list failed: internal error", err);
+    throw err;
   }
-}
+};
 
 //Housecare staff delete
 export const deleteStaff = async id => {
   try {
-    await axios.delete(`${HOUSECARE_BASE_URL}/${id}`)
+    await axios.delete(`${HOUSECARE_BASE_URL}/${id}`);
   } catch (err) {
     console.log(
       err.response ? err.response.data : err.message,
       "something went wrong in staff delete"
-    )
-    throw err
+    );
+    throw err;
   }
-}
+};
 
 //Staff details edit by Id
 export const staffEdit = async id => {
-  const token = localStorage.getItem("token")
-  axios.defaults.headers.common["Authorization"] = token
+  const token = localStorage.getItem("token");
+  if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios.get(`${HOUSECARE_BASE_URL}/${id}`)
-    return response.data
+    const response = await axios.get(`${HOUSECARE_BASE_URL}/${id}`);
+    return response.data;
   } catch (err) {
-    console.log(err, "staff fetching error")
-    throw err
+    console.log(err, "staff fetching error");
+    throw err;
   }
-}
+};
 
 //staff details update
 export const staffUpdate = async (id, formData) => {
@@ -105,13 +119,13 @@ export const staffUpdate = async (id, formData) => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    })
-    return response.data
+    });
+    return response.data;
   } catch (err) {
-    console.error("Error updating staff:", err)
-    throw err
+    console.error("Error updating staff:", err);
+    throw err;
   }
-}
+};
 
 //revoke staff
 export const toggleBlockStaff = async id => {
@@ -120,48 +134,43 @@ export const toggleBlockStaff = async id => {
     headers: {
       "Content-Type": "application/json",
     },
-  })
+  });
 
   if (!response.ok) {
-    throw new Error("Failed to toggle block status")
+    throw new Error("Failed to toggle block status");
   }
 
-  return response.json()
-}
-
-
+  return response.json();
+};
 
 //charity organaization listing
-
 export const fetchCharity = async () => {
-  const token = localStorage.getItem("token")
-  axios.defaults.headers.common["Authorization"] = token
+  const token = localStorage.getItem("token");
+  if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios.get(`${CHARITY_URL}`)
-    return response.data
+    const response = await axios.get(`${CHARITY_URL}`);
+    return response.data;
   } catch (err) {
-    console.log(err, "charity organaization details listing failed")
+    console.log(err, "charity organaization details listing failed");
   }
-}
+};
 
 //charity organaization Add
-
 export const handleCharity = async formData => {
   try {
     const response = await axios.post(`${CHARITY_URL}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    })
-    return response.data
+    });
+    return response.data;
   } catch (err) {
-    console.log(err, "Charity Organaizaztion Adding Failed")
-    throw err
+    console.log(err, "Charity Organaizaztion Adding Failed");
+    throw err;
   }
-}
+};
 
 //charity organaization Delete
-
 export const charityDelete = async (id) => {
   const { isConfirmed } = await Swal.fire({
     title: 'Are you sure?',
@@ -195,75 +204,72 @@ export const charityDelete = async (id) => {
       });
     }
   }
-}
+};
 
 //superadmin signin
-
 export const handleadminLogin = async (e, values, setLoginStatus) => {
-  e.preventDefault()
+  e.preventDefault();
   const Data = {
     email: values.email,
     password: values.password,
-  }
+  };
 
-  console.log("Attempting to login with data")
+  console.log("Attempting to login with data");
 
   try {
-    const response = await axios.post(`${ADMIN_URL}`, Data)
+    const response = await axios.post(`${ADMIN_URL}`, Data);
     if (response.status === 200) {
-      setLoginStatus("success")
-      const token = response.data.token
-      localStorage.setItem("token", token)
-      const HomecareAdmin = response.data.HomecareAdmin
-      localStorage.setItem("HomecareAdmin", JSON.stringify(HomecareAdmin))
+      setLoginStatus("success");
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      const HomecareAdmin = response.data.HomecareAdmin;
+      localStorage.setItem("HomecareAdmin", JSON.stringify(HomecareAdmin));
       // const roles  = response.data.roles
       // localStorage.setItem("roles", JSON.stringify(roles))
-      console.log("Token and user data stored in Local storage")
-      window.location.href = "/dashboard"
+      console.log("Token and user data stored in Local storage");
+      window.location.href = "/dashboard";
     }
   } catch (err) {
-    setLoginStatus("error")
+    setLoginStatus("error");
     if (err.response && err.response.status === 400) {
-      console.log(err.response.data.message)
+      console.log(err.response.data.message);
     } else {
-      console.log(err.message, "something went wrong in signin")
+      console.log(err.message, "something went wrong in signin");
     }
   }
-}
+};
 
 //fetch Super admin
 export const fetchAdmin = async () => {
   try {
-    const response = await axios.get(`${ADMIN_URL}`)
-    return response.data
+    const response = await axios.get(`${ADMIN_URL}`);
+    return response.data;
   } catch (err) {
-    console.log(err, "Super admin details listing failed")
+    console.log(err, "Super admin details listing failed");
   }
-}
+};
 
 //Super admin Edit ById
-
 export const EditAdmin = async id => {
   try {
-    const response = await axios.get(`${ADMIN_URL}/${id}`)
-    return response.data
+    const response = await axios.get(`${ADMIN_URL}/${id}`);
+    return response.data;
   } catch (err) {
-    console.log(err, "Fetching admin details is failed")
+    console.log(err, "Fetching admin details is failed");
   }
-}
+};
 //charity organaization edit by Id
-
 export const charityEdit = async id => {
-  const token = localStorage.getItem("token")
-  axios.defaults.headers.common["Authorization"] = token
+  const token = localStorage.getItem("token");
+  if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios.get(`${CHARITY_URL}/${id}`)
-    return response.data
+    const response = await axios.get(`${CHARITY_URL}/${id}`);
+    return response.data;
   } catch (err) {
-    console.log(err, "charity organaizatiuon fetching error")
-    throw err
+    console.log(err, "charity organaizatiuon fetching error");
+    throw err;
   }
-}
+};
 //charity update
 export const charityUpdate = async (id, formData) => {
   try {
@@ -271,41 +277,40 @@ export const charityUpdate = async (id, formData) => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    })
-    return response.data
+    });
+    return response.data;
   } catch (err) {
-    console.error("Error updating charity:", err)
-    throw err
+    console.error("Error updating charity:", err);
+    throw err;
   }
-}
+};
 //charity staff creation
 export const handleCharitystaff = async formData => {
-  const token = localStorage.getItem("token")
-  axios.defaults.headers.common["Authorization"] = token
+  const token = localStorage.getItem("token");
+  if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
     const response = await axios.post(`${CHARITYSTAFF_URL}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    })
-    return response.data
+    });
+    return response.data;
   } catch (err) {
-    console.log( "Charitystaff  Adding Failed")
-    throw err
+    console.log( "Charitystaff  Adding Failed");
+    throw err;
   }
-}
+};
 //fetch charity staffs
 export const fetchCharitystaffs = async () => {
   try {
-    const response = await axios.get(`${CHARITYSTAFF_URL}`)
-    return response.data
+    const response = await axios.get(`${CHARITYSTAFF_URL}`);
+    return response.data;
   } catch (err) {
-    console.log(err, "charity staffs details listing failed")
+    console.log(err, "charity staffs details listing failed");
   }
-}
+};
 
 //delete charitystaffs
-
 export const charitystaffDelete = async (id) => {
   const { value: confirmed } = await Swal.fire({
     title: 'Are you sure?',
@@ -334,17 +339,17 @@ export const charitystaffDelete = async (id) => {
       );
     }
   }
-}
+};
 
 //charity staffs edit byId
 export const charitystaffEdit = async id => {
   try {
-    const response = await axios.get(`${CHARITYSTAFF_URL}/${id}`)
-    return response.data
+    const response = await axios.get(`${CHARITYSTAFF_URL}/${id}`);
+    return response.data;
   } catch (err) {
-    console.log("an error occured in charity staff Fetching", err)
+    console.log("an error occured in charity staff Fetching", err);
   }
-}
+};
 //charity staff update
 export const charityStaffUpdate = async (id, formData) => {
   try {
@@ -352,13 +357,13 @@ export const charityStaffUpdate = async (id, formData) => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    })
-    return response.data
+    });
+    return response.data;
   } catch (err) {
-    console.log("an error occured in charity staff details updation", err)
-    throw err
+    console.log("an error occured in charity staff details updation", err);
+    throw err;
   }
-}
+};
 //revoke charity staffs
 // export const blockcharityStaff = async id => {
 //   const response = await fetch(`${CHARITYSTAFF_URL}/${id}`, {
@@ -375,36 +380,34 @@ export const charityStaffUpdate = async (id, formData) => {
 //   return response.json()
 // }
 
-
 //create benificiary  
 export const handleBenificiary = async formData => {
-  const token = localStorage.getItem("token")
-  axios.defaults.headers.common["Authorization"] = token
+  const token = localStorage.getItem("token");
+  if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
     const response = await axios.post(`${BENIFICIARY_URL}`, formData, {
       headers: {
         "Content-Type": "application/json",
       },
-    })
-    return response.data
+    });
+    return response.data;
   } catch (err) {
-    console.log(err, "Benificiary  Adding Failed")
-    throw err
+    console.log(err, "Benificiary  Adding Failed");
+    throw err;
   }
-}
+};
 //fetch benificiary
 export const fetchBenificiarys = async () => {
-  const token = localStorage.getItem("token")
-  axios.defaults.headers.common["Authorization"] = token
+  const token = localStorage.getItem("token");
+  if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios.get(`${BENIFICIARY_URL}`)
-    return response.data
+    const response = await axios.get(`${BENIFICIARY_URL}`);
+    return response.data;
   } catch (err) {
-    console.log(err, "benificiary details listing failed")
+    console.log(err, "benificiary details listing failed");
   }
-}
+};
 //delete benificiary
-
 export const benificiaryDelete = async (id) => {
   const { value: confirmed } = await Swal.fire({
     title: 'Are you sure?',
@@ -433,34 +436,32 @@ export const benificiaryDelete = async (id) => {
       );
     }
   }
-}
+};
 //benificiary edit byId
 export const benificiaryEdit = async id => {
   try {
-    const response = await axios.get(`${BENIFICIARY_URL}/${id}`)
-    return response.data
+    const response = await axios.get(`${BENIFICIARY_URL}/${id}`);
+    return response.data;
   } catch (err) {
-    console.log("an error occured in benificiary Fetching", err)
+    console.log("an error occured in benificiary Fetching", err);
   }
-}
+};
 
 // benificary id block
+export const toggleBlockBenificary = async id => {
+  const response = await fetch(`${BASE_URL}/benificiary/block/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
- export const toggleBlockBenificary = async id => {
-    const response = await fetch(`${BASE_URL}/benificiary/block/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-  
-    if (!response.ok) {
-      throw new Error("Failed to toggle block status")
-    }
-  
-    return response.json()
+  if (!response.ok) {
+    throw new Error("Failed to toggle block status");
   }
 
+  return response.json();
+};
 
 //benificiary update
 export const benificiaryUpdate = async (id, formData) => {
@@ -469,13 +470,13 @@ export const benificiaryUpdate = async (id, formData) => {
       headers: {
         "Content-Type": "application/json",
       },
-    })
-    return response.data
+    });
+    return response.data;
   } catch (err) {
-    console.log("an error occured in benificiary details updation", err)
-    throw err
+    console.log("an error occured in benificiary details updation", err);
+    throw err;
   }
-}
+};
 //handle charity signin
 // export const handleCharitySignin = async (e, values, setLoginStatus) => {
 //   e.preventDefault()
@@ -579,8 +580,6 @@ export const handleCharitySignin = async (e, values, setLoginStatus) => {
     }
   }
 };
-
-
 
 //category create
 export const handleCategory = async formData => {
