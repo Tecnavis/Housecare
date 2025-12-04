@@ -6,18 +6,11 @@ const dblink = process.env.MONGODB_URI;
 function connectDB() {
     mongoose.connect(dblink)
     .then(() => {
-        console.log("✅ Database connected successfully");
-        
-        // Don't log localhost URL in production
-        if (process.env.NODE_ENV === 'development') {
-            console.log("http://localhost:8000");
-        } else {
-            console.log("🌐 Production server ready");
-        }
+        console.log("✅ MongoDB connected successfully");
     })
     .catch((err) => {
-        console.error("❌ Database connection error:", err.message);
-        console.log("Error occurred in database connection");
+        console.error("❌ MongoDB connection error:", err.message);
+        process.exit(1); // Exit if DB connection fails
     });
 }
 

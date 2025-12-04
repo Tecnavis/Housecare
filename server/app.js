@@ -26,11 +26,11 @@ connectDB();
 
 var app = express();
 
-// CORS Configuration - FIXED
+// CORS Configuration
 app.use(cors({
   origin: ["http://localhost:3000", "http://localhost:3001", 'https://housecare.tecnavis.in'],
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // Fixed: "method" → "methods"
-  credentials: true // Fixed: "credential" → "credentials"
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  credentials: true
 }));
 
 // View engine setup
@@ -39,15 +39,9 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-// Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
-
-// If you have a React frontend in a 'client' or 'build' directory:
-// Uncomment and adjust if needed:
-// app.use(express.static(path.join(__dirname, '../client/build')));
-// app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 // API Routes
 app.use('/', indexRouter);
@@ -73,13 +67,19 @@ app.use(function(req, res, next) {
 
 // Error handler
 app.use(function(err, req, res, next) {
-  // Set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // Render the error page
+  
   res.status(err.status || 500);
   res.render('error');
+});
+
+// Start server
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✅ Database connected successfully`);
 });
 
 module.exports = app;
