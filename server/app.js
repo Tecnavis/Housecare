@@ -28,7 +28,12 @@ var app = express();
 
 // CORS Configuration
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:3001", 'https://housecare.tecnavis.in'],
+  origin: [
+    "http://localhost:3000", 
+    "http://localhost:3001", 
+    'https://housecare.tecnavis.in',
+    'https://housecare-server.onrender.com'  // Add this
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true
 }));
