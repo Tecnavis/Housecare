@@ -32,7 +32,7 @@ app.use(cors({
     "http://localhost:3000", 
     "http://localhost:3001", 
     'https://housecare.tecnavis.in',
-    'https://housecare-server.onrender.com'  // Add this
+    'https://api.housecare.tecnavis.in'  // Make sure this is included
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true
