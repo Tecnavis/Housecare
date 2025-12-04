@@ -20,24 +20,37 @@ const FRONT_ORIGINS = [
   'http://127.0.0.1:3000',
 ];
 
-app.use((req, res, next) => {
-  // custom CORS handling so we can return a clean 403 on disallowed origins
-  const origin = req.headers.origin;
-  if (!origin || FRONT_ORIGINS.includes(origin)) {
-    // allow non-browser clients (curl, Postman) which send no origin
-    return cors({
-      origin: origin || true,
+// create a reusable cors options object so preflight + runtime use same behavior
+const corsOptionsDelegate = (req, callback) => {
+  const origin = req.header('origin');
+  // allow non-browser clients that send no Origin header (curl, Postman)
+  if (!origin) {
+    return callback(null, { origin: true, credentials: true });
+  }
+  if (FRONT_ORIGINS.includes(origin)) {
+    return callback(null, {
+      origin: true,
       credentials: true,
       methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
       allowedHeaders: ['Content-Type','Authorization','X-Requested-With'],
-    })(req, res, next);
+    });
   }
   // origin present but not allowed
-  res.status(403).json({ error: 'CORS policy: origin not allowed' });
-});
+  return callback(new Error('CORS policy: origin not allowed'), { origin: false });
+};
 
-// optional explicit preflight handler
-app.options('*', cors());
+// use the delegate for normal requests
+app.use((req, res, next) => {
+  cors(corsOptionsDelegate)(req, res, (err) => {
+    if (err) {
+      // consistent JSON response for CORS rejection
+      return res.status(403).json({ error: 'CORS policy: origin not allowed' });
+    }
+    next();
+  });
+});
+// use the same options for preflight
+app.options('*', cors(corsOptionsDelegate));
 
 // --- DB connect (supports MONGO_URI or MONGODB_URI env names) ---
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/housecare';
@@ -65,6 +78,17 @@ const connectWithRetry = async (retries = 0) => {
 connectWithRetry();
 
 // --- basic routes ---
+// root route (helps browser / health probes that hit '/')
+app.get('/', (req, res) => {
+  res.json({
+    ok: true,
+    service: 'housecare-api',
+    env: process.env.NODE_ENV || 'dev',
+    version: process.env.npm_package_version || null,
+  });
+});
+
+// health route
 app.get('/health', (req, res) => res.json({ ok: true, env: process.env.NODE_ENV || 'dev' }));
 
 // mount your auth route (safely)
@@ -115,6 +139,9 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'dev'} on port ${PORT}`);
 });
+
+// export app for testing or external use
+module.exports = app;
 
 // --- process-level handlers to aid debugging in production ---
 process.on('uncaughtException', (err) => {
