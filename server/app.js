@@ -28,14 +28,27 @@ var app = express();
 
 // CORS Configuration
 app.use(cors({
-  origin: [
-    "http://localhost:3000", 
-    "http://localhost:3001", 
-    'https://housecare.tecnavis.in',
-    'https://api.housecare.tecnavis.in'  // Make sure this is included
-  ],
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'https://housecare.tecnavis.in',
+      'https://www.housecare.tecnavis.in',
+      'https://api.housecare.tecnavis.in'
+    ];
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  credentials: true
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // View engine setup
