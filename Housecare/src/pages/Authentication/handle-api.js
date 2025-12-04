@@ -477,79 +477,7 @@ export const benificiaryUpdate = async (id, formData) => {
     throw err;
   }
 };
-//handle charity signin
-// export const handleCharitySignin = async (e, values, setLoginStatus) => {
-//   e.preventDefault()
-//   const Data = {
-//     email: values.email,
-//     password: values.password,
-//   } 
-//   console.log("Attempting to login with data")
-//   try {
-//     const response = await axios.post(`${CHARITY_URL}/signin`, Data);
-//     if (response.status === 200) {
-  
-//     const { token, charitydetails } = response.data; 
-//     localStorage.setItem("token", token);
-//     localStorage.setItem("charitydetails",JSON.stringify (charitydetails));
 
-
-//     setLoginStatus(true);
-//     console.log("Login successful");
-
-//     const data = []
-
-//       const fetchDatas = async () => {
-//         try {
-//           const response = await axios.get(`${BENIFICIARY_URL}`)
-//          data.push(response.data);
-//         } catch (error) {
-//           console.error("Error fetching benificiary details:", error)
-//         }
-//       }
-
-//       fetchDatas();
-//       // filter benificiarys based on the selected charity
-
-//       console.log(data, "hiooioi");
-      
-    
-//       const charitydetailsss = JSON.parse(localStorage.getItem("charitydetails"))
-//       const filteredBenificiarys = data.filter(
-//         benificiary => benificiary.charity_name === charitydetailsss.charity
-//       )
-
-    
-//         try {
-//            // array of benificiaries
-      
-//           const simplifiedData = filteredBenificiarys.map(ben => ({
-//             Name: ben.benificiary_name,
-//             id: ben._id,
-//             BEN_ID: ben.benificiary_id,
-//             Number: ben.number,
-//             category: ben.category,
-//             age: ben.age,
-//             amount:  0
-//           }));
-      
-//           localStorage.setItem("data", JSON.stringify(simplifiedData));
-//         } catch (error) {
-//           console.error("Error fetching beneficiary details:", error);
-//         }
-
-
-//     window.location.href = "/dashboards";
-//     }
-//   } catch (err) {
-//     setLoginStatus("error")
-//     if (err.response && err.response.status === 400) {
-//       console.log(err.response.data.message)
-//     } else {
-//       console.log(err.message, "something went wrong in signin")
-//     } 
-//    } 
-// }
 
 
 export const handleCharitySignin = async (e, values, setLoginStatus) => {
