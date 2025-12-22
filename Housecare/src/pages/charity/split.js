@@ -9,10 +9,10 @@ import * as XLSX from "xlsx"
 
 import Navbar from "./Navbars"
 import { BASE_URL } from "../Authentication/handle-api"
-import { fetchbeneficiarys } from "pages/Authentication/handle-api"
+import { fetchbenificiarys } from "pages/Authentication/handle-api"
 
 const App = () => {
-  const [beneficiarys, setbeneficiarys] = useState([])
+  const [benificiarys, setbenificiarys] = useState([])
   const [data, setData] = useState([])
   const [editIndex, setEditIndex] = useState(null)
   // const [amount, setAmount] = useState([])
@@ -41,12 +41,12 @@ const App = () => {
 
   const fetchDatas = async () => {
     try {
-      const response = await fetchbeneficiarys()
+      const response = await fetchbenificiarys()
       const charitydetails = JSON.parse(localStorage.getItem("charitydetails"))      
       const notBlock = response?.filter(val => val.isBlocked == false  && val.charity_name === charitydetails.charity)
-      setbeneficiarys(notBlock)
+      setbenificiarys(notBlock)
     } catch (error) {
-      console.error("Error fetching beneficiary details:", error)
+      console.error("Error fetching benificiary details:", error)
     }
   }
 
@@ -58,10 +58,10 @@ const App = () => {
   
 
   const splitAmount = useMemo(() => {
-    if (beneficiarys.length === 0) return 0;
+    if (benificiarys.length === 0) return 0;
   
-    return parseFloat((limitedAmount / beneficiarys.length).toFixed(2));
-  }, [limitedAmount, beneficiarys]);
+    return parseFloat((limitedAmount / benificiarys.length).toFixed(2));
+  }, [limitedAmount, benificiarys]);
   
   
   // 1. Get data from localStorage
@@ -80,32 +80,32 @@ const App = () => {
  
 
   useEffect(() => {
-    if (beneficiarys.length === 0) {
+    if (benificiarys.length === 0) {
       fetchDatas()
     }
     const charitydetails = JSON.parse(localStorage.getItem("charitydetails"))
     if (charitydetails) {
-      const filteredbeneficiarys = beneficiarys.filter(
-        beneficiary => beneficiary.charity_name === charitydetails.charity
+      const filteredbenificiarys = benificiarys.filter(
+        benificiary => benificiary.charity_name === charitydetails.charity
       )
       
       const savedData = JSON.parse(localStorage.getItem("data")) || []
-      const initialData = filteredbeneficiarys.map(beneficiary => ({
-        Name: beneficiary.beneficiary_name,
-        id: beneficiary._id,
-        beneficiary_id: beneficiary.beneficiary_id,
-        Nav_Number: beneficiary.navision_linked_no,
-        Number: beneficiary.number,
-        category: beneficiary.category,
-        age: beneficiary.age,
+      const initialData = filteredbenificiarys.map(benificiary => ({
+        Name: benificiary.benificiary_name,
+        id: benificiary._id,
+        benificiary_id: benificiary.benificiary_id,
+        Nav_Number: benificiary.navision_linked_no,
+        Number: benificiary.number,
+        category: benificiary.category,
+        age: benificiary.age,
         amount:
-          savedData.find(item => item.id === beneficiary._id)?.amount || 0,
+          savedData.find(item => item.id === benificiary._id)?.amount || 0,
       }))
 
       setData(initialData)
     }
     fetchEmails()
-  }, [beneficiarys])
+  }, [benificiarys])
 
 
   const handleCancelClick = () => {
@@ -238,7 +238,7 @@ const App = () => {
         .map(item => ({
           totalamount: limitedAmount,
           splitamount: parseFloat(item.amount),
-          beneficiary: item.id,
+          benificiary: item.id,
           date: new Date().toISOString(),
         }))        
 
@@ -259,11 +259,11 @@ const App = () => {
 
       // Update beneficiaries' balances
       const balanceUpdates = splits.map(split => ({
-        beneficiaryId: split.beneficiary,
+        benificiaryId: split.benificiary,
         newBalance: parseFloat(split.splitamount),
       }))
 
-      await axios.post(`${BASE_URL}/beneficiary/update-balances`, {
+      await axios.post(`${BASE_URL}/benificiary/update-balances`, {
         balanceUpdates,
       })
 
@@ -303,7 +303,7 @@ const App = () => {
     const tableData = filteredTableData.map(split => ({
       Name: split.Name,
       Nav_Number: split.Nav_Number,
-      BEN_ID: split.beneficiary_id,
+      BEN_ID: split.benificiary_id,
       Number: split.Number,
       Category: split.category,
       Age: split.age,
@@ -492,7 +492,7 @@ const App = () => {
                 </>
               )}
               <div style={{ flexGrow: 1, textAlign: "center" }}>
-                <h4 style={{ margin: 0 }}>Beneficiary Distribution Panel</h4>
+                <h4 style={{ margin: 0 }}>benificiary Distribution Panel</h4>
               </div>
               <div style={{ textAlign: "right" }}>
                 <div style={{ position: "relative", display: "inline-block" }}>
@@ -548,7 +548,7 @@ const App = () => {
                 <tr key={row.id}>
                   <td>{row.Name}</td>
                   <td>{row.id}</td>
-                  <td>{row.beneficiary_id}</td>
+                  <td>{row.benificiary_id}</td>
                   <td>{row.Nav_Number}</td>
                   <td>{row.Number}</td>
                   <td>{row.category}</td>

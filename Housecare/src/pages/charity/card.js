@@ -2,55 +2,55 @@ import React from "react";
 import { Row, Col, Card, Badge } from "react-bootstrap";
 import imgdark from "../../assets/images/1.JPG"
 
-// BeneficiaryDetails Component
-const BeneficiaryDetails = ({ beneficiary }) => {
+// benificiaryDetails Component
+const benificiaryDetails = ({ benificiary }) => {
   return (
     <address>
-      <strong className="text-primary">{beneficiary.beneficiary_name}</strong>
+      <strong className="text-primary">{benificiary.benificiary_name}</strong>
       <br />
-      <span>{beneficiary.email_id}</span>
+      <span>{benificiary.email_id}</span>
       <br />
-      <span>{beneficiary.number}</span>
+      <span>{benificiary.number}</span>
       <br />
-      <span>Age: {beneficiary.age}</span>
+      <span>Age: {benificiary.age}</span>
       <br />
-      <span>{beneficiary.category}</span>
+      <span>{benificiary.category}</span>
       <br />
-      <span>Physically challenged: {beneficiary.physically_challenged}</span>
+      <span>Physically challenged: {benificiary.physically_challenged}</span>
       <br />
-      <span>Health status: {beneficiary.health_status}</span>
+      <span>Health status: {benificiary.health_status}</span>
       <br />
-      <span>Marital status: {beneficiary.marital}</span>
+      <span>Marital status: {benificiary.marital}</span>
       <br />
-      <span>Family members: {beneficiary.family_members}</span>
+      <span>Family members: {benificiary.family_members}</span>
     </address>
   );
 };
 
-// BeneficiaryCard Component
-const BeneficiaryCard = ({ beneficiary }) => {
+// benificiaryCard Component
+const benificiaryCard = ({ benificiary }) => {
   return (
     <Card className="border-light shadow-sm">
       <Card.Body>
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <strong className="text-primary">{beneficiary.beneficiary_name}</strong>
-          <strong className="text-secondary">{beneficiary.charity_name}</strong>
-          <Badge bg={beneficiary.account_status ? "success" : "danger"}>
-            {beneficiary.account_status ? "Active" : "Inactive"}
+          <strong className="text-primary">{benificiary.benificiary_name}</strong>
+          <strong className="text-secondary">{benificiary.charity_name}</strong>
+          <Badge bg={benificiary.account_status ? "success" : "danger"}>
+            {benificiary.account_status ? "Active" : "Inactive"}
           </Badge>
         </div>
         <div className="d-flex justify-content-between">
-          <span>{beneficiary.email_id}</span>
-          <span>{beneficiary.number}</span>
-          <span>{beneficiary.navision_linked_no}</span>
+          <span>{benificiary.email_id}</span>
+          <span>{benificiary.number}</span>
+          <span>{benificiary.navision_linked_no}</span>
         </div>
       </Card.Body>
       <Card.Footer className="d-flex justify-content-between">
         <small className="text-muted">
-          Beneficiary ID: {beneficiary.beneficiary_id}
+          benificiary ID: {benificiary.benificiary_id}
         </small>
         <small className="text-muted">
-          Balance: <strong>SAR {beneficiary.Balance}</strong>
+          Balance: <strong>SAR {benificiary.Balance}</strong>
         </small>
       </Card.Footer>
     </Card>
@@ -58,7 +58,7 @@ const BeneficiaryCard = ({ beneficiary }) => {
 };
 
 // Main Component
-const BeneficiaryInfo = ({ beneficiary }) => {
+const benificiaryInfo = ({ benificiary }) => {
   return (
     <Row className="p-4">
       <Col xs="12">
@@ -70,13 +70,13 @@ const BeneficiaryInfo = ({ beneficiary }) => {
           <hr className="flex-grow-1 mx-3" />
         </div>
 
-        {/* Beneficiary Information */}
+        {/* benificiary Information */}
         <Row>
           <Col xs="12" md="6">
-            <BeneficiaryDetails beneficiary={beneficiary} />
+            <benificiaryDetails benificiary={benificiary} />
           </Col>
           <Col xs="12" md="6">
-            <BeneficiaryCard beneficiary={beneficiary} />
+            <benificiaryCard benificiary={benificiary} />
           </Col>
         </Row>
       </Col>
@@ -84,4 +84,4 @@ const BeneficiaryInfo = ({ beneficiary }) => {
   );
 };
 
-export default BeneficiaryInfo;
+export default benificiaryInfo;

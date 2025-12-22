@@ -2,23 +2,23 @@ import React, { useEffect, useState } from "react"
 import styles from "./dashboard.module.css"
 import Navbar from "./Navbars"
 import axios from "axios"
-import { fetchbeneficiarys , BASE_URL} from "pages/Authentication/handle-api"
+import { fetchbenificiarys , BASE_URL} from "pages/Authentication/handle-api"
 import Graf from "./Navbars/graf"
-const beneficiary_URL = `${process.env.REACT_APP_BASE_URL}/beneficiary`;
+const benificiary_URL = `${process.env.REACT_APP_BASE_URL}/benificiary`;
 
 
 const Dashboards = () => {
-  //beneficiarys list
-  const [beneficiarys, setbeneficiarys] = useState([])
+  //benificiarys list
+  const [benificiarys, setbenificiarys] = useState([])
   useEffect(() => {
     fetchSplits()
     const fetchDatas = async () => {
       try {
-        const response = await fetchbeneficiarys()
-        setbeneficiarys(response)
+        const response = await fetchbenificiarys()
+        setbenificiarys(response)
         
       } catch (error) {
-        console.error("Error fetching beneficiary details:", error)
+        console.error("Error fetching benificiary details:", error)
       }
     }
     fetchDatas()
@@ -27,9 +27,9 @@ const Dashboards = () => {
   // const limitedamount = JSON.parse(localStorage.getItem("limitedamount"))
   const charitydetails = JSON.parse(localStorage.getItem("charitydetails"))
 
-  // filter beneficiarys based on the selected charity
-  const filteredbeneficiarys = beneficiarys.filter(
-    beneficiary => beneficiary.charity_name === charitydetails.charity
+  // filter benificiarys based on the selected charity
+  const filteredbenificiarys = benificiarys.filter(
+    benificiary => benificiary.charity_name === charitydetails.charity
   )
 
   const [totalAmount, setTotalAmount] = useState(0)
@@ -80,7 +80,7 @@ const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
       
       // setTotalAmount(response?.data)
       const filteredSplits = response?.data.filter(
-        split => split.beneficiary && split.beneficiary.charity_name === charityName
+        split => split.benificiary && split.benificiary.charity_name === charityName
       );
       setSplits(filteredSplits);
       
@@ -114,15 +114,15 @@ const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
           return;
         }
 
-        const { data } = await axios.get(`${beneficiary_URL}`);
+        const { data } = await axios.get(`${benificiary_URL}`);
         const filtered = data.filter(
           ben => ben.charity_name === charityFromStorage.charity
         );
 
         const simplified = filtered.map(ben => ({
-          Name: ben.beneficiary_name,
+          Name: ben.benificiary_name,
           id: ben._id,
-          BEN_ID: ben.beneficiary_id,
+          BEN_ID: ben.benificiary_id,
           Number: ben.number,
           category: ben.category,
           age: ben.age,
@@ -130,7 +130,7 @@ const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
         }));
 
         localStorage.setItem("data", JSON.stringify(simplified));
-        console.log("Beneficiary data stored.");
+        console.log("benificiary data stored.");
       } catch (err) {
         console.error("Error fetching beneficiaries:", err);
       }
@@ -161,7 +161,7 @@ const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
         </div>
         <div className={styles.cards}>
           <div className={styles.cardtitle}>Total Beneficiaries</div>
-          <div className={styles.cardvalue}>{filteredbeneficiarys.length}</div>
+          <div className={styles.cardvalue}>{filteredbenificiarys.length}</div>
           {/* <div className={styles.cardsubtext}>0% From previous period</div> */}
         </div>
         <div className={styles.cards}>

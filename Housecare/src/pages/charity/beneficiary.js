@@ -12,29 +12,29 @@ import {
   ModalBody,
   Input,
 } from "reactstrap"
-import ImportBeneficiaryModal from "./charitybeneficiaryimport"
+import ImportbenificiaryModal from "./charitybenificiaryimport"
 import axios from "axios"
 import { useNavigate, useParams } from "react-router-dom"
 import { Link } from "react-router-dom"
 import { useForm } from "helpers/useForms"
 import Swal from "sweetalert2"
 import {
-  fetchbeneficiarys,
-  handlebeneficiary,
-  beneficiaryDelete,
-  beneficiaryEdit,
-  beneficiaryUpdate,
+  fetchbenificiarys,
+  handlebenificiary,
+  benificiaryDelete,
+  benificiaryEdit,
+  benificiaryUpdate,
   BASE_URL,
   toggleBlockBenificary,
 } from "../Authentication/handle-api"
 import Navbar from "./Navbars"
 
-const beneficiary_URL = `${process.env.REACT_APP_BASE_URL}/beneficiary`;
+const benificiary_URL = `${process.env.REACT_APP_BASE_URL}/benificiary`;
 
 
-const Beneficiary = () => {
+const benificiary = () => {
   const [datas, handleChanges, setDatas] = useForm({
-    beneficiary_name: "",
+    benificiary_name: "",
     category: "",
     age: "",
     number: "",
@@ -57,7 +57,7 @@ const Beneficiary = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const { id } = useParams()
   const [edits, setEdits] = useState(false)
-  const [beneficiarys, setbeneficiarys] = useState([])
+  const [benificiarys, setbenificiarys] = useState([])
   const [modals, setmodals] = useState(false)
   const [editedId, setEditedId] = useState(null)
   const [validationErrors, setValidationErrors] = useState({})
@@ -84,13 +84,13 @@ const Beneficiary = () => {
     fetchData()
   }, [id])
 
-  //beneficiary create
+  //benificiary create
 
-  const beneficiaryCreate = async e => {
+  const benificiaryCreate = async e => {
     e.preventDefault()
     const errors = {}
     if (!datas.date) errors.date = "Date is required."
-    if (!datas.beneficiary_name) errors.beneficiary_name = "Name is required."
+    if (!datas.benificiary_name) errors.benificiary_name = "Name is required."
     if (!datas.category) errors.category = "Category is required."
     if (!datas.age) errors.age = "Age is required."
     if (!datas.email_id) errors.email_id = "Email is required."
@@ -122,7 +122,7 @@ const Beneficiary = () => {
       formData.append(key, datas[key])
     })
     try {
-      await handlebeneficiary(formData)
+      await handlebenificiary(formData)
       fetchDatas()
       Swal.fire({
         title: "Success!",
@@ -133,7 +133,7 @@ const Beneficiary = () => {
       await fetchAndStoreBeneficiaries()
       setmodals(false)
     } catch (err) {
-      console.log(err, "beneficiary adding failed")
+      console.log(err, "benificiary adding failed")
       Swal.fire({
         title: "Error!",
         text: "Creation failed. Don't use existing email or number",
@@ -142,69 +142,69 @@ const Beneficiary = () => {
       })
     }
   }
-  //beneficiarys list
+  //benificiarys list
   const fetchDatas = async () => {
     try {
-      const response = await fetchbeneficiarys()
+      const response = await fetchbenificiarys()
 
       
-      setbeneficiarys(response)
+      setbenificiarys(response)
     } catch (error) {
-      console.error("Error fetching beneficiary details:", error)
+      console.error("Error fetching benificiary details:", error)
     }
   }
-  // filter beneficiarys based on the selected charity
+  // filter benificiarys based on the selected charity
 
   const charitydetails = JSON.parse(localStorage.getItem("charitydetails"))
-  const filteredbeneficiarys = beneficiarys.filter(
-    beneficiary => beneficiary.charity_name === charitydetails.charity
+  const filteredbenificiarys = benificiarys.filter(
+    benificiary => benificiary.charity_name === charitydetails.charity
   )
 
   
-  //beneficiary delete
-  const deletebeneficiary = async id => {
+  //benificiary delete
+  const deletebenificiary = async id => {
     try {
-      await beneficiaryDelete(id)
+      await benificiaryDelete(id)
       fetchDatas()
       await fetchAndStoreBeneficiaries()
     } catch (err) {
       console.log(err, "delete failed")
     }
   }
-  //beneficiary edit
-  const editbeneficiary = async id => {
+  //benificiary edit
+  const editbenificiary = async id => {
     try {
-      const beneficiaryDetails = await beneficiaryEdit(id)
+      const benificiaryDetails = await benificiaryEdit(id)
       setEditedId(id)
       setDatas({
-        charity_name: beneficiaryDetails.charity_name,
-        email_id: beneficiaryDetails.email_id,
-        number: beneficiaryDetails.number,
-        nationality: beneficiaryDetails.nationality,
-        // Balance: beneficiaryDetails.Balance,
-        sex: beneficiaryDetails.sex,
-        health_status: beneficiaryDetails.health_status,
-        marital: beneficiaryDetails.marital,
-        // navision_linked_no: beneficiaryDetails.navision_linked_no,
-        physically_challenged: beneficiaryDetails.physically_challenged,
-        family_members: beneficiaryDetails.family_members,
-        account_status: beneficiaryDetails.account_status,
-        beneficiary_name: beneficiaryDetails.beneficiary_name,
-        category: beneficiaryDetails.category,
-        age: beneficiaryDetails.age,
+        charity_name: benificiaryDetails.charity_name,
+        email_id: benificiaryDetails.email_id,
+        number: benificiaryDetails.number,
+        nationality: benificiaryDetails.nationality,
+        // Balance: benificiaryDetails.Balance,
+        sex: benificiaryDetails.sex,
+        health_status: benificiaryDetails.health_status,
+        marital: benificiaryDetails.marital,
+        // navision_linked_no: benificiaryDetails.navision_linked_no,
+        physically_challenged: benificiaryDetails.physically_challenged,
+        family_members: benificiaryDetails.family_members,
+        account_status: benificiaryDetails.account_status,
+        benificiary_name: benificiaryDetails.benificiary_name,
+        category: benificiaryDetails.category,
+        age: benificiaryDetails.age,
       })
       await fetchAndStoreBeneficiaries()
     } catch (err) {
       console.log("an error occured", err)
     }
   }
-  //handle beneficiary update
-  const handlebeneficiaryUpdate = async e => {
+  //handle benificiary update
+  const handlebenificiaryUpdate = async e => {
     e.preventDefault()
 
     const errors = {}
     if (!datas.date) errors.date = "Date is required."
-    if (!datas.beneficiary_name) errors.beneficiary_name = "Name is required."
+    if (!datas.benificiary_name) errors.benificiary_name = "Name is required."
     if (!datas.category) errors.category = "Category is required."
     if (!datas.age) errors.age = "Age is required."
     if (!datas.email_id) errors.email_id = "Email is required."
@@ -235,7 +235,7 @@ const Beneficiary = () => {
       formData.append(key, datas[key])
     })
     try {
-      await beneficiaryUpdate(editedId, formData)
+      await benificiaryUpdate(editedId, formData)
       fetchDatas()
       Swal.fire({
         title: "Success!",
@@ -246,7 +246,7 @@ const Beneficiary = () => {
       await fetchAndStoreBeneficiaries()
       setEdits(false)
     } catch (err) {
-      console.error("Error updating beneficiary:", err)
+      console.error("Error updating benificiary:", err)
       Swal.fire({
         title: "Error!",
         text: "Update failed. Don't use existing email or phone number",
@@ -255,15 +255,15 @@ const Beneficiary = () => {
       })
     }
   }
-  //beneficiary details and transactions
+  //benificiary details and transactions
   const handleShow = _id => {
     navigate(`/beneficiariesdetails/${_id}`)
   }
   //search
-  const filteredBen = filteredbeneficiarys.filter(
+  const filteredBen = filteredbenificiarys.filter(
     benfi =>
-      benfi?.beneficiary_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  benfi?.beneficiary_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      benfi?.benificiary_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  benfi?.benificiary_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
   benfi?.nationality?.toLowerCase().includes(searchTerm.toLowerCase()) ||
   benfi?.sex?.toLowerCase().includes(searchTerm.toLowerCase()) ||
   benfi?.email_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -274,9 +274,9 @@ const Beneficiary = () => {
   const handleExport = async () => {
     try {
       // Only export beneficiaries for the current charity
-      const exportData = filteredbeneficiarys.map(ben => ({
-        beneficiary_name: ben.beneficiary_name,
-        beneficiary_id: ben.beneficiary_id,
+      const exportData = filteredbenificiarys.map(ben => ({
+        benificiary_name: ben.benificiary_name,
+        benificiary_id: ben.benificiary_id,
         number: ben.number,
         email_id: ben.email_id,
         charity_name: ben.charity_name,
@@ -344,10 +344,10 @@ const Beneficiary = () => {
 
     if (isConfirmed) {
       try {
-        const updatedBeneficiary = await toggleBlockBenificary(id)
-        console.log(updatedBeneficiary)
+        const updatedbenificiary = await toggleBlockBenificary(id)
+        console.log(updatedbenificiary)
 
-        setbeneficiarys(prevBenfi =>
+        setbenificiarys(prevBenfi =>
           prevBenfi.map(s =>
             s._id === id ? { ...s, isBlocked: !currentStatus } : s
           )
@@ -388,15 +388,15 @@ const Beneficiary = () => {
       return;
     }
 
-    const { data } = await axios.get(`${beneficiary_URL}`);
+    const { data } = await axios.get(`${benificiary_URL}`);
     const filtered = data.filter(
       ben => ben.charity_name === charityFromStorage.charity
     );
 
     const simplified = filtered.map(ben => ({
-      Name: ben.beneficiary_name,
+      Name: ben.benificiary_name,
       id: ben._id,
-      BEN_ID: ben.beneficiary_id,
+      BEN_ID: ben.benificiary_id,
       Number: ben.number,
       category: ben.category,
       age: ben.age,
@@ -404,7 +404,7 @@ const Beneficiary = () => {
     }));
 
     localStorage.setItem("data", JSON.stringify(simplified));
-    console.log("Beneficiary data stored.");
+    console.log("benificiary data stored.");
   } catch (err) {
     console.error("Error fetching beneficiaries:", err);
   }
@@ -417,8 +417,8 @@ useEffect(() => {
   // }, 1000);
 }, []);
 
-// After adding a new beneficiary, call this again:
-// await addNewBeneficiary(...);
+// After adding a new benificiary, call this again:
+// await addNewbenificiary(...);
 // await fetchAndStoreBeneficiaries();
 
 
@@ -466,16 +466,16 @@ useEffect(() => {
                             <path d="M8 0q-.264 0-.523.017l.064.998a7 7 0 0 1 .918 0l.064-.998A8 8 0 0 0 8 0M6.44.152q-.52.104-1.012.27l.321.948q.43-.147.884-.237L6.44.153zm4.132.271a8 8 0 0 0-1.011-.27l-.194.98q.453.09.884.237zm1.873.925a8 8 0 0 0-.906-.524l-.443.896q.413.205.793.459zM4.46.824q-.471.233-.905.524l.556.83a7 7 0 0 1 .793-.458zM2.725 1.985q-.394.346-.74.74l.752.66q.303-.345.648-.648zm11.29.74a8 8 0 0 0-.74-.74l-.66.752q.346.303.648.648zm1.161 1.735a8 8 0 0 0-.524-.905l-.83.556q.254.38.458.793l.896-.443zM1.348 3.555q-.292.433-.524.906l.896.443q.205-.413.459-.793zM.423 5.428a8 8 0 0 0-.27 1.011l.98.194q.09-.453.237-.884zM15.848 6.44a8 8 0 0 0-.27-1.012l-.948.321q.147.43.237.884zM.017 7.477a8 8 0 0 0 0 1.046l.998-.064a7 7 0 0 1 0-.918zM16 8a8 8 0 0 0-.017-.523l-.998.064a7 7 0 0 1 0 .918l.998.064A8 8 0 0 0 16 8M.152 9.56q.104.52.27 1.012l.948-.321a7 7 0 0 1-.237-.884l-.98.194zm15.425 1.012q.168-.493.27-1.011l-.98-.194q-.09.453-.237.884zM.824 11.54a8 8 0 0 0 .524.905l.83-.556a7 7 0 0 1-.458-.793zm13.828.905q.292-.434.524-.906l-.896-.443q-.205.413-.459.793zm-12.667.83q.346.394.74.74l.66-.752a7 7 0 0 1-.648-.648zm11.29.74q.394-.346.74-.74l-.752-.66q-.302.346-.648.648zm-1.735 1.161q.471-.233.905-.524l-.556-.83a7 7 0 0 1-.793.458zm-7.985-.524q.434.292.906.524l.443-.896a7 7 0 0 1-.793-.459zm1.873.925q.493.168 1.011.27l.194-.98a7 7 0 0 1-.884-.237zm4.132.271a8 8 0 0 0 1.012-.27l-.321-.948a7 7 0 0 1-.884.237l.194.98zm-2.083.135a8 8 0 0 0 1.046 0l-.064-.998a7 7 0 0 1-.918 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
                           </svg>
                         </Link>{" "}
-                        ADD NEW BENEFICIARY{" "}
+                        ADD NEW benificiary{" "}
                       </Button>
                       <Button
                         className="btn btn-primary ms-2"
                         onClick={handleExport}
                       >
-                        EXPORT BENEFICIARY
+                        EXPORT benificiary
                       </Button>
                       <Button onClick={toggleImportModal}>
-                        IMPORT BENEFICIARY
+                        IMPORT benificiary
                       </Button>{" "}
                     </div>
 
@@ -491,7 +491,7 @@ useEffect(() => {
                           setmodals(!modals)
                         }}
                       >
-                        Create New beneficiary
+                        Create New benificiary
                       </ModalHeader>
                       <ModalBody>
                         <form>
@@ -502,14 +502,14 @@ useEffect(() => {
                                 <input
                                   type="text"
                                   className="form-control"
-                                  name="beneficiary_name"
+                                  name="benificiary_name"
                                   placeholder="Enter Name"
-                                  value={datas.beneficiary_name}
+                                  value={datas.benificiary_name}
                                   onChange={handleChanges}
                                 />
-                                {validationErrors.beneficiary_name && (
+                                {validationErrors.benificiary_name && (
                                   <small className="text-danger">
-                                    {validationErrors.beneficiary_name}
+                                    {validationErrors.benificiary_name}
                                   </small>
                                 )}
                               </div>
@@ -784,7 +784,7 @@ useEffect(() => {
                                 <button
                                   type="submit"
                                   className="btn btn-primary"
-                                  onClick={beneficiaryCreate}
+                                  onClick={benificiaryCreate}
                                 >
                                   save
                                 </button>
@@ -813,15 +813,15 @@ useEffect(() => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredBen.map(beneficiary => (
-                      <tr key={beneficiary._id} className="table-light">
-                        <td>{beneficiary.beneficiary_name}</td>
-                        <td>{beneficiary.beneficiary_id}</td>
-                        <td>{beneficiary.number}</td>
-                        <td>{beneficiary.email_id}</td>
-                        <td>{beneficiary.nationality}</td>
-                        <td>{beneficiary.sex}</td>
-                        <td>{beneficiary.Balance || 0}</td>
+                    {filteredBen.map(benificiary => (
+                      <tr key={benificiary._id} className="table-light">
+                        <td>{benificiary.benificiary_name}</td>
+                        <td>{benificiary.benificiary_id}</td>
+                        <td>{benificiary.number}</td>
+                        <td>{benificiary.email_id}</td>
+                        <td>{benificiary.nationality}</td>
+                        <td>{benificiary.sex}</td>
+                        <td>{benificiary.Balance || 0}</td>
                         <td
                           style={{
                             textAlign: "center",
@@ -840,12 +840,12 @@ useEffect(() => {
                             className="waves-effect waves-light"
                             onClick={() =>
                               handleBlock(
-                                beneficiary._id,
-                                beneficiary.isBlocked
+                                benificiary._id,
+                                benificiary.isBlocked
                               )
                             }
                           >
-                            {beneficiary.isBlocked ? "Unblock" : "Block"}
+                            {benificiary.isBlocked ? "Unblock" : "Block"}
                           </Button>
 
                           <Button
@@ -853,7 +853,7 @@ useEffect(() => {
                               backgroundColor: "transparent",
                               border: "none",
                             }}
-                            onClick={() => handleShow(beneficiary._id)}
+                            onClick={() => handleShow(benificiary._id)}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -873,7 +873,7 @@ useEffect(() => {
                             }}
                           >
                             <Button
-                              onClick={() => editbeneficiary(beneficiary._id)}
+                              onClick={() => editbenificiary(benificiary._id)}
                               style={{
                                 backgroundColor: "transparent",
                                 border: "none",
@@ -904,7 +904,7 @@ useEffect(() => {
                                 setEdits(!edits)
                               }}
                             >
-                              Edit Beneficiary
+                              Edit benificiary
                             </ModalHeader>
 
                             <ModalBody>
@@ -916,14 +916,14 @@ useEffect(() => {
                                       <input
                                         type="text"
                                         className="form-control"
-                                        name="beneficiary_name"
+                                        name="benificiary_name"
                                         placeholder="Enter Name"
-                                        value={datas.beneficiary_name}
+                                        value={datas.benificiary_name}
                                         onChange={handleChanges}
                                       />
-                                      {validationErrors.beneficiary_name && (
+                                      {validationErrors.benificiary_name && (
                                         <small className="text-danger">
-                                          {validationErrors.beneficiary_name}
+                                          {validationErrors.benificiary_name}
                                         </small>
                                       )}
                                     </div>
@@ -1207,7 +1207,7 @@ useEffect(() => {
                                       <button
                                         type="submit"
                                         className="btn btn-primary"
-                                        onClick={handlebeneficiaryUpdate}
+                                        onClick={handlebenificiaryUpdate}
                                       >
                                         Update
                                       </button>
@@ -1222,7 +1222,7 @@ useEffect(() => {
                               backgroundColor: "transparent",
                               border: "none",
                             }}
-                            onClick={() => deletebeneficiary(beneficiary._id)}
+                            onClick={() => deletebenificiary(benificiary._id)}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -1246,7 +1246,7 @@ useEffect(() => {
           </Card>
         </Col>
       </Row>
-      <ImportBeneficiaryModal
+      <ImportbenificiaryModal
         isOpen={importModalOpen}
         toggle={toggleImportModal}
         onImportSuccess={fetchDatas}
@@ -1256,4 +1256,4 @@ useEffect(() => {
   )
 }
 
-export default Beneficiary
+export default benificiary

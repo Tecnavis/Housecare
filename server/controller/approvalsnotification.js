@@ -4,13 +4,13 @@ const Notification = require('../model/charitynotification');
 // Create a new notification
 exports.createNotification = async (req, res) => {
   try {
-    const { charityName, beneficiaryName, status } = req.body;
-    const message = `Housecare ${status === 'Accepted' ? 'approved' : 'rejected'} the ${beneficiaryName}'s payment.`;
+    const { charityName, benificiaryName, status } = req.body;
+    const message = `Housecare ${status === 'Accepted' ? 'approved' : 'rejected'} the ${benificiaryName}'s payment.`;
 
     const notification = new Notification({
       message,
       charityName,
-      beneficiaryName,
+      benificiaryName,
       status,
     });
 

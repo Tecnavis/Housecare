@@ -3,10 +3,10 @@ import { Row, Col, Card, CardBody } from "reactstrap";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { BASE_URL } from "../../Authentication/handle-api";
-import { fetchbeneficiarys } from "../../Authentication/handle-api";
+import { fetchbenificiarys } from "../../Authentication/handle-api";
 
 const MonthlyEarnings = () => {
-  const [beneficiarys, setbeneficiarys] = useState([]);
+  const [benificiarys, setbenificiarys] = useState([]);
   const [, setSplits] = useState([]);
   const [series, setSeries] = useState([
     { name: "APPROVED", data: Array(12).fill(0) },
@@ -39,16 +39,16 @@ const MonthlyEarnings = () => {
 
   const fetchDatas = async () => {
     try {
-      const response = await fetchbeneficiarys();
-      setbeneficiarys(response);
+      const response = await fetchbenificiarys();
+      setbenificiarys(response);
     } catch (error) {
-      console.error("Error fetching beneficiary details:", error);
+      console.error("Error fetching benificiary details:", error);
     }
   };
 
   const charitydetails = JSON.parse(localStorage.getItem("charitydetails"));
-  const filteredbeneficiarys = beneficiarys.filter(
-    beneficiary => beneficiary.charity_name === charitydetails.charity
+  const filteredbenificiarys = benificiarys.filter(
+    benificiary => benificiary.charity_name === charitydetails.charity
   );
 
   const fetchSplits = async () => {
@@ -66,7 +66,7 @@ const MonthlyEarnings = () => {
       if (response && response?.data && Array.isArray(response?.data)) {
         const filteredSplits = response?.data
           .filter(
-            split => split.beneficiary && split.beneficiary.charity_name === charityName
+            split => split.benificiary && split.benificiary.charity_name === charityName
           )
           .sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -118,8 +118,8 @@ const MonthlyEarnings = () => {
           <h4 className="card-title mb-4">Overview</h4>
           <Row className="text-center mt-4">
             <Col xs="3">
-              <h5 className="font-size-20">{filteredbeneficiarys.length}</h5>
-              <p className="text-muted">Beneficiary</p>
+              <h5 className="font-size-20">{filteredbenificiarys.length}</h5>
+              <p className="text-muted">benificiary</p>
             </Col>
             <Col xs="3">
               <h5 className="font-size-20">{acceptedCount}</h5>

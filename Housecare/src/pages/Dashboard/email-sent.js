@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, CardBody } from 'reactstrap';
 import ReactApexChart from 'react-apexcharts';
-import { fetchbeneficiarys, fetchCharity } from "pages/Authentication/handle-api";
+import { fetchbenificiarys, fetchCharity } from "pages/Authentication/handle-api";
 import axios from "axios";
 import { BASE_URL } from "../Authentication/handle-api";
 
 const MonthlyEarnings = () => {
     const [charitys, setCharitys] = useState([]);
-    const [beneficiarys, setbeneficiarys] = useState([]);
+    const [benificiarys, setbenificiarys] = useState([]);
     const [, setSplits] = useState([]);
     const [acceptedAmount, setAcceptedAmount] = useState(0);
 
@@ -34,14 +34,14 @@ const MonthlyEarnings = () => {
             
             const charityCounts = processCharityData(charityResponse);
             
-            const beneficiaryResponse = await fetchbeneficiarys();
-            setbeneficiarys(beneficiaryResponse);
+            const benificiaryResponse = await fetchbenificiarys();
+            setbenificiarys(benificiaryResponse);
             
-            const beneficiaryCounts = processBeneficiaryData(beneficiaryResponse);
+            const benificiaryCounts = processbenificiaryData(benificiaryResponse);
             
             setSeries([
                 { name: 'Charitys', data: charityCounts },
-                { name: 'Beneficiaries', data: beneficiaryCounts }
+                { name: 'Beneficiaries', data: benificiaryCounts }
             ]);
         } catch (err) {
             console.log(err);
@@ -67,12 +67,12 @@ const MonthlyEarnings = () => {
     
         return counts;
     };
-//beneficiary monthly data
-    const processBeneficiaryData = (data) => {
+//benificiary monthly data
+    const processbenificiaryData = (data) => {
         const counts = Array(12).fill(0);
     
-        data.forEach(beneficiary => {
-            const createdDateStr = beneficiary.date || beneficiary.created_at;
+        data.forEach(benificiary => {
+            const createdDateStr = benificiary.date || benificiary.created_at;
             const createdDate = createdDateStr ? new Date(createdDateStr) : null;
     
             if (createdDate && !isNaN(createdDate.getTime())) {
@@ -154,8 +154,8 @@ const fetchSplits = async () => {
                             <p className="text-muted">Charity</p>
                         </Col>
                         <Col xs="4">
-                            <h5 className="font-size-20">{beneficiarys.length}</h5>
-                            <p className="text-muted">Beneficiary</p>
+                            <h5 className="font-size-20">{benificiarys.length}</h5>
+                            <p className="text-muted">benificiary</p>
                         </Col>
                         <Col xs="4">
                             <h5 className="font-size-20">SAR {acceptedAmount}</h5>

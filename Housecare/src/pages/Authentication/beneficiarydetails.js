@@ -7,10 +7,10 @@ import imgdark from "../../assets/images/1.JPG"
 import { BASE_URL } from "./handle-api"
 import axios from "axios"
 
-const beneficiaryDetails = props => {
-  document.title = "beneficiary Details | Housecare"
+const benificiaryDetails = props => {
+  document.title = "benificiary Details | Housecare"
 
-  const [beneficiarys, setBeneficiarys] = useState([])
+  const [benificiarys, setbenificiarys] = useState([])
   const [transactions, setTransactions] = useState([])
   const { id } = useParams()
 
@@ -19,17 +19,17 @@ const beneficiaryDetails = props => {
       const token = localStorage.getItem("token")
       axios.defaults.headers.common["Authorization"] = token
       try {
-        const response = await axios.get(`${BASE_URL}/beneficiary/${id}`)
-        setBeneficiarys(response.data)
+        const response = await axios.get(`${BASE_URL}/benificiary/${id}`)
+        setbenificiarys(response.data)
       } catch (error) {
-        console.error("Error fetching beneficiary details:", error)
+        console.error("Error fetching benificiary details:", error)
       }
     }
 
     const fetchTransactions = async () => {
       try {
         const response = await axios.get(
-          `${BASE_URL}/beneficiary/${id}/transactions`
+          `${BASE_URL}/benificiary/${id}/transactions`
         )
         const { creditedDetails, debitedDetails } = response.data
 
@@ -40,14 +40,14 @@ const beneficiaryDetails = props => {
             amount: split.splitamount,
             type: "credit",
             status: split.status,
-            beneficiaryId: split.beneficiary,
+            benificiaryId: split.benificiary,
           })),
           ...debitedDetails.map(debit => ({
             date: debit.debitedDate,
             amount: debit.debitedAmount,
             type: "debit",
             status: "Debited",
-            beneficiaryId: debit.beneficiary,
+            benificiaryId: debit.benificiary,
           })),
         ]
 
@@ -95,22 +95,22 @@ const beneficiaryDetails = props => {
                   <Row>
                     <Col xs="6">
                       <address>
-                        <strong>{beneficiarys.beneficiary_name}</strong>
+                        <strong>{benificiarys.benificiary_name}</strong>
                         <br />
-                        {beneficiarys.email_id}
+                        {benificiarys.email_id}
                         <br />
-                        {beneficiarys.number}
+                        {benificiarys.number}
                       </address>
                     </Col>
                     <Col xs="6" className="text-end">
                       <address>
-                        <strong>{beneficiarys.charity_name}</strong>
+                        <strong>{benificiarys.charity_name}</strong>
                         <br />
-                        Navision No. {beneficiarys.navision_linked_no}
+                        Navision No. {benificiarys.navision_linked_no}
                         <br />
-                        {beneficiarys.beneficiary_id}
+                        {benificiarys.benificiary_id}
                         <br />
-                        {beneficiarys.nationality}
+                        {benificiarys.nationality}
                       </address>
                     </Col>
                   </Row>
@@ -119,26 +119,26 @@ const beneficiaryDetails = props => {
                       <address>
                         <strong>Personal info</strong>
                         <br />
-                        Age: {beneficiarys.age}
+                        Age: {benificiarys.age}
                         <br />
-                        {beneficiarys.category}
+                        {benificiarys.category}
                         <br />
-                        Physically challenged: {beneficiarys.physically_challenged}
+                        Physically challenged: {benificiarys.physically_challenged}
                         <br />
-                        Health status: {beneficiarys.health_status}
+                        Health status: {benificiarys.health_status}
                         <br />
-                        Marital status: {beneficiarys.marital}
+                        Marital status: {benificiarys.marital}
                         <br />
-                        Family members: {beneficiarys.family_members}
+                        Family members: {benificiarys.family_members}
                       </address>
                     </Col>
                     <Col xs="6" className="mt-4 text-end">
                       <address>
                         <strong>Balance</strong>
                         <br />
-                        {beneficiarys.Balance}
+                        {benificiarys.Balance}
                         <br />
-                        {beneficiarys.account_status ? (
+                        {benificiarys.account_status ? (
                           <span style={{ color: "green" }}>Active</span>
                         ) : (
                           <span style={{ color: "red" }}>Inactive</span>
@@ -165,24 +165,24 @@ const beneficiaryDetails = props => {
                           className="text-primary"
                           style={{ fontSize: "large" }}
                         >
-                          {beneficiarys.beneficiary_name}
+                          {benificiarys.benificiary_name}
                         </strong>
                         <br />
-                        <span>Age: {beneficiarys.age}</span>
+                        <span>Age: {benificiarys.age}</span>
                         <br />
-                        <span>{beneficiarys.category}</span>
+                        <span>{benificiarys.category}</span>
                         <br />
                         <span>
                           Physically challenged:{" "}
-                          {beneficiarys.physically_challenged}
+                          {benificiarys.physically_challenged}
                         </span>
                         <br />
-                        <span>Health status: {beneficiarys.health_status}</span>
+                        <span>Health status: {benificiarys.health_status}</span>
                         <br />
-                        <span>Marital status: {beneficiarys.marital}</span>
+                        <span>Marital status: {benificiarys.marital}</span>
                         <br />
                         <span>
-                          Family members: {beneficiarys.family_members}
+                          Family members: {benificiarys.family_members}
                         </span>
                       </address>
                     </Col>
@@ -191,11 +191,11 @@ const beneficiaryDetails = props => {
                         <div className="card-body">
                           <div className="d-flex justify-content-between align-items-center mb-3">
                             <strong className="text-primary">
-                              {beneficiarys.charity_name}
+                              {benificiarys.charity_name}
                             </strong>
           
                             <div className="badge-container">
-                              {beneficiarys?.account_status?.toLowerCase() ==
+                              {benificiarys?.account_status?.toLowerCase() ==
                               "active" ? (
                                 <span className="badge bg-success">Active</span>
                               ) : (
@@ -207,9 +207,9 @@ const beneficiaryDetails = props => {
                           </div>
 
                           <div className="d-flex justify-content-between mb-3">
-                            <span>{beneficiarys.email_id}</span>
-                            <span>{beneficiarys.number}</span>
-                            <span>{beneficiarys.navision_linked_no}</span>
+                            <span>{benificiarys.email_id}</span>
+                            <span>{benificiarys.number}</span>
+                            <span>{benificiarys.navision_linked_no}</span>
                           </div>
 
                           <div
@@ -217,11 +217,11 @@ const beneficiaryDetails = props => {
                             style={{ fontSize: "medium" }}
                           >
                             <small className="text-muted">
-                              Beneficiary ID: {beneficiarys.beneficiary_id}
+                              benificiary ID: {benificiarys.benificiary_id}
                             </small>
                             <small className="text-muted">
                               Balance:{" "}
-                              <strong>SAR {beneficiarys.Balance}</strong>
+                              <strong>SAR {benificiarys.Balance}</strong>
                             </small>
                           </div>
                         </div>
@@ -269,7 +269,7 @@ const beneficiaryDetails = props => {
                                 <strong>Date & Time</strong>
                               </td>
                               <td className="text-center">
-                                <strong>Beneficiary Id</strong>
+                                <strong>benificiary Id</strong>
                               </td>
                               <td className="text-center">
                                 <strong>Transaction</strong>
@@ -291,9 +291,9 @@ const beneficiaryDetails = props => {
                               return (
                                 <tr key={index}>
                                   <td>{formattedDate}</td>
-                                  {/* <td className="text-center">{transaction.beneficiaryId}</td> */}
+                                  {/* <td className="text-center">{transaction.benificiaryId}</td> */}
                                   <td className="text-center">
-                                    {beneficiarys.beneficiary_id}
+                                    {benificiarys.benificiary_id}
                                   </td>
                                   <td className="text-center">
                                     {transaction.type === "credit"
@@ -322,7 +322,7 @@ const beneficiaryDetails = props => {
                               color: "black",
                             }}
                           >
-                            Total Amount : {beneficiarys.Balance}
+                            Total Amount : {benificiarys.Balance}
                           </Button>
                           <Link
                             to="#"
@@ -351,4 +351,4 @@ const beneficiaryDetails = props => {
   )
 }
 
-export default connect(null, { setBreadcrumbItems })(beneficiaryDetails)
+export default connect(null, { setBreadcrumbItems })(benificiaryDetails)

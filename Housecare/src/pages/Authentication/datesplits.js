@@ -13,7 +13,7 @@ const Datesplits = () => {
   //     try {
   //       const response = await axios.get(`${BASE_URL}/api/splits`)
   //       const filteredSplits = response.data.filter(
-  //         split => split.beneficiary.charity_name === charityName
+  //         split => split.benificiary.charity_name === charityName
   //       )
   //       setSplits(filteredSplits)
   //       console.log(filteredSplits, "Filtered Splits")
@@ -30,11 +30,11 @@ const Datesplits = () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/splits`);
         const filteredSplits = response.data.filter(split => {
-          // Check if split.beneficiary exists before accessing charity_name
-          if (split.beneficiary && split.beneficiary.charity_name) {
-            return split.beneficiary.charity_name === charityName;
+          // Check if split.benificiary exists before accessing charity_name
+          if (split.benificiary && split.benificiary.charity_name) {
+            return split.benificiary.charity_name === charityName;
           } else {
-            console.log("Missing beneficiary or charity_name in split:", split);
+            console.log("Missing benificiary or charity_name in split:", split);
             return false;
           }
         });
@@ -60,12 +60,12 @@ const Datesplits = () => {
       .map(split => ({
         Date: new Date(split.date).toLocaleDateString(),
         _id: split._id,
-        beneficiary_name: split.beneficiary.beneficiary_name,
-        beneficiary_id: split.beneficiary.beneficiary_id,
-        number: split.beneficiary.number,
-        category: split.beneficiary.category,
-        age: split.beneficiary.age,
-        charity_name: split.beneficiary.charity_name,
+        benificiary_name: split.benificiary.benificiary_name,
+        benificiary_id: split.benificiary.benificiary_id,
+        number: split.benificiary.number,
+        category: split.benificiary.category,
+        age: split.benificiary.age,
+        charity_name: split.benificiary.charity_name,
         splitamount: split.splitamount,
         SecurityID: "", // This field should be editable
       }));
@@ -83,8 +83,8 @@ const Datesplits = () => {
     worksheet.columns = [
       { header: "Date", key: "Date", width: 15 },
       { header: "_id", key: "_id", width: 30 },
-      { header: "beneficiary_name", key: "beneficiary_name", width: 30 },
-      { header: "beneficiary_id", key: "beneficiary_id", width: 30 },
+      { header: "benificiary_name", key: "benificiary_name", width: 30 },
+      { header: "benificiary_id", key: "benificiary_id", width: 30 },
       { header: "number", key: "number", width: 15 },
       { header: "category", key: "category", width: 20 },
       { header: "age", key: "age", width: 10 },

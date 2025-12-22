@@ -1,6 +1,6 @@
 const Splits = require("../model/split");
 const Debited = require("../model/debited");
-const beneficiary = require("../model/beneficiary");
+const benificiary = require("../model/benificiary");
 const Notifications = require("../model/notification");
 const nodemailer = require("nodemailer");
 const Staffs = require("../model/housecare-model");
@@ -66,7 +66,7 @@ exports.saveSplits = async (req, res) => {
 
 exports.getSplits = async (req, res) => {
   try {
-    const splits = await Splits.find().populate("beneficiary");
+    const splits = await Splits.find().populate("benificiary");
 
     res.status(200).json(splits);
   } catch (error) {
@@ -97,7 +97,7 @@ exports.deleteSplit = async (req, res) => {
 exports.updateSplitById = async (req, res) => {
   try {
     const { id } = req.params;
-    const { beneficiary, ...splitData } = req.body;
+    const { benificiary, ...splitData } = req.body;
 
     // Update the Split
     const updatedSplit = await Splits.findByIdAndUpdate(id, splitData, {
@@ -108,24 +108,24 @@ exports.updateSplitById = async (req, res) => {
       return res.status(404).send("Split not found");
     }
 
-    // Update the beneficiary
-    const benfID = await Splits.findById(id).populate("beneficiary");
-    const beneficiar = await beneficiary.findById(benfID.beneficiary);
-    const updatedBeneficiary = await beneficiary.findByIdAndUpdate(
+    // Update the benificiary
+    const benfID = await Splits.findById(id).populate("benificiary");
+    const beneficiar = await benificiary.findById(benfID.benificiary);
+    const updatedbenificiary = await benificiary.findByIdAndUpdate(
       beneficiar._id,
-      beneficiary
+      benificiary
     );
 
-    if (!updatedBeneficiary) {
-      return res.status(404).send("Beneficiary not found");
+    if (!updatedbenificiary) {
+      return res.status(404).send("benificiary not found");
     }
 
     res.json({
       split: updatedSplit,
-      beneficiary: updatedBeneficiary,
+      benificiary: updatedbenificiary,
     });
   } catch (error) {
-    console.error("Error updating split and beneficiary:", error);
+    console.error("Error updating split and benificiary:", error);
     res.status(500).send("Server Error");
   }
 };
@@ -175,18 +175,18 @@ exports.getPendingApprovalsCount = async (req, res) => {
   }
 };
 
-// Get split details by beneficiary ID
-exports.getSplitDetailsByBeneficiary = async (req, res) => {
+// Get split details by benificiary ID
+exports.getSplitDetailsBybenificiary = async (req, res) => {
   try {
-    const beneficiaryId = req.params.id;
+    const benificiaryId = req.params.id;
     const splitDetails = await Splits.find({
-      beneficiary: beneficiaryId,
-    }).populate("beneficiary");
+      benificiary: benificiaryId,
+    }).populate("benificiary");
 
     if (!splitDetails || splitDetails.length === 0) {
       return res
         .status(404)
-        .json({ message: "No split details found for this beneficiary" });
+        .json({ message: "No split details found for this benificiary" });
     }
 
     res.status(200).json(splitDetails);
@@ -316,13 +316,13 @@ exports.resetNotificationCount = async (req, res) => {
 ////transactions
 exports.getTransactions = async (req, res) => {
   try {
-    const beneficiaryId = req.params.id;
+    const benificiaryId = req.params.id;
 
     // Fetch credited details
-    const creditedDetails = await Splits.find({ beneficiary: beneficiaryId });
+    const creditedDetails = await Splits.find({ benificiary: benificiaryId });
 
     // Fetch debited details
-    const debitedDetails = await Debited.find({ beneficiary: beneficiaryId });
+    const debitedDetails = await Debited.find({ benificiary: benificiaryId });
 
     res.json({
       creditedDetails,
@@ -469,7 +469,7 @@ exports.sendPdf = async (req, res) => {
     const phoneNumbers =  await Smssender.find();
     const onlyPhones = phoneNumbers.map(item => item.phone.toString()); 
 
-    const messageBody = `${charity.charity} new Beneficiary added`;
+    const messageBody = `${charity.charity} new benificiary added`;
     
     
     for (const number of onlyPhones) {

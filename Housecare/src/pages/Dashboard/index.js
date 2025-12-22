@@ -15,7 +15,7 @@ import EmailSent from "./email-sent"
 
 //Import Action to copy breadcrumb items from local state to redux state
 import {
-  fetchbeneficiarys,
+  fetchbenificiarys,
   fetchCharity,
 } from "pages/Authentication/handle-api"
 import axios from "axios"
@@ -24,7 +24,7 @@ const Dashboard = () => {
   document.title = "Dashboard |Housecare - Charity management"
 
   const [charitys, setCharitys] = useState([])
-  const [beneficiarys, setbeneficiarys] = useState([])
+  const [benificiarys, setbenificiarys] = useState([])
 
   useEffect(() => {
     loadData()
@@ -36,8 +36,8 @@ const Dashboard = () => {
     try {
       const response = await fetchCharity()
       setCharitys(response)
-      const respond = await fetchbeneficiarys()
-      setbeneficiarys(respond)
+      const respond = await fetchbenificiarys()
+      setbenificiarys(respond)
     } catch (err) {
       console.log(err)
     }
@@ -69,7 +69,7 @@ const Dashboard = () => {
 
   // const reports = [
   //   { title: "Charity Organizations", iconClass: "cube-outline", total: `${charitys.length}`, average: "+11%", badgecolor: "info" },
-  //   { title: "Total Beneficiaries", iconClass: "buffer", total: `${beneficiarys.length}`, average: "-29%", badgecolor: "danger" },
+  //   { title: "Total Beneficiaries", iconClass: "buffer", total: `${benificiarys.length}`, average: "-29%", badgecolor: "danger" },
   //   { title: "Total  Approvals", iconClass: "briefcase-check", total: "11", average: "0%", badgecolor: "warning" },
   //   { title: "Pending Approvals", iconClass: "tag-text-outline", total: `${pendingApprovals}`, average: "+89%", badgecolor: "info" },
   // ]
@@ -82,7 +82,7 @@ const Dashboard = () => {
     {
       title: "Total Beneficiaries",
       iconClass: "mdi mdi-account-supervisor",
-      total: `${beneficiarys.length}`,
+      total: `${benificiarys.length}`,
     },
     {
       title: `Total   Approvals`,

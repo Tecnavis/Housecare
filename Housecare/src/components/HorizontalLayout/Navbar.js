@@ -150,9 +150,9 @@ const Navbar = props => {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/beneficiary" className="nav-link">
+                  <Link to="/benificiary" className="nav-link">
                     <i className="mdi mdi-account-group"></i>
-                    <span>{props.t("Beneficiary")}</span>
+                    <span>{props.t("benificiary")}</span>
                   </Link>
                 </li>
                 <li className="nav-item">
