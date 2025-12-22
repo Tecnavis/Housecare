@@ -1,7 +1,7 @@
 import React, { useEffect,  useState } from 'react';
 import { Modal, ModalHeader, ModalBody, Button, Alert } from 'reactstrap';
-import { BASE_URL, fetchBenificiarys } from './handle-api';
-import img1 from '../../assets/images/benificiary.png';
+import { BASE_URL, fetchbeneficiarys } from './handle-api';
+import img1 from '../../assets/images/beneficiary.png';
 import * as XLSX from "xlsx";
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -12,7 +12,7 @@ const ExcelImport = ({ isOpen, toggle, onImportSuccess }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
      const [emailList, setEmailList] = useState([]);
-         const [, setBenificiarys] = useState([])
+         const [, setbeneficiarys] = useState([])
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -63,7 +63,7 @@ const ExcelImport = ({ isOpen, toggle, onImportSuccess }) => {
 
   const handleDownloadTemplate = () => {
     const headings = [
-      ["benificiary_name", "number", "email_id", "charity_name", "nationality", 
+      ["beneficiary_name", "number", "email_id", "charity_name", "nationality", 
        "sex", "health_status", "marital", "navision_linked_no", 
        "physically_challenged", "family_members", "account_status", 
        "Balance", "category", "age"]
@@ -80,7 +80,7 @@ const ExcelImport = ({ isOpen, toggle, onImportSuccess }) => {
     const worksheet = XLSX.utils.aoa_to_sheet([...headings, ...sampleRow]);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
-    XLSX.writeFile(workbook, "Benificiary_Template.xlsx");
+    XLSX.writeFile(workbook, "beneficiary_Template.xlsx");
   };
 
 
@@ -102,23 +102,23 @@ const ExcelImport = ({ isOpen, toggle, onImportSuccess }) => {
    
        const fetchDatas = async () => {
           try {
-            const response = await fetchBenificiarys()
-            setBenificiarys(response)
+            const response = await fetchbeneficiarys()
+            setbeneficiarys(response)
           } catch (error) {
-            console.error("Error fetching benificiary details:", error)
+            console.error("Error fetching beneficiary details:", error)
           }
         }
       
  const sendEmail = async () => {
    
-  const  latestData = await fetchBenificiarys(); 
+  const  latestData = await fetchbeneficiarys(); 
   
-  setBenificiarys(latestData);
+  setbeneficiarys(latestData);
 
   const filteredTableData = latestData?.filter(split => split.amount !== 0);
           const tableData = filteredTableData.map(split => ({
-          Name: split.benificiary_name,
-          BEN_ID: split.benificiary_id,
+          Name: split.beneficiary_name,
+          BEN_ID: split.beneficiary_id,
           Phone: split.number,
           Category: split.category,
           Email: split.email_id,
@@ -173,7 +173,7 @@ const ExcelImport = ({ isOpen, toggle, onImportSuccess }) => {
   return (
     <Modal isOpen={isOpen} toggle={toggle} className="modal-dialog-centered" size="xl">
       <ModalHeader toggle={toggle}>
-        Import Benificiary Data from Excel
+        Import beneficiary Data from Excel
       </ModalHeader>
       <ModalBody>
         <div className="mb-4">

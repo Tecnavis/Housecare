@@ -50,7 +50,7 @@ const UiTabsAccordions = () => {
           const split = splits.find(s => s._id === splitId);
           await axios.post(`${BASE_URL}/approvals/notifications`, {
             charityName: split.beneficiary?.charity_name,
-            beneficiaryName: split.beneficiary?.benificiary_name,
+            beneficiaryName: split.beneficiary?.beneficiary_name,
             status,
           });
         })
@@ -194,8 +194,8 @@ const UiTabsAccordions = () => {
                                   />
                                 </td>
                                 <td>{splitDate}</td>
-                                <td>{split.beneficiary?.benificiary_id || "N/A"}</td>
-                                <td>{split.beneficiary?.benificiary_name || "N/A"}</td>
+                                <td>{split.beneficiary?.beneficiary_id || "N/A"}</td>
+                                <td>{split.beneficiary?.beneficiary_name || "N/A"}</td>
                                 <td>{split.beneficiary?.number || "N/A"}</td>
                                 <td>{split.beneficiary?.charity_name || "N/A"}</td>
                                 <td>{split.beneficiary?.age || "N/A"}</td>

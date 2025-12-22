@@ -60,8 +60,8 @@ const Datesplits = () => {
       .map(split => ({
         Date: new Date(split.date).toLocaleDateString(),
         _id: split._id,
-        benificiary_name: split.beneficiary.benificiary_name,
-        benificiary_id: split.beneficiary.benificiary_id,
+        beneficiary_name: split.beneficiary.beneficiary_name,
+        beneficiary_id: split.beneficiary.beneficiary_id,
         number: split.beneficiary.number,
         category: split.beneficiary.category,
         age: split.beneficiary.age,
@@ -83,8 +83,8 @@ const Datesplits = () => {
     worksheet.columns = [
       { header: "Date", key: "Date", width: 15 },
       { header: "_id", key: "_id", width: 30 },
-      { header: "benificiary_name", key: "benificiary_name", width: 30 },
-      { header: "benificiary_id", key: "benificiary_id", width: 30 },
+      { header: "beneficiary_name", key: "beneficiary_name", width: 30 },
+      { header: "beneficiary_id", key: "beneficiary_id", width: 30 },
       { header: "number", key: "number", width: 15 },
       { header: "category", key: "category", width: 20 },
       { header: "age", key: "age", width: 10 },

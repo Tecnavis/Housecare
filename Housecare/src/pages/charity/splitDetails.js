@@ -92,7 +92,7 @@ const SplitedDetails = () => {
               <th>Date</th>
               <th>Time</th>
               <th>Id</th>
-              <th>benificiary_id</th>
+              <th>beneficiary_id</th>
               <th>Name</th>
               <th>Number</th>
               <th>Category</th>
@@ -118,8 +118,8 @@ const SplitedDetails = () => {
                   <td>{formattedDate}</td>
                   <td>{formattedTime}</td>
                   <td>{split._id}</td>
-                  <td>{split.beneficiary.benificiary_id}</td>
-                  <td>{split.beneficiary.benificiary_name}</td>
+                  <td>{split.beneficiary.beneficiary_id}</td>
+                  <td>{split.beneficiary.beneficiary_name}</td>
                   <td>{split.beneficiary.number}</td>
                   <td>{split.beneficiary.category}</td>
                   <td>{split.beneficiary.age}</td>
