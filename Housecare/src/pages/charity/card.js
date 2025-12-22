@@ -6,7 +6,7 @@ import imgdark from "../../assets/images/1.JPG"
 const BeneficiaryDetails = ({ beneficiary }) => {
   return (
     <address>
-      <strong className="text-primary">{beneficiary.beneficiary_name}</strong>
+      <strong className="text-primary">{beneficiary.benificiary_name}</strong>
       <br />
       <span>{beneficiary.email_id}</span>
       <br />
@@ -33,7 +33,7 @@ const BeneficiaryCard = ({ beneficiary }) => {
     <Card className="border-light shadow-sm">
       <Card.Body>
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <strong className="text-primary">{beneficiary.beneficiary_name}</strong>
+          <strong className="text-primary">{beneficiary.benificiary_name}</strong>
           <strong className="text-secondary">{beneficiary.charity_name}</strong>
           <Badge bg={beneficiary.account_status ? "success" : "danger"}>
             {beneficiary.account_status ? "Active" : "Inactive"}
@@ -47,7 +47,7 @@ const BeneficiaryCard = ({ beneficiary }) => {
       </Card.Body>
       <Card.Footer className="d-flex justify-content-between">
         <small className="text-muted">
-          Beneficiary ID: {beneficiary.beneficiary_id}
+          Beneficiary ID: {beneficiary.benificiary_id}
         </small>
         <small className="text-muted">
           Balance: <strong>SAR {beneficiary.Balance}</strong>

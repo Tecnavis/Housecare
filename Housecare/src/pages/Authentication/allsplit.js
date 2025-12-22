@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
-import { BASE_URL, fetchbeneficiarys } from "./handle-api"
+import { BASE_URL, fetchBenificiarys } from "./handle-api"
 import styles from "../charity/split.module.css"
 import { Card } from "reactstrap"
 import Swal from "sweetalert2"
 
 function Allsplit() {
   const [splits, setSplits] = useState([])
-  const [, setbeneficiarys] = useState([])
+  const [, setBenificiarys] = useState([])
 
   useEffect(() => {
     loadData()
@@ -25,8 +25,8 @@ function Allsplit() {
 
   const loadData = async () => {
     try {
-      const respond = await fetchbeneficiarys()
-      setbeneficiarys(respond)
+      const respond = await fetchBenificiarys()
+      setBenificiarys(respond)
     } catch (err) {
       console.log(err)
     }
@@ -91,11 +91,11 @@ function Allsplit() {
                 <td>{new Date(split.date).toLocaleDateString()}</td>
                 {/* <td>{split._id}</td> */}
                 <td>
-                  {split.beneficiary ? split.beneficiary.beneficiary_id : "N/A"}
+                  {split.beneficiary ? split.beneficiary.benificiary_id : "N/A"}
                 </td>
                 <td>
                   {split.beneficiary
-                    ? split.beneficiary.beneficiary_name
+                    ? split.beneficiary.benificiary_name
                     : "N/A"}
                 </td>
                 <td>{split.beneficiary ? split.beneficiary.number : "N/A"}</td>

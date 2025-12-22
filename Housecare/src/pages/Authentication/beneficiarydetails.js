@@ -7,8 +7,8 @@ import imgdark from "../../assets/images/1.JPG"
 import { BASE_URL } from "./handle-api"
 import axios from "axios"
 
-const beneficiaryDetails = props => {
-  document.title = "beneficiary Details | Housecare"
+const BenificiaryDetails = props => {
+  document.title = "Benificiary Details | Housecare"
 
   const [beneficiarys, setBeneficiarys] = useState([])
   const [transactions, setTransactions] = useState([])
@@ -19,7 +19,7 @@ const beneficiaryDetails = props => {
       const token = localStorage.getItem("token")
       axios.defaults.headers.common["Authorization"] = token
       try {
-        const response = await axios.get(`${BASE_URL}/beneficiary/${id}`)
+        const response = await axios.get(`${BASE_URL}/benificiary/${id}`)
         setBeneficiarys(response.data)
       } catch (error) {
         console.error("Error fetching beneficiary details:", error)
@@ -29,7 +29,7 @@ const beneficiaryDetails = props => {
     const fetchTransactions = async () => {
       try {
         const response = await axios.get(
-          `${BASE_URL}/beneficiary/${id}/transactions`
+          `${BASE_URL}/benificiary/${id}/transactions`
         )
         const { creditedDetails, debitedDetails } = response.data
 
@@ -95,7 +95,7 @@ const beneficiaryDetails = props => {
                   <Row>
                     <Col xs="6">
                       <address>
-                        <strong>{beneficiarys.beneficiary_name}</strong>
+                        <strong>{beneficiarys.benificiary_name}</strong>
                         <br />
                         {beneficiarys.email_id}
                         <br />
@@ -108,7 +108,7 @@ const beneficiaryDetails = props => {
                         <br />
                         Navision No. {beneficiarys.navision_linked_no}
                         <br />
-                        {beneficiarys.beneficiary_id}
+                        {beneficiarys.benificiary_id}
                         <br />
                         {beneficiarys.nationality}
                       </address>
@@ -165,7 +165,7 @@ const beneficiaryDetails = props => {
                           className="text-primary"
                           style={{ fontSize: "large" }}
                         >
-                          {beneficiarys.beneficiary_name}
+                          {beneficiarys.benificiary_name}
                         </strong>
                         <br />
                         <span>Age: {beneficiarys.age}</span>
@@ -217,7 +217,7 @@ const beneficiaryDetails = props => {
                             style={{ fontSize: "medium" }}
                           >
                             <small className="text-muted">
-                              Beneficiary ID: {beneficiarys.beneficiary_id}
+                              Beneficiary ID: {beneficiarys.benificiary_id}
                             </small>
                             <small className="text-muted">
                               Balance:{" "}
@@ -293,7 +293,7 @@ const beneficiaryDetails = props => {
                                   <td>{formattedDate}</td>
                                   {/* <td className="text-center">{transaction.beneficiaryId}</td> */}
                                   <td className="text-center">
-                                    {beneficiarys.beneficiary_id}
+                                    {beneficiarys.benificiary_id}
                                   </td>
                                   <td className="text-center">
                                     {transaction.type === "credit"
@@ -351,4 +351,4 @@ const beneficiaryDetails = props => {
   )
 }
 
-export default connect(null, { setBreadcrumbItems })(beneficiaryDetails)
+export default connect(null, { setBreadcrumbItems })(BenificiaryDetails)

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Benificiaries = require("./model/beneficiary");
+const Benificiaries = require("./model/benificiary");
 
 // Replace with your MongoDB connection string
 const connectionString = "mongodb+srv://tecnaviswebsolutions:BjUzlgVyfGIJB1dQ@housecare.hapql0h.mongodb.net/?retryWrites=true&w=majority&appName=housecare";

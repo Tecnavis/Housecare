@@ -56,8 +56,8 @@ const SplitedHistory = () => {
               SecurityID: row.SecurityID, // Assuming SecurityID is a field in the split model or used for some logic
               beneficiary: {
                 _id: row.beneficiary,
-                beneficiary_id: row.beneficiary_id,
-                beneficiary_name: row.beneficiary_name,
+                benificiary_id: row.benificiary_id,
+                benificiary_name: row.benificiary_name,
                 number: row.number,
                 category: row.category,
                 age: row.age,
@@ -97,8 +97,8 @@ const SplitedHistory = () => {
     const tableData = splits.map(split => ({
       Date: new Date(split.date).toLocaleDateString(),
       // Id: split._id,
-      Beneficiary_ID: split.beneficiary.beneficiary_id,
-      Name: split.beneficiary.beneficiary_name,
+      Beneficiary_ID: split.beneficiary.benificiary_id,
+      Name: split.beneficiary.benificiary_name,
       Number: split.beneficiary.number,
       Category: split.beneficiary.category,
       Age: split.beneficiary.age,
@@ -185,7 +185,7 @@ const SplitedHistory = () => {
             <tr>
               <th>Date</th>
               <th>Id</th>
-              <th>beneficiary_id</th>
+              <th>benificiary_id</th>
               <th>Name</th>
               <th>Number</th>
               <th>Category</th>
@@ -200,8 +200,8 @@ const SplitedHistory = () => {
               <tr key={index}>
                 <td>{new Date(split.date).toLocaleDateString()}</td>
                 <td>{split._id}</td>
-                <td>{split.beneficiary.beneficiary_id}</td>
-                <td>{split.beneficiary.beneficiary_name}</td>
+                <td>{split.beneficiary.benificiary_id}</td>
+                <td>{split.beneficiary.benificiary_name}</td>
                 <td>{split.beneficiary.number}</td>
                 <td>{split.beneficiary.category}</td>
                 <td>{split.beneficiary.age}</td>

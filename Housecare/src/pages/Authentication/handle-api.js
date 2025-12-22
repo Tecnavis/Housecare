@@ -14,7 +14,7 @@ const HOUSECARE_BASE_URL = `${BASE}/housecare`;
 const CHARITY_URL = `${BASE}/charity`;
 const ADMIN_URL = `${BASE}/admin`;
 const CHARITYSTAFF_URL = `${BASE}/charitystaff`;
-const beneficiary_URL = `${BASE}/beneficiary`;
+const BENIFICIARY_URL = `${BASE}/benificiary`;
 const CATEGORY_URL = `${BASE}/category`;
 const EMAIL_URL = `${BASE}/email`;
 export const BASE_URL = BASE;
@@ -380,35 +380,35 @@ export const charityStaffUpdate = async (id, formData) => {
 //   return response.json()
 // }
 
-//create beneficiary  
-export const handlebeneficiary = async formData => {
+//create benificiary  
+export const handleBenificiary = async formData => {
   const token = localStorage.getItem("token");
   if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios.post(`${beneficiary_URL}`, formData, {
+    const response = await axios.post(`${BENIFICIARY_URL}`, formData, {
       headers: {
         "Content-Type": "application/json",
       },
     });
     return response.data;
   } catch (err) {
-    console.log(err, "beneficiary  Adding Failed");
+    console.log(err, "Benificiary  Adding Failed");
     throw err;
   }
 };
-//fetch beneficiary
-export const fetchbeneficiarys = async () => {
+//fetch benificiary
+export const fetchBenificiarys = async () => {
   const token = localStorage.getItem("token");
   if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios.get(`${beneficiary_URL}`);
+    const response = await axios.get(`${BENIFICIARY_URL}`);
     return response.data;
   } catch (err) {
-    console.log(err, "beneficiary details listing failed");
+    console.log(err, "benificiary details listing failed");
   }
 };
-//delete beneficiary
-export const beneficiaryDelete = async (id) => {
+//delete benificiary
+export const benificiaryDelete = async (id) => {
   const { value: confirmed } = await Swal.fire({
     title: 'Are you sure?',
     text: 'Do you want to delete this beneficiary?',
@@ -422,7 +422,7 @@ export const beneficiaryDelete = async (id) => {
 
   if (confirmed) {
     try {
-      await axios.delete(`${beneficiary_URL}/${id}`);
+      await axios.delete(`${BENIFICIARY_URL}/${id}`);
       Swal.fire(
         'Deleted!',
         'The beneficiary has been deleted.',
@@ -437,19 +437,19 @@ export const beneficiaryDelete = async (id) => {
     }
   }
 };
-//beneficiary edit byId
-export const beneficiaryEdit = async id => {
+//benificiary edit byId
+export const benificiaryEdit = async id => {
   try {
-    const response = await axios.get(`${beneficiary_URL}/${id}`);
+    const response = await axios.get(`${BENIFICIARY_URL}/${id}`);
     return response.data;
   } catch (err) {
-    console.log("an error occured in beneficiary Fetching", err);
+    console.log("an error occured in benificiary Fetching", err);
   }
 };
 
 // benificary id block
 export const toggleBlockBenificary = async id => {
-  const response = await fetch(`${BASE_URL}/beneficiary/block/${id}`, {
+  const response = await fetch(`${BASE_URL}/benificiary/block/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -463,17 +463,17 @@ export const toggleBlockBenificary = async id => {
   return response.json();
 };
 
-//beneficiary update
-export const beneficiaryUpdate = async (id, formData) => {
+//benificiary update
+export const benificiaryUpdate = async (id, formData) => {
   try {
-    const response = await axios.put(`${beneficiary_URL}/${id}`, formData, {
+    const response = await axios.put(`${BENIFICIARY_URL}/${id}`, formData, {
       headers: {
         "Content-Type": "application/json",
       },
     });
     return response.data;
   } catch (err) {
-    console.log("an error occured in beneficiary details updation", err);
+    console.log("an error occured in benificiary details updation", err);
     throw err;
   }
 };

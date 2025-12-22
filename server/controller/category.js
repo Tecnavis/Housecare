@@ -88,6 +88,6 @@ exports.delete = asyncHandler(async (req, res) => {
 		}
 	} catch (err) {
 		console.log(err, 'delete failed');
-		return res.status(500).json({ message: 'an error occured in beneficiary delete' });
+		return res.status(500).json({ message: 'an error occured in Benificiary delete' });
 	}
 });

@@ -1,6 +1,6 @@
 const Splits = require("../model/split");
 const Debited = require("../model/debited");
-const beneficiary = require("../model/beneficiary");
+const Benificiary = require("../model/benificiary");
 const Notifications = require("../model/notification");
 const nodemailer = require("nodemailer");
 const Staffs = require("../model/housecare-model");
@@ -108,10 +108,10 @@ exports.updateSplitById = async (req, res) => {
       return res.status(404).send("Split not found");
     }
 
-    // Update the beneficiary
+    // Update the Benificiary
     const benfID = await Splits.findById(id).populate("beneficiary");
-    const beneficiar = await beneficiary.findById(benfID.beneficiary);
-    const updatedBeneficiary = await beneficiary.findByIdAndUpdate(
+    const beneficiar = await Benificiary.findById(benfID.beneficiary);
+    const updatedBeneficiary = await Benificiary.findByIdAndUpdate(
       beneficiar._id,
       beneficiary
     );

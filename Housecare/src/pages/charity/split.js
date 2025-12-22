@@ -9,10 +9,10 @@ import * as XLSX from "xlsx"
 
 import Navbar from "./Navbars"
 import { BASE_URL } from "../Authentication/handle-api"
-import { fetchbeneficiarys } from "pages/Authentication/handle-api"
+import { fetchBenificiarys } from "pages/Authentication/handle-api"
 
 const App = () => {
-  const [beneficiarys, setbeneficiarys] = useState([])
+  const [benificiarys, setBenificiarys] = useState([])
   const [data, setData] = useState([])
   const [editIndex, setEditIndex] = useState(null)
   // const [amount, setAmount] = useState([])
@@ -41,12 +41,12 @@ const App = () => {
 
   const fetchDatas = async () => {
     try {
-      const response = await fetchbeneficiarys()
+      const response = await fetchBenificiarys()
       const charitydetails = JSON.parse(localStorage.getItem("charitydetails"))      
       const notBlock = response?.filter(val => val.isBlocked == false  && val.charity_name === charitydetails.charity)
-      setbeneficiarys(notBlock)
+      setBenificiarys(notBlock)
     } catch (error) {
-      console.error("Error fetching beneficiary details:", error)
+      console.error("Error fetching benificiary details:", error)
     }
   }
 
@@ -58,10 +58,10 @@ const App = () => {
   
 
   const splitAmount = useMemo(() => {
-    if (beneficiarys.length === 0) return 0;
+    if (benificiarys.length === 0) return 0;
   
-    return parseFloat((limitedAmount / beneficiarys.length).toFixed(2));
-  }, [limitedAmount, beneficiarys]);
+    return parseFloat((limitedAmount / benificiarys.length).toFixed(2));
+  }, [limitedAmount, benificiarys]);
   
   
   // 1. Get data from localStorage
@@ -80,32 +80,32 @@ const App = () => {
  
 
   useEffect(() => {
-    if (beneficiarys.length === 0) {
+    if (benificiarys.length === 0) {
       fetchDatas()
     }
     const charitydetails = JSON.parse(localStorage.getItem("charitydetails"))
     if (charitydetails) {
-      const filteredbeneficiarys = beneficiarys.filter(
-        beneficiary => beneficiary.charity_name === charitydetails.charity
+      const filteredBenificiarys = benificiarys.filter(
+        benificiary => benificiary.charity_name === charitydetails.charity
       )
       
       const savedData = JSON.parse(localStorage.getItem("data")) || []
-      const initialData = filteredbeneficiarys.map(beneficiary => ({
-        Name: beneficiary.beneficiary_name,
-        id: beneficiary._id,
-        beneficiary_id: beneficiary.beneficiary_id,
-        Nav_Number: beneficiary.navision_linked_no,
-        Number: beneficiary.number,
-        category: beneficiary.category,
-        age: beneficiary.age,
+      const initialData = filteredBenificiarys.map(benificiary => ({
+        Name: benificiary.benificiary_name,
+        id: benificiary._id,
+        benificiary_id: benificiary.benificiary_id,
+        Nav_Number: benificiary.navision_linked_no,
+        Number: benificiary.number,
+        category: benificiary.category,
+        age: benificiary.age,
         amount:
-          savedData.find(item => item.id === beneficiary._id)?.amount || 0,
+          savedData.find(item => item.id === benificiary._id)?.amount || 0,
       }))
 
       setData(initialData)
     }
     fetchEmails()
-  }, [beneficiarys])
+  }, [benificiarys])
 
 
   const handleCancelClick = () => {
@@ -263,7 +263,7 @@ const App = () => {
         newBalance: parseFloat(split.splitamount),
       }))
 
-      await axios.post(`${BASE_URL}/beneficiary/update-balances`, {
+      await axios.post(`${BASE_URL}/benificiary/update-balances`, {
         balanceUpdates,
       })
 
@@ -303,7 +303,7 @@ const App = () => {
     const tableData = filteredTableData.map(split => ({
       Name: split.Name,
       Nav_Number: split.Nav_Number,
-      BEN_ID: split.beneficiary_id,
+      BEN_ID: split.benificiary_id,
       Number: split.Number,
       Category: split.category,
       Age: split.age,
@@ -548,7 +548,7 @@ const App = () => {
                 <tr key={row.id}>
                   <td>{row.Name}</td>
                   <td>{row.id}</td>
-                  <td>{row.beneficiary_id}</td>
+                  <td>{row.benificiary_id}</td>
                   <td>{row.Nav_Number}</td>
                   <td>{row.Number}</td>
                   <td>{row.category}</td>

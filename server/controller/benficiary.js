@@ -1,4 +1,4 @@
-const Benificiaries = require("../model/beneficiary");
+const Benificiaries = require("../model/benificiary");
 const Charity = require("../model/charity");
 const asyncHandler = require("express-async-handler");
 const Debited = require('../model/debited');
@@ -7,7 +7,7 @@ const xlsx = require('xlsx');
 
 exports.create = asyncHandler(async (req, res) => {
   const {
-    beneficiary_name,
+    benificiary_name,
     date,
     category,
     age,
@@ -41,7 +41,7 @@ exports.create = asyncHandler(async (req, res) => {
     const charities = await Benificiaries.create({
       charity_name: charity_name,
       email_id: email_id,
-      beneficiary_name: beneficiary_name,
+      benificiary_name: benificiary_name,
       category: category,
       date: date,
       age: age,
@@ -57,16 +57,16 @@ exports.create = asyncHandler(async (req, res) => {
       family_members: family_members,
     });
     if (!charities) {
-      console.log("beneficiary creation failed");
+      console.log("benificiary creation failed");
       res.send("Failed");
     } else {
       res.send("Success");
     }
   } catch (err) {
-    console.log(err, "beneficiary creation failed");
+    console.log(err, "benificiary creation failed");
     return res
       .status(400)
-      .json({ err: "something went wrong in beneficiary creation" });
+      .json({ err: "something went wrong in benificiary creation" });
   }
 });
 
@@ -88,20 +88,20 @@ exports.edit = asyncHandler(async (req, res) => {
 		if (!charities) {
 			console.log('something went wrong in Edit by Id');
 			return res.status(400).json({
-				message: "an error occured in edit by Id Can't found the beneficiary",
+				message: "an error occured in edit by Id Can't found the benificiary",
 			});
 		}
 		res.json(charities);
 	} catch (err) {
 		console.log(err, 'an error occured in edit by Id');
-		return res.status(500).json({ err: 'an error occured in beneficiary details edit by Id' });
+		return res.status(500).json({ err: 'an error occured in benificiary details edit by Id' });
 	}
 });
 
 
 exports.update = asyncHandler(async (req, res) => {
     const {
-        beneficiary_name,
+        benificiary_name,
         category,
         date,
         age,
@@ -122,7 +122,7 @@ exports.update = asyncHandler(async (req, res) => {
 	try {
 		const charity = await Benificiaries.findById(id);
 		if (!charity) {
-			return res.status(400).json({ message: 'beneficiary not found' });
+			return res.status(400).json({ message: 'benificiary not found' });
 		}
     // Check if the email already exists for another staff member
     const existingEmail = await Benificiaries.findOne({ email_id, _id: { $ne: id } });
@@ -135,7 +135,7 @@ exports.update = asyncHandler(async (req, res) => {
     if (existingPhone) {
       return res.status(400).json({ message: 'Phone number already exists' });
     }
-		charity.beneficiary_name = beneficiary_name;
+		charity.benificiary_name = benificiary_name;
     charity.category = category;
     charity.age = age;
 		charity.email_id = email_id;
@@ -151,11 +151,11 @@ exports.update = asyncHandler(async (req, res) => {
 		charity.Balance = Balance;
 		charity.physically_challenged = physically_challenged;
 		charity.family_members = family_members;
-		const updatebeneficiary = await charity.save();
-		res.json({ updatebeneficiary });
+		const updateBenificiary = await charity.save();
+		res.json({ updateBenificiary });
 	} catch (err) {
-		console.log('an error occured in beneficiary updation');
-		return res.status(500).json({ err: 'An error occured in beneficiary details updation' });
+		console.log('an error occured in Benificiary updation');
+		return res.status(500).json({ err: 'An error occured in Benificiary details updation' });
 	}
 });
 
@@ -165,15 +165,15 @@ exports.delete = asyncHandler(async (req, res) => {
 	try {
 		const charities = await Benificiaries.findById(id);
 		if (!charities) {
-			console.log('beneficiary not found');
-			return res.status(400).json({ message: 'beneficiary not found to delete' });
+			console.log('Benificiary not found');
+			return res.status(400).json({ message: 'Benificiary not found to delete' });
 		} else {
 			await charities.deleteOne();
 			res.json({ message: 'delete successfully' });
 		}
 	} catch (err) {
 		console.log(err, 'delete failed');
-		return res.status(500).json({ message: 'an error occured in beneficiary delete' });
+		return res.status(500).json({ message: 'an error occured in Benificiary delete' });
 	}
 });
 
@@ -311,8 +311,8 @@ exports.importFromExcel = async (req, res) => {
     }
 
     // Fetch all existing beneficiary IDs and emails to prevent duplicates
-    const existingBeneficiaries = await Benificiaries.find({}, 'beneficiary_id email_id');
-    const existingbeneficiaryIds = new Set(existingBeneficiaries.map((b) => b.beneficiary_id));
+    const existingBeneficiaries = await Benificiaries.find({}, 'benificiary_id email_id');
+    const existingBenificiaryIds = new Set(existingBeneficiaries.map((b) => b.benificiary_id));
     const existingEmails = new Set(existingBeneficiaries.map((b) => b.email_id));
 
     const beneficiariesToInsert = [];
@@ -337,19 +337,19 @@ exports.importFromExcel = async (req, res) => {
 
       // Find the next available unique ID
       let newIdNumber = 1;
-      let newbeneficiaryId;
+      let newBenificiaryId;
 
       do {
-        newbeneficiaryId = `${charityPrefix}${newIdNumber.toString().padStart(5, '0')}`;
+        newBenificiaryId = `${charityPrefix}${newIdNumber.toString().padStart(5, '0')}`;
         newIdNumber++;
-      } while (existingbeneficiaryIds.has(newbeneficiaryId));
+      } while (existingBenificiaryIds.has(newBenificiaryId));
 
-      existingbeneficiaryIds.add(newbeneficiaryId); // Track used IDs
+      existingBenificiaryIds.add(newBenificiaryId); // Track used IDs
       existingEmails.add(b.email_id); // Track used emails to prevent duplicates
 
       beneficiariesToInsert.push({
-        beneficiary_id: newbeneficiaryId,
-        beneficiary_name: b.beneficiary_name || "",
+        benificiary_id: newBenificiaryId,
+        benificiary_name: b.benificiary_name || "",
         number: b.number || "",
         email_id: b.email_id || "",
         charity_name: b.charity_name || "",
@@ -398,8 +398,8 @@ exports.importBenificiariesFromExcel = async (req, res) => {
     }
 
     // Fetch all existing beneficiary IDs and emails to prevent duplicates
-    const existingBeneficiaries = await Benificiaries.find({}, 'beneficiary_id email_id');
-    const existingBeneficiaryIds = new Set(existingBeneficiaries.map((b) => b.beneficiary_id));
+    const existingBeneficiaries = await Benificiaries.find({}, 'benificiary_id email_id');
+    const existingBeneficiaryIds = new Set(existingBeneficiaries.map((b) => b.benificiary_id));
     const existingEmails = new Set(existingBeneficiaries.filter(b => b.email_id).map((b) => b.email_id));
 
     // Fetch all charities and create a map for quick lookup
@@ -468,8 +468,8 @@ exports.importBenificiariesFromExcel = async (req, res) => {
       }
 
       beneficiariesToInsert.push({
-        beneficiary_id: newBeneficiaryId,
-        beneficiary_name: b.beneficiary_name || "",
+        benificiary_id: newBeneficiaryId,
+        benificiary_name: b.benificiary_name || "",
         number: b.number || "",
         email_id: b.email_id || "",
         charity_name: b.charity_name || "",
@@ -516,18 +516,18 @@ exports.block = async (req, res) => {
   try {
 
     
-    const beneficiary = await Benificiaries.findById(id);
+    const benificiary = await Benificiaries.findById(id);
     
-    if (!beneficiary) {
+    if (!benificiary) {
       return res.status(404).json({ message: "Benificary not found" });
     }
 
-    beneficiary.isBlocked = !beneficiary.isBlocked; 
-    beneficiary.account_status = beneficiary.isBlocked ? "Inactive" : "Active";
+    benificiary.isBlocked = !benificiary.isBlocked; 
+    benificiary.account_status = benificiary.isBlocked ? "Inactive" : "Active";
     
    
-    await beneficiary.save();
-    res.json(beneficiary);
+    await benificiary.save();
+    res.json(benificiary);
   } catch (error) {
     console.error("Error in Block benificary:", error);
     res.status(500).json({ message: "Server Error" });

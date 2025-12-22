@@ -10,21 +10,21 @@ import {
   FormFeedback,
 } from "reactstrap"
 import axios from "axios"
-import { BASE_URL, fetchbeneficiarys } from "pages/Authentication/handle-api"
-const beneficiary_URL = `${process.env.REACT_APP_BASE_URL}/beneficiary`;
+import { BASE_URL, fetchBenificiarys } from "pages/Authentication/handle-api"
+const BENIFICIARY_URL = `${process.env.REACT_APP_BASE_URL}/benificiary`;
 
 
 const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
   const [amount, setAmount] = useState("")
   const [isInvalid, setIsInvalid] = useState(false)
-    const [beneficiarys, setbeneficiarys] = useState([])
+    const [benificiarys, setBenificiarys] = useState([])
   
 
   useEffect(() => {
 
     const FetchBenfi = async () => {
       try {
-        const response = await fetchbeneficiarys()
+        const response = await fetchBenificiarys()
 
         const charityFromStorage = JSON.parse(localStorage.getItem("charitydetails"));
         if (!charityFromStorage?.charity) {
@@ -35,7 +35,7 @@ const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
         const filtered = response.filter(
           ben => ben.charity_name === charityFromStorage.charity
         );
-        setbeneficiarys(filtered);
+        setBenificiarys(filtered);
       } catch (error) {
         console.error(error)
       }
@@ -54,7 +54,7 @@ const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
     var raw = localStorage.getItem("data")
     const parsed = JSON.parse(raw || "[]"); 
 
-    if(beneficiarys.length !== 0 || parsed.length !== 0 )  {    
+    if(benificiarys.length !== 0 || parsed.length !== 0 )  {    
         if (amount >= 1) {
         try {
           // const response = await axios.post(`${BASE_URL}/amount`, { amount })
@@ -117,15 +117,15 @@ const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
         return;
       }
   
-      const { data } = await axios.get(`${beneficiary_URL}`);
+      const { data } = await axios.get(`${BENIFICIARY_URL}`);
       const filtered = data.filter(
         ben => ben.charity_name === charityFromStorage.charity
       );
   
       const simplified = filtered.map(ben => ({
-        Name: ben.beneficiary_name,
+        Name: ben.benificiary_name,
         id: ben._id,
-        BEN_ID: ben.beneficiary_id,
+        BEN_ID: ben.benificiary_id,
         Number: ben.number,
         category: ben.category,
         age: ben.age,

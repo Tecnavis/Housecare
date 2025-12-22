@@ -3,10 +3,10 @@ import { Row, Col, Card, CardBody } from "reactstrap";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { BASE_URL } from "../../Authentication/handle-api";
-import { fetchbeneficiarys } from "../../Authentication/handle-api";
+import { fetchBenificiarys } from "../../Authentication/handle-api";
 
 const MonthlyEarnings = () => {
-  const [beneficiarys, setbeneficiarys] = useState([]);
+  const [benificiarys, setBenificiarys] = useState([]);
   const [, setSplits] = useState([]);
   const [series, setSeries] = useState([
     { name: "APPROVED", data: Array(12).fill(0) },
@@ -39,16 +39,16 @@ const MonthlyEarnings = () => {
 
   const fetchDatas = async () => {
     try {
-      const response = await fetchbeneficiarys();
-      setbeneficiarys(response);
+      const response = await fetchBenificiarys();
+      setBenificiarys(response);
     } catch (error) {
-      console.error("Error fetching beneficiary details:", error);
+      console.error("Error fetching benificiary details:", error);
     }
   };
 
   const charitydetails = JSON.parse(localStorage.getItem("charitydetails"));
-  const filteredbeneficiarys = beneficiarys.filter(
-    beneficiary => beneficiary.charity_name === charitydetails.charity
+  const filteredBenificiarys = benificiarys.filter(
+    benificiary => benificiary.charity_name === charitydetails.charity
   );
 
   const fetchSplits = async () => {
@@ -118,7 +118,7 @@ const MonthlyEarnings = () => {
           <h4 className="card-title mb-4">Overview</h4>
           <Row className="text-center mt-4">
             <Col xs="3">
-              <h5 className="font-size-20">{filteredbeneficiarys.length}</h5>
+              <h5 className="font-size-20">{filteredBenificiarys.length}</h5>
               <p className="text-muted">Beneficiary</p>
             </Col>
             <Col xs="3">
