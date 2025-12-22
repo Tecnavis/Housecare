@@ -19,8 +19,8 @@ const SplitedHistory = () => {
         const response = await axios.get(`${BASE_URL}/api/splits`)
         const filteredSplits = response.data.filter(
           split =>
-            split.benificiary &&
-            split.benificiary.charity_name === charityName &&
+            split.beneficiary &&
+            split.beneficiary.charity_name === charityName &&
             new Date(split.date).toLocaleDateString() === selectedDate
         )
         setSplits(filteredSplits)
@@ -54,10 +54,10 @@ const SplitedHistory = () => {
             const payload = {
               splitamount: row.splitamount,
               SecurityID: row.SecurityID, // Assuming SecurityID is a field in the split model or used for some logic
-              benificiary: {
-                _id: row.benificiary,
-                benificiary_id: row.benificiary_id,
-                benificiary_name: row.benificiary_name,
+              beneficiary: {
+                _id: row.beneficiary,
+                beneficiary_id: row.beneficiary_id,
+                beneficiary_name: row.beneficiary_name,
                 number: row.number,
                 category: row.category,
                 age: row.age,
@@ -97,11 +97,11 @@ const SplitedHistory = () => {
     const tableData = splits.map(split => ({
       Date: new Date(split.date).toLocaleDateString(),
       // Id: split._id,
-      benificiary_ID: split.benificiary.benificiary_id,
-      Name: split.benificiary.benificiary_name,
-      Number: split.benificiary.number,
-      Category: split.benificiary.category,
-      Age: split.benificiary.age,
+      Beneficiary_ID: split.beneficiary.beneficiary_id,
+      Name: split.beneficiary.beneficiary_name,
+      Number: split.beneficiary.number,
+      Category: split.beneficiary.category,
+      Age: split.beneficiary.age,
       Amount: split.splitamount,
       Status: split.status,
     }))
@@ -185,7 +185,7 @@ const SplitedHistory = () => {
             <tr>
               <th>Date</th>
               <th>Id</th>
-              <th>benificiary_id</th>
+              <th>beneficiary_id</th>
               <th>Name</th>
               <th>Number</th>
               <th>Category</th>
@@ -200,11 +200,11 @@ const SplitedHistory = () => {
               <tr key={index}>
                 <td>{new Date(split.date).toLocaleDateString()}</td>
                 <td>{split._id}</td>
-                <td>{split.benificiary.benificiary_id}</td>
-                <td>{split.benificiary.benificiary_name}</td>
-                <td>{split.benificiary.number}</td>
-                <td>{split.benificiary.category}</td>
-                <td>{split.benificiary.age}</td>
+                <td>{split.beneficiary.beneficiary_id}</td>
+                <td>{split.beneficiary.beneficiary_name}</td>
+                <td>{split.beneficiary.number}</td>
+                <td>{split.beneficiary.category}</td>
+                <td>{split.beneficiary.age}</td>
                 <td>{split.splitamount}</td>
                 <td>{split.status}</td>
               </tr>

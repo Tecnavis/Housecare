@@ -14,7 +14,7 @@ const HOUSECARE_BASE_URL = `${BASE}/housecare`;
 const CHARITY_URL = `${BASE}/charity`;
 const ADMIN_URL = `${BASE}/admin`;
 const CHARITYSTAFF_URL = `${BASE}/charitystaff`;
-const benificiary_URL = `${BASE}/benificiary`;
+const beneficiary_URL = `${BASE}/beneficiary`;
 const CATEGORY_URL = `${BASE}/category`;
 const EMAIL_URL = `${BASE}/email`;
 export const BASE_URL = BASE;
@@ -380,38 +380,38 @@ export const charityStaffUpdate = async (id, formData) => {
 //   return response.json()
 // }
 
-//create benificiary  
-export const handlebenificiary = async formData => {
+//create beneficiary  
+export const handlebeneficiary = async formData => {
   const token = localStorage.getItem("token");
   if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios.post(`${benificiary_URL}`, formData, {
+    const response = await axios.post(`${beneficiary_URL}`, formData, {
       headers: {
         "Content-Type": "application/json",
       },
     });
     return response.data;
   } catch (err) {
-    console.log(err, "benificiary  Adding Failed");
+    console.log(err, "beneficiary  Adding Failed");
     throw err;
   }
 };
-//fetch benificiary
-export const fetchbenificiarys = async () => {
+//fetch beneficiary
+export const fetchbeneficiarys = async () => {
   const token = localStorage.getItem("token");
   if (token) axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios.get(`${benificiary_URL}`);
+    const response = await axios.get(`${beneficiary_URL}`);
     return response.data;
   } catch (err) {
-    console.log(err, "benificiary details listing failed");
+    console.log(err, "beneficiary details listing failed");
   }
 };
-//delete benificiary
-export const benificiaryDelete = async (id) => {
+//delete beneficiary
+export const beneficiaryDelete = async (id) => {
   const { value: confirmed } = await Swal.fire({
     title: 'Are you sure?',
-    text: 'Do you want to delete this benificiary?',
+    text: 'Do you want to delete this beneficiary?',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -422,10 +422,10 @@ export const benificiaryDelete = async (id) => {
 
   if (confirmed) {
     try {
-      await axios.delete(`${benificiary_URL}/${id}`);
+      await axios.delete(`${beneficiary_URL}/${id}`);
       Swal.fire(
         'Deleted!',
-        'The benificiary has been deleted.',
+        'The beneficiary has been deleted.',
         'success'
       );
     } catch (err) {
@@ -437,19 +437,19 @@ export const benificiaryDelete = async (id) => {
     }
   }
 };
-//benificiary edit byId
-export const benificiaryEdit = async id => {
+//beneficiary edit byId
+export const beneficiaryEdit = async id => {
   try {
-    const response = await axios.get(`${benificiary_URL}/${id}`);
+    const response = await axios.get(`${beneficiary_URL}/${id}`);
     return response.data;
   } catch (err) {
-    console.log("an error occured in benificiary Fetching", err);
+    console.log("an error occured in beneficiary Fetching", err);
   }
 };
 
 // benificary id block
 export const toggleBlockBenificary = async id => {
-  const response = await fetch(`${BASE_URL}/benificiary/block/${id}`, {
+  const response = await fetch(`${BASE_URL}/beneficiary/block/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -463,17 +463,17 @@ export const toggleBlockBenificary = async id => {
   return response.json();
 };
 
-//benificiary update
-export const benificiaryUpdate = async (id, formData) => {
+//beneficiary update
+export const beneficiaryUpdate = async (id, formData) => {
   try {
-    const response = await axios.put(`${benificiary_URL}/${id}`, formData, {
+    const response = await axios.put(`${beneficiary_URL}/${id}`, formData, {
       headers: {
         "Content-Type": "application/json",
       },
     });
     return response.data;
   } catch (err) {
-    console.log("an error occured in benificiary details updation", err);
+    console.log("an error occured in beneficiary details updation", err);
     throw err;
   }
 };

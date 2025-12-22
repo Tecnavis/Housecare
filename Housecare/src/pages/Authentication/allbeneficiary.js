@@ -14,10 +14,10 @@ import {
 } from "reactstrap"
 import axios from "axios"
 import moment from "moment" // Import moment.js for handling dates
-import GoogleSheetsImport from "./benificiaryimport"
+import GoogleSheetsImport from "./beneficiaryimport"
 import * as XLSX from "xlsx"
 
-import { fetchbenificiarys, BASE_URL, toggleBlockBenificary } from "./handle-api"
+import { fetchbeneficiarys, BASE_URL, toggleBlockBenificary } from "./handle-api"
 import Swal from "sweetalert2"
 // Function to generate a transaction ID that starts with "TR" followed by 6 digits
 const generateTransactionId = () => {
@@ -25,11 +25,11 @@ const generateTransactionId = () => {
   return `TR${randomDigits}`
 }
 
-function benificiary() {
-  const [benificiarys, setbenificiarys] = useState([])
+function Beneficiary() {
+  const [beneficiarys, setbeneficiarys] = useState([])
   const [searchTerm, setSearchTerm] = useState("") // New state for search input
   const [modal, setModal] = useState(false)
-  const [selectedbenificiary, setSelectedbenificiary] = useState(null)
+  const [selectedbeneficiary, setSelectedbeneficiary] = useState(null)
   const [spendAmount, setSpendAmount] = useState("")
   const [transactionId, setTransactionId] = useState("")
   const [transactionDate, setTransactionDate] = useState(
@@ -44,8 +44,8 @@ function benificiary() {
   // Fetch charity organization details
   const loadData = async () => {
     try {
-      const respond = await fetchbenificiarys()
-      setbenificiarys(respond)
+      const respond = await fetchbeneficiarys()
+      setbeneficiarys(respond)
     } catch (err) {
       console.log(err)
     }
@@ -53,8 +53,8 @@ function benificiary() {
 
   const toggleModal = () => setModal(!modal)
 
-  const handlePayNowClick = benificiary => {
-    setSelectedbenificiary(benificiary)
+  const handlePayNowClick = beneficiary => {
+    setSelectedbeneficiary(beneficiary)
     setTransactionId(generateTransactionId()) // Generate custom transaction ID starting with "TR"
     setSpendAmount("") // Clear the spend amount field
     setTransactionDate(moment().format("YYYY-MM-DD")) // Default to today's date
@@ -70,17 +70,17 @@ function benificiary() {
   }
 
   const handleSubmit = async () => {
-    if (!selectedbenificiary || !selectedbenificiary._id) {
-      alert("Invalid benificiary selected.")
+    if (!selectedbeneficiary || !selectedbeneficiary._id) {
+      alert("Invalid beneficiary selected.")
       return
     }
 
     try {
-      // Update the benificiary
-      await updatebenificiaryInDatabase(selectedbenificiary._id, {
+      // Update the beneficiary
+      await updateBeneficiaryInDatabase(selectedbeneficiary._id, {
         debitedAmount: parseFloat(spendAmount),
         debitedDate: new Date(transactionDate),
-        Balance: selectedbenificiary.Balance - parseFloat(spendAmount),
+        Balance: selectedbeneficiary.Balance - parseFloat(spendAmount),
       })
 
       // Save the debited history
@@ -88,7 +88,7 @@ function benificiary() {
         debitedAmount: parseFloat(spendAmount),
         debitedDate: new Date(transactionDate),
         transactionId,
-        benificiary: selectedbenificiary._id,
+        beneficiary: selectedbeneficiary._id,
       })
 
       await loadData()
@@ -101,12 +101,12 @@ function benificiary() {
     }
   }
 
-  // Function to update benificiary in the database
-  const updatebenificiaryInDatabase = async (id, data) => {
+  // Function to update beneficiary in the database
+  const updateBeneficiaryInDatabase = async (id, data) => {
     try {
-      await axios.put(`${BASE_URL}/benificiary/beneficiaries/${id}`, data)
+      await axios.put(`${BASE_URL}/beneficiary/beneficiaries/${id}`, data)
     } catch (err) {
-      console.error("Error updating benificiary:", err)
+      console.error("Error updating beneficiary:", err)
       throw err
     }
   }
@@ -114,33 +114,33 @@ function benificiary() {
   // Function to save debited history
   const saveDebitedHistory = async data => {
     try {
-      await axios.post(`${BASE_URL}/benificiary/debited`, data)
+      await axios.post(`${BASE_URL}/beneficiary/debited`, data)
     } catch (err) {
       console.error("Error saving debited history:", err)
       throw err
     }
   }
 
-  const handleView = benificiaryId => {
-    window.location.href = `/benificiarydetails/${benificiaryId}`
+  const handleView = beneficiaryId => {
+    window.location.href = `/beneficiarydetails/${beneficiaryId}`
   }
 
   // Filter beneficiaries based on the search term
-  const filteredBeneficiaries = benificiarys.filter(
-    benificiary =>
-      benificiary.benificiary_name
+  const filteredBeneficiaries = beneficiarys.filter(
+    beneficiary =>
+      beneficiary.beneficiary_name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      benificiary.charity_name
+      beneficiary.charity_name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      benificiary.benificiary_id
+      beneficiary.beneficiary_id
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
   )
 
   const handleExport = () => {
-    if (benificiarys.length === 0) {
+    if (beneficiarys.length === 0) {
       Swal.fire({
         icon: "error",
         title: "No data available to export.",
@@ -151,23 +151,23 @@ function benificiary() {
     }
 
     // Format data for Excel with all required fields
-    const exportData = benificiarys.map(benificiary => ({
-      "benificiary ID": benificiary.benificiary_id,
-      "benificiary Name": benificiary.benificiary_name,
-      "Phone Number": benificiary.number,
-      Email: benificiary.email_id,
-      "Charity Name": benificiary.charity_name,
-      Nationality: benificiary.nationality,
-      Sex: benificiary.sex,
-      "Health Status": benificiary.health_status,
-      "Marital Status": benificiary.marital,
-      "Navision Linked No": benificiary.navision_linked_no,
-      "Physically Challenged": benificiary.physically_challenged,
-      "Family Members": benificiary.family_members,
-      "Account Status": benificiary.account_status,
-      Balance: benificiary.Balance || 0,
-      Category: benificiary.category,
-      Age: benificiary.age,
+    const exportData = beneficiarys.map(beneficiary => ({
+      "Beneficiary ID": beneficiary.beneficiary_id,
+      "Beneficiary Name": beneficiary.beneficiary_name,
+      "Phone Number": beneficiary.number,
+      Email: beneficiary.email_id,
+      "Charity Name": beneficiary.charity_name,
+      Nationality: beneficiary.nationality,
+      Sex: beneficiary.sex,
+      "Health Status": beneficiary.health_status,
+      "Marital Status": beneficiary.marital,
+      "Navision Linked No": beneficiary.navision_linked_no,
+      "Physically Challenged": beneficiary.physically_challenged,
+      "Family Members": beneficiary.family_members,
+      "Account Status": beneficiary.account_status,
+      Balance: beneficiary.Balance || 0,
+      Category: beneficiary.category,
+      Age: beneficiary.age,
     }))
 
     // Create a worksheet
@@ -196,10 +196,10 @@ function benificiary() {
 
       if (isConfirmed) {
         try {
-          const updatedbenificiary = await toggleBlockBenificary(id)
-          console.log(updatedbenificiary)
+          const updatedBeneficiary = await toggleBlockBenificary(id)
+          console.log(updatedBeneficiary)
 
-          setbenificiarys(prevBenfi =>
+          setbeneficiarys(prevBenfi =>
             prevBenfi.map(s =>
               s._id === id ? { ...s, isBlocked: !currentStatus } : s
             )
@@ -243,7 +243,7 @@ function benificiary() {
                 justifyContent: "space-between",
               }}
             >
-              <h4 className="card-title mb-3">benificiaryS</h4>
+              <h4 className="card-title mb-3">BENEFICIARYS</h4>
               <Input
                 type="text"
                 placeholder="Search Beneficiaries..."
@@ -252,13 +252,13 @@ function benificiary() {
                 style={{ width: "300px" }} // Adjust the width of the search bar as needed
               />
               <button className="btn btn-primary" onClick={handleExport}>
-                EXPORT benificiary
+                EXPORT BENEFICIARY
               </button>
               <button
                 className="btn btn-primary"
                 onClick={() => setImportModal(true)}
               >
-                IMPORT benificiaryS
+                IMPORT BENEFICIARYS
               </button>
             </div>
           </CardBody>
@@ -271,7 +271,7 @@ function benificiary() {
               <thead>
                 <tr style={{ fontWeight: "bold" }}>
                   <td>Name</td>
-                  <td>benificiary Id</td>
+                  <td>beneficiary Id</td>
                   <td>Charity</td>
                   <td>Email</td>
                   <td>Phone</td>
@@ -280,14 +280,14 @@ function benificiary() {
                 </tr>
               </thead>
               <tbody>
-                {filteredBeneficiaries.map(benificiary => (
-                  <tr key={benificiary.id}>
-                    <td>{benificiary.benificiary_name}</td>
-                    <td>{benificiary.benificiary_id}</td>
-                    <td>{benificiary.charity_name}</td>
-                    <td>{benificiary.email_id}</td>
-                    <td>{benificiary.number}</td>
-                    <td>{benificiary.Balance || 0}</td>
+                {filteredBeneficiaries.map(beneficiary => (
+                  <tr key={beneficiary.id}>
+                    <td>{beneficiary.beneficiary_name}</td>
+                    <td>{beneficiary.beneficiary_id}</td>
+                    <td>{beneficiary.charity_name}</td>
+                    <td>{beneficiary.email_id}</td>
+                    <td>{beneficiary.number}</td>
+                    <td>{beneficiary.Balance || 0}</td>
                     <td style={{ justifyContent: "center", display: "flex" }}>
                       <Button
                         style={{
@@ -300,10 +300,10 @@ function benificiary() {
 
                         className="waves-effect waves-light"
                         onClick={() =>
-                          handleBlock(benificiary._id, benificiary.isBlocked)
+                          handleBlock(beneficiary._id, beneficiary.isBlocked)
                         }
                       >
-                        {benificiary.isBlocked ? "Unblock" : "Block"}
+                        {beneficiary.isBlocked ? "Unblock" : "Block"}
                       </Button>
                       <Button
                         style={{
@@ -314,7 +314,7 @@ function benificiary() {
                           marginRight: "10px",
                         }}
                         className="waves-effect waves-light"
-                        onClick={() => handlePayNowClick(benificiary)}
+                        onClick={() => handlePayNowClick(beneficiary)}
                       >
                         PAY NOW
                       </Button>
@@ -323,7 +323,7 @@ function benificiary() {
                           backgroundColor: "transparent",
                           color: "black",
                         }}
-                        onClick={() => handleView(benificiary._id)}
+                        onClick={() => handleView(beneficiary._id)}
                       >
                         VIEW
                       </Button>
@@ -394,4 +394,4 @@ function benificiary() {
   )
 }
 
-export default benificiary
+export default Beneficiary

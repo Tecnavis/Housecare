@@ -1,5 +1,5 @@
 const express = require("express");
-const Controller = require("../controller/benificiary");
+const Controller = require("../controller/beneficiary");
 const auth = require("../middleware/auth");
 
 const router = express.Router();
@@ -11,7 +11,7 @@ router.put("/:id", auth, Controller.update);
 router.delete("/:id", auth, Controller.delete);
 
 router.patch("/block/:id", auth, Controller.block);
-router.put("/balance/:id", auth, Controller.updatebenificiaryBalance);
+router.put("/balance/:id", auth, Controller.updateBeneficiaryBalance);
 router.post("/update-balances", auth, Controller.updateBalances);
 router.post("/import", auth, Controller.importBenificiariesFromExcel);
 

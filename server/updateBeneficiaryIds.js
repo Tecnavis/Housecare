@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Benificiaries = require("./model/benificiary");
+const Benificiaries = require("./model/beneficiary");
 
 // Replace with your MongoDB connection string
 const connectionString = "mongodb+srv://tecnaviswebsolutions:BjUzlgVyfGIJB1dQ@housecare.hapql0h.mongodb.net/?retryWrites=true&w=majority&appName=housecare";
@@ -14,18 +14,18 @@ mongoose.connect(connectionString)
       const benificiaries = await Benificiaries.find({}).sort({ createdAt: 1 });
 
       for (let i = 0; i < benificiaries.length; i++) {
-        const benificiary = benificiaries[i];
+        const beneficiary = benificiaries[i];
 
         // Check for required fields and set defaults if needed
-        if (!benificiary.age) benificiary.age = 0; // or any default value
-        if (!benificiary.category) benificiary.category = "Unknown"; // or any default value
+        if (!beneficiary.age) beneficiary.age = 0; // or any default value
+        if (!beneficiary.category) beneficiary.category = "Unknown"; // or any default value
 
         const newId = `BENF${(i + 1).toString().padStart(5, "0")}`;
-        benificiary.benificiary_id = newId;
+        beneficiary.beneficiary_id = newId;
 
-        // Save each updated benificiary
-        await benificiary.save();
-        console.log(`Updated benificiary ${benificiary._id} with ID ${newId}`);
+        // Save each updated beneficiary
+        await beneficiary.save();
+        console.log(`Updated beneficiary ${beneficiary._id} with ID ${newId}`);
       }
 
       console.log("All existing benificiaries have been updated with unique IDs");

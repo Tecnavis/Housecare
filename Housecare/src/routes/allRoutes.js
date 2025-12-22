@@ -66,7 +66,7 @@ import Kanban from "pages/Kanban"
 import Staff from "pages/staffs"
 import Charity from "pages/Authentication/charity"
 import Superadmin from "pages/Authentication/superadmin"
-import benificiarydetails from "pages/Authentication/benificiarydetails"
+import Beneficiarydetails from "pages/Authentication/beneficiarydetails"
 import Charity1 from "../pages/charity"
 import CharityTeam from "../pages/charity/charity-team"
 import Mainpage from "pages/charity/mainpage"
@@ -74,8 +74,8 @@ import Dashboards from "pages/charity/dashboards"
 import BenificiariesDetails from "pages/charity/beneficiariesdetails"
 import Split from "pages/charity/split"
 import Profile from "pages/charity/profile"
-import benificiary from "pages/charity/benificiary"
-import Allbeneficiaries from "pages/Authentication/allbenificiary"
+import Beneficiary from "pages/charity/beneficiary"
+import Allbeneficiaries from "pages/Authentication/allbeneficiary"
 // import New from "pages/charity/new"
 import New from "pages/charity/splitDetails"
 import SplitHistory from "pages/Authentication/splithistory"
@@ -95,7 +95,7 @@ const userRoutes = [
   { path: "/charity", component: <Charity /> },
   { path: "/admin", component: <Charity /> },
   { path: "/charitydetails/:id", component: <CharityDetails /> },
-  { path: "/benificiarydetails/:id", component: <benificiarydetails /> },
+  { path: "/beneficiarydetails/:id", component: <Beneficiarydetails /> },
 { path: "/splithistory", component: <SplitHistory /> },
   { path: "/histories", component: <Charitysplithistory /> },
   { path: "/datesplits/:id", component: <Datesplits /> },
@@ -104,7 +104,7 @@ const userRoutes = [
   {path: "/email-sender" , component: <EmailSender/>},
   {path: "/sms-sender" , component: <SmsSender/>},
   {path: "/latest-notifications" , component: <LatestNotifications/>},
-  {path: "/benificiary" , component: <Allbeneficiaries/>},
+  {path: "/beneficiary" , component: <Allbeneficiaries/>},
 
 
   // //calendar
@@ -177,7 +177,7 @@ const authRoutes = [
   {path:"/beneficiariesdetails/:id",component:<BenificiariesDetails/>},
   {path:"/split",component:<Split/>},
   {path:"/profiles/:id",component:<Profile/>},
-  {path:"/beneficiaries",component:<benificiary/>},
+  {path:"/beneficiaries",component:<Beneficiary/>},
   { path: "/pages-403", component: <Pages403 /> },
   { path: "/pages-500", component: <Pages500 /> },
   {path: "/history" , component: <New/>},

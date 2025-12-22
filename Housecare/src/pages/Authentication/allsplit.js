@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
-import { BASE_URL, fetchbenificiarys } from "./handle-api"
+import { BASE_URL, fetchbeneficiarys } from "./handle-api"
 import styles from "../charity/split.module.css"
 import { Card } from "reactstrap"
 import Swal from "sweetalert2"
 
 function Allsplit() {
   const [splits, setSplits] = useState([])
-  const [, setbenificiarys] = useState([])
+  const [, setbeneficiarys] = useState([])
 
   useEffect(() => {
     loadData()
@@ -25,8 +25,8 @@ function Allsplit() {
 
   const loadData = async () => {
     try {
-      const respond = await fetchbenificiarys()
-      setbenificiarys(respond)
+      const respond = await fetchbeneficiarys()
+      setbeneficiarys(respond)
     } catch (err) {
       console.log(err)
     }
@@ -91,18 +91,18 @@ function Allsplit() {
                 <td>{new Date(split.date).toLocaleDateString()}</td>
                 {/* <td>{split._id}</td> */}
                 <td>
-                  {split.benificiary ? split.benificiary.benificiary_id : "N/A"}
+                  {split.beneficiary ? split.beneficiary.beneficiary_id : "N/A"}
                 </td>
                 <td>
-                  {split.benificiary
-                    ? split.benificiary.benificiary_name
+                  {split.beneficiary
+                    ? split.beneficiary.beneficiary_name
                     : "N/A"}
                 </td>
-                <td>{split.benificiary ? split.benificiary.number : "N/A"}</td>
+                <td>{split.beneficiary ? split.beneficiary.number : "N/A"}</td>
                 <td>
-                  {split.benificiary ? split.benificiary.category : "N/A"}
+                  {split.beneficiary ? split.beneficiary.category : "N/A"}
                 </td>
-                <td>{split.benificiary ? split.benificiary.age : "N/A"}</td>
+                <td>{split.beneficiary ? split.beneficiary.age : "N/A"}</td>
                 <td>{split.splitamount}</td>
                 <td>{split.status}</td>
                 <td>

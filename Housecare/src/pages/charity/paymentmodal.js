@@ -10,21 +10,21 @@ import {
   FormFeedback,
 } from "reactstrap"
 import axios from "axios"
-import { BASE_URL, fetchbenificiarys } from "pages/Authentication/handle-api"
-const benificiary_URL = `${process.env.REACT_APP_BASE_URL}/benificiary`;
+import { BASE_URL, fetchbeneficiarys } from "pages/Authentication/handle-api"
+const beneficiary_URL = `${process.env.REACT_APP_BASE_URL}/beneficiary`;
 
 
 const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
   const [amount, setAmount] = useState("")
   const [isInvalid, setIsInvalid] = useState(false)
-    const [benificiarys, setbenificiarys] = useState([])
+    const [beneficiarys, setbeneficiarys] = useState([])
   
 
   useEffect(() => {
 
     const FetchBenfi = async () => {
       try {
-        const response = await fetchbenificiarys()
+        const response = await fetchbeneficiarys()
 
         const charityFromStorage = JSON.parse(localStorage.getItem("charitydetails"));
         if (!charityFromStorage?.charity) {
@@ -35,7 +35,7 @@ const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
         const filtered = response.filter(
           ben => ben.charity_name === charityFromStorage.charity
         );
-        setbenificiarys(filtered);
+        setbeneficiarys(filtered);
       } catch (error) {
         console.error(error)
       }
@@ -54,7 +54,7 @@ const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
     var raw = localStorage.getItem("data")
     const parsed = JSON.parse(raw || "[]"); 
 
-    if(benificiarys.length !== 0 || parsed.length !== 0 )  {    
+    if(beneficiarys.length !== 0 || parsed.length !== 0 )  {    
         if (amount >= 1) {
         try {
           // const response = await axios.post(`${BASE_URL}/amount`, { amount })
@@ -117,15 +117,15 @@ const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
         return;
       }
   
-      const { data } = await axios.get(`${benificiary_URL}`);
+      const { data } = await axios.get(`${beneficiary_URL}`);
       const filtered = data.filter(
         ben => ben.charity_name === charityFromStorage.charity
       );
   
       const simplified = filtered.map(ben => ({
-        Name: ben.benificiary_name,
+        Name: ben.beneficiary_name,
         id: ben._id,
-        BEN_ID: ben.benificiary_id,
+        BEN_ID: ben.beneficiary_id,
         Number: ben.number,
         category: ben.category,
         age: ben.age,
@@ -133,7 +133,7 @@ const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
       }));
   
       localStorage.setItem("data", JSON.stringify(simplified));
-      console.log("benificiary data stored.");
+      console.log("Beneficiary data stored.");
     } catch (err) {
       console.error("Error fetching beneficiaries:", err);
     }
@@ -149,7 +149,7 @@ const PaymentModal = ({ isOpen, toggle, saveAmount }) => {
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
       <ModalHeader toggle={toggle}>
-        benificiary PAYMENT DISTRIBUTION
+        BENEFICIARY PAYMENT DISTRIBUTION
       </ModalHeader>
       <ModalBody>
         <p>Enter your limited amount:</p>

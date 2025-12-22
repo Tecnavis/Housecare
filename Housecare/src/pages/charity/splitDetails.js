@@ -22,8 +22,8 @@ const SplitedDetails = () => {
         const filteredSplits = response?.data
           .filter(
             split =>
-              split?.benificiary &&
-              split.benificiary.charity_name === charityName
+              split?.beneficiary &&
+              split.beneficiary.charity_name === charityName
           )
           .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date in descending order
 
@@ -92,7 +92,7 @@ const SplitedDetails = () => {
               <th>Date</th>
               <th>Time</th>
               <th>Id</th>
-              <th>benificiary_id</th>
+              <th>beneficiary_id</th>
               <th>Name</th>
               <th>Number</th>
               <th>Category</th>
@@ -118,11 +118,11 @@ const SplitedDetails = () => {
                   <td>{formattedDate}</td>
                   <td>{formattedTime}</td>
                   <td>{split._id}</td>
-                  <td>{split.benificiary.benificiary_id}</td>
-                  <td>{split.benificiary.benificiary_name}</td>
-                  <td>{split.benificiary.number}</td>
-                  <td>{split.benificiary.category}</td>
-                  <td>{split.benificiary.age}</td>
+                  <td>{split.beneficiary.beneficiary_id}</td>
+                  <td>{split.beneficiary.beneficiary_name}</td>
+                  <td>{split.beneficiary.number}</td>
+                  <td>{split.beneficiary.category}</td>
+                  <td>{split.beneficiary.age}</td>
                   <td>{split.splitamount}</td>
                   <td>{split.status}</td>
                   <td>

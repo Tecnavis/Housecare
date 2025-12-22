@@ -1,4 +1,4 @@
-const Benificiaries = require("../model/benificiary");
+const Benificiaries = require("../model/beneficiary");
 const Charity = require("../model/charity");
 const asyncHandler = require("express-async-handler");
 const Debited = require('../model/debited');
@@ -7,7 +7,7 @@ const xlsx = require('xlsx');
 
 exports.create = asyncHandler(async (req, res) => {
   const {
-    benificiary_name,
+    beneficiary_name,
     date,
     category,
     age,
@@ -41,7 +41,7 @@ exports.create = asyncHandler(async (req, res) => {
     const charities = await Benificiaries.create({
       charity_name: charity_name,
       email_id: email_id,
-      benificiary_name: benificiary_name,
+      beneficiary_name: beneficiary_name,
       category: category,
       date: date,
       age: age,
@@ -57,16 +57,16 @@ exports.create = asyncHandler(async (req, res) => {
       family_members: family_members,
     });
     if (!charities) {
-      console.log("benificiary creation failed");
+      console.log("beneficiary creation failed");
       res.send("Failed");
     } else {
       res.send("Success");
     }
   } catch (err) {
-    console.log(err, "benificiary creation failed");
+    console.log(err, "beneficiary creation failed");
     return res
       .status(400)
-      .json({ err: "something went wrong in benificiary creation" });
+      .json({ err: "something went wrong in beneficiary creation" });
   }
 });
 
@@ -88,20 +88,20 @@ exports.edit = asyncHandler(async (req, res) => {
 		if (!charities) {
 			console.log('something went wrong in Edit by Id');
 			return res.status(400).json({
-				message: "an error occured in edit by Id Can't found the benificiary",
+				message: "an error occured in edit by Id Can't found the beneficiary",
 			});
 		}
 		res.json(charities);
 	} catch (err) {
 		console.log(err, 'an error occured in edit by Id');
-		return res.status(500).json({ err: 'an error occured in benificiary details edit by Id' });
+		return res.status(500).json({ err: 'an error occured in beneficiary details edit by Id' });
 	}
 });
 
 
 exports.update = asyncHandler(async (req, res) => {
     const {
-        benificiary_name,
+        beneficiary_name,
         category,
         date,
         age,
@@ -122,7 +122,7 @@ exports.update = asyncHandler(async (req, res) => {
 	try {
 		const charity = await Benificiaries.findById(id);
 		if (!charity) {
-			return res.status(400).json({ message: 'benificiary not found' });
+			return res.status(400).json({ message: 'beneficiary not found' });
 		}
     // Check if the email already exists for another staff member
     const existingEmail = await Benificiaries.findOne({ email_id, _id: { $ne: id } });
@@ -135,7 +135,7 @@ exports.update = asyncHandler(async (req, res) => {
     if (existingPhone) {
       return res.status(400).json({ message: 'Phone number already exists' });
     }
-		charity.benificiary_name = benificiary_name;
+		charity.beneficiary_name = beneficiary_name;
     charity.category = category;
     charity.age = age;
 		charity.email_id = email_id;
@@ -151,11 +151,11 @@ exports.update = asyncHandler(async (req, res) => {
 		charity.Balance = Balance;
 		charity.physically_challenged = physically_challenged;
 		charity.family_members = family_members;
-		const updatebenificiary = await charity.save();
-		res.json({ updatebenificiary });
+		const updatebeneficiary = await charity.save();
+		res.json({ updatebeneficiary });
 	} catch (err) {
-		console.log('an error occured in benificiary updation');
-		return res.status(500).json({ err: 'An error occured in benificiary details updation' });
+		console.log('an error occured in beneficiary updation');
+		return res.status(500).json({ err: 'An error occured in beneficiary details updation' });
 	}
 });
 
@@ -165,35 +165,35 @@ exports.delete = asyncHandler(async (req, res) => {
 	try {
 		const charities = await Benificiaries.findById(id);
 		if (!charities) {
-			console.log('benificiary not found');
-			return res.status(400).json({ message: 'benificiary not found to delete' });
+			console.log('beneficiary not found');
+			return res.status(400).json({ message: 'beneficiary not found to delete' });
 		} else {
 			await charities.deleteOne();
 			res.json({ message: 'delete successfully' });
 		}
 	} catch (err) {
 		console.log(err, 'delete failed');
-		return res.status(500).json({ message: 'an error occured in benificiary delete' });
+		return res.status(500).json({ message: 'an error occured in beneficiary delete' });
 	}
 });
 
 //update balance
-exports.updatebenificiaryBalance = async (req, res) => {
+exports.updateBeneficiaryBalance = async (req, res) => {
   try {
     const { id } = req.params;
     const { Balance } = req.body;
 
-    const benificiary = await Benificiaries.findById(id);
-    if (!benificiary) {
-      return res.status(404).send("benificiary not found");
+    const beneficiary = await Benificiaries.findById(id);
+    if (!beneficiary) {
+      return res.status(404).send("Beneficiary not found");
     }
 
-    benificiary.Balance = Balance;
-    await benificiary.save();
+    beneficiary.Balance = Balance;
+    await beneficiary.save();
 
-    res.send(benificiary);
+    res.send(beneficiary);
   } catch (error) {
-    res.status(500).send("Error updating benificiary balance");
+    res.status(500).send("Error updating beneficiary balance");
   }
 };
 
@@ -203,13 +203,13 @@ exports.updatebenificiaryBalance = async (req, res) => {
 // Create a new debited record
 exports. createDebitedRecord = async (req, res) => {
   try {
-      const { debitedAmount, debitedDate, transactionId, benificiary } = req.body;
+      const { debitedAmount, debitedDate, transactionId, beneficiary } = req.body;
 
       const newDebited = new Debited({
           debitedAmount,
           debitedDate,
           transactionId,
-          benificiary
+          beneficiary
       });
 
       await newDebited.save();
@@ -220,22 +220,22 @@ exports. createDebitedRecord = async (req, res) => {
   }
 };
 // Example of a controller update function
-exports.updatebenificiary = async (req, res) => {
+exports.updateBeneficiary = async (req, res) => {
   try {
     const { id } = req.params;
     const { debitedAmount, debitedDate, Balance } = req.body;
     
-    const updatedbenificiary = await Benificiaries.findByIdAndUpdate(
+    const updatedBeneficiary = await Benificiaries.findByIdAndUpdate(
       id,
       { debitedAmount, debitedDate, Balance }, // Ensure all necessary fields are updated
       { new: true }
     );
 
-    if (!updatedbenificiary) {
-      return res.status(404).send('benificiary not found');
+    if (!updatedBeneficiary) {
+      return res.status(404).send('Beneficiary not found');
     }
 
-    res.json(updatedbenificiary);
+    res.json(updatedBeneficiary);
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -247,19 +247,19 @@ exports.updateBalances = async (req, res) => {
     const { balanceUpdates } = req.body;    
 
     await Promise.all(balanceUpdates.map(async (update) => {
-      const benificiary = await Benificiaries.findById(update.benificiaryId);
+      const beneficiary = await Benificiaries.findById(update.beneficiaryId);
       
-      if (benificiary && (benificiary.Balance === null || benificiary.Balance === undefined)) {
+      if (beneficiary && (beneficiary.Balance === null || beneficiary.Balance === undefined)) {
         // Set Balance to 0 only if it's null/undefined
         await Benificiaries.updateOne(
-          { _id: update.benificiaryId },
+          { _id: update.beneficiaryId },
           { $set: { Balance: 0 } }
         );
       }
     
       // Now safely increment
       await Benificiaries.updateOne(
-        { _id: update.benificiaryId },
+        { _id: update.beneficiaryId },
         { $inc: { Balance: update.newBalance } }
       );
     }));
@@ -282,10 +282,10 @@ exports.updateBalances = async (req, res) => {
 //     const { balanceUpdates } = req.body;
 
 //     await Promise.all(balanceUpdates.map(async (update) => {
-//       const benificiary = await Benificiaries.findById(update.benificiaryId);
-//       if (benificiary) {
-//         benificiary.Balance += update.newBalance;
-//         await benificiary.save();
+//       const beneficiary = await Benificiaries.findById(update.beneficiaryId);
+//       if (beneficiary) {
+//         beneficiary.Balance += update.newBalance;
+//         await beneficiary.save();
 //       }
 //     }));
 
@@ -310,9 +310,9 @@ exports.importFromExcel = async (req, res) => {
       return res.status(400).json({ error: 'Empty Excel file' });
     }
 
-    // Fetch all existing benificiary IDs and emails to prevent duplicates
-    const existingBeneficiaries = await Benificiaries.find({}, 'benificiary_id email_id');
-    const existingbenificiaryIds = new Set(existingBeneficiaries.map((b) => b.benificiary_id));
+    // Fetch all existing beneficiary IDs and emails to prevent duplicates
+    const existingBeneficiaries = await Benificiaries.find({}, 'beneficiary_id email_id');
+    const existingbeneficiaryIds = new Set(existingBeneficiaries.map((b) => b.beneficiary_id));
     const existingEmails = new Set(existingBeneficiaries.map((b) => b.email_id));
 
     const beneficiariesToInsert = [];
@@ -337,19 +337,19 @@ exports.importFromExcel = async (req, res) => {
 
       // Find the next available unique ID
       let newIdNumber = 1;
-      let newbenificiaryId;
+      let newbeneficiaryId;
 
       do {
-        newbenificiaryId = `${charityPrefix}${newIdNumber.toString().padStart(5, '0')}`;
+        newbeneficiaryId = `${charityPrefix}${newIdNumber.toString().padStart(5, '0')}`;
         newIdNumber++;
-      } while (existingbenificiaryIds.has(newbenificiaryId));
+      } while (existingbeneficiaryIds.has(newbeneficiaryId));
 
-      existingbenificiaryIds.add(newbenificiaryId); // Track used IDs
+      existingbeneficiaryIds.add(newbeneficiaryId); // Track used IDs
       existingEmails.add(b.email_id); // Track used emails to prevent duplicates
 
       beneficiariesToInsert.push({
-        benificiary_id: newbenificiaryId,
-        benificiary_name: b.benificiary_name || "",
+        beneficiary_id: newbeneficiaryId,
+        beneficiary_name: b.beneficiary_name || "",
         number: b.number || "",
         email_id: b.email_id || "",
         charity_name: b.charity_name || "",
@@ -397,9 +397,9 @@ exports.importBenificiariesFromExcel = async (req, res) => {
       return res.status(400).json({ error: 'Empty Excel file' });
     }
 
-    // Fetch all existing benificiary IDs and emails to prevent duplicates
-    const existingBeneficiaries = await Benificiaries.find({}, 'benificiary_id email_id');
-    const existingbenificiaryIds = new Set(existingBeneficiaries.map((b) => b.benificiary_id));
+    // Fetch all existing beneficiary IDs and emails to prevent duplicates
+    const existingBeneficiaries = await Benificiaries.find({}, 'beneficiary_id email_id');
+    const existingBeneficiaryIds = new Set(existingBeneficiaries.map((b) => b.beneficiary_id));
     const existingEmails = new Set(existingBeneficiaries.filter(b => b.email_id).map((b) => b.email_id));
 
     // Fetch all charities and create a map for quick lookup
@@ -447,7 +447,7 @@ exports.importBenificiariesFromExcel = async (req, res) => {
       // Initialize next ID counter for this charity if not already done
       if (!nextIdMap.has(charityPrefix)) {
         // Find highest existing ID for this prefix
-        const existingIds = Array.from(existingbenificiaryIds)
+        const existingIds = Array.from(existingBeneficiaryIds)
           .filter(id => id.startsWith(charityPrefix))
           .map(id => parseInt(id.substring(charityPrefix.length), 10))
           .filter(num => !isNaN(num));
@@ -456,20 +456,20 @@ exports.importBenificiariesFromExcel = async (req, res) => {
         nextIdMap.set(charityPrefix, highestId + 1);
       }
 
-      // Generate new benificiary ID
+      // Generate new beneficiary ID
       let nextId = nextIdMap.get(charityPrefix);
-      const newbenificiaryId = `${charityPrefix}${nextId.toString().padStart(5, '0')}`;
+      const newBeneficiaryId = `${charityPrefix}${nextId.toString().padStart(5, '0')}`;
       nextIdMap.set(charityPrefix, nextId + 1);
       
       // Track used IDs and emails
-      existingbenificiaryIds.add(newbenificiaryId);
+      existingBeneficiaryIds.add(newBeneficiaryId);
       if (b.email_id) {
         existingEmails.add(b.email_id);
       }
 
       beneficiariesToInsert.push({
-        benificiary_id: newbenificiaryId,
-        benificiary_name: b.benificiary_name || "",
+        beneficiary_id: newBeneficiaryId,
+        beneficiary_name: b.beneficiary_name || "",
         number: b.number || "",
         email_id: b.email_id || "",
         charity_name: b.charity_name || "",
@@ -516,18 +516,18 @@ exports.block = async (req, res) => {
   try {
 
     
-    const benificiary = await Benificiaries.findById(id);
+    const beneficiary = await Benificiaries.findById(id);
     
-    if (!benificiary) {
+    if (!beneficiary) {
       return res.status(404).json({ message: "Benificary not found" });
     }
 
-    benificiary.isBlocked = !benificiary.isBlocked; 
-    benificiary.account_status = benificiary.isBlocked ? "Inactive" : "Active";
+    beneficiary.isBlocked = !beneficiary.isBlocked; 
+    beneficiary.account_status = beneficiary.isBlocked ? "Inactive" : "Active";
     
    
-    await benificiary.save();
-    res.json(benificiary);
+    await beneficiary.save();
+    res.json(beneficiary);
   } catch (error) {
     console.error("Error in Block benificary:", error);
     res.status(500).json({ message: "Server Error" });

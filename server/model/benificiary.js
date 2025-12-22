@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const Charity = require("./charity");
 
-const benificiarySchema = new mongoose.Schema({
-  benificiary_id: { type: String, unique: true },
+const beneficiarySchema = new mongoose.Schema({
+  beneficiary_id: { type: String, unique: true },
 
-  benificiary_name: { type: String, required: true },
+  beneficiary_name: { type: String, required: true },
   email_id: { type: String, required: true },
   number: Number,
 
@@ -30,7 +30,7 @@ const benificiarySchema = new mongoose.Schema({
 }, { timestamps: true });
 
 /* AUTO ID GENERATION */
-benificiarySchema.pre("save", async function (next) {
+beneficiarySchema.pre("save", async function (next) {
   if (!this.isNew) return next();
 
   const charity = await Charity.findById(this.charity_id);
@@ -43,12 +43,12 @@ benificiarySchema.pre("save", async function (next) {
     .sort({ createdAt: -1 });
 
   let num = 1;
-  if (last?.benificiary_id) {
-    num = parseInt(last.benificiary_id.replace(charity.prifix, ""), 10) + 1;
+  if (last?.beneficiary_id) {
+    num = parseInt(last.beneficiary_id.replace(charity.prifix, ""), 10) + 1;
   }
 
-  this.benificiary_id = `${charity.prifix}${num.toString().padStart(5, "0")}`;
+  this.beneficiary_id = `${charity.prifix}${num.toString().padStart(5, "0")}`;
   next();
 });
 
-module.exports = mongoose.model("Benificiaries", benificiarySchema);
+module.exports = mongoose.model("Benificiaries", beneficiarySchema);

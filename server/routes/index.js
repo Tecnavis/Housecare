@@ -31,12 +31,12 @@ router.get("/count", splitsController.getNotificationCount);
 router.post("/reset", splitsController.resetNotificationCount);
 router.put('/splits/:id/status', splitsController.updateSplitStatus);
 router.get("/pending-approvals",splitsController.getPendingApprovalsCount);
-router.get('/splitses/:id', splitsController.getSplitDetailsBybenificiary);
+router.get('/splitses/:id', splitsController.getSplitDetailsByBeneficiary);
 router.post('/sendmail', upload.single('excel'), splitsController.sendEmail);
 // router.post("/create", notificationController.createNotification);
 // router.get("/count", notificationController.getNotificationCount);
 // router.post("/reset", notificationController.resetNotificationCount);
-router.get("/benificiary/:id/transactions", splitsController.getTransactions);
+router.get("/beneficiary/:id/transactions", splitsController.getTransactions);
 router.post('/request-otp',splitsController.requestOtp);
 
 

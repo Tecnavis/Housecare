@@ -49,8 +49,8 @@ const UiTabsAccordions = () => {
           
           const split = splits.find(s => s._id === splitId);
           await axios.post(`${BASE_URL}/approvals/notifications`, {
-            charityName: split.benificiary?.charity_name,
-            benificiaryName: split.benificiary?.benificiary_name,
+            charityName: split.beneficiary?.charity_name,
+            beneficiaryName: split.beneficiary?.beneficiary_name,
             status,
           });
         })
@@ -171,7 +171,7 @@ const UiTabsAccordions = () => {
                                 />
                               </th>
                               <th>Date</th>
-                              <th>benificiary ID</th>
+                              <th>Beneficiary ID</th>
                               <th>Name</th>
                               <th>Number</th>
                               <th>Charity</th>
@@ -194,11 +194,11 @@ const UiTabsAccordions = () => {
                                   />
                                 </td>
                                 <td>{splitDate}</td>
-                                <td>{split.benificiary?.benificiary_id || "N/A"}</td>
-                                <td>{split.benificiary?.benificiary_name || "N/A"}</td>
-                                <td>{split.benificiary?.number || "N/A"}</td>
-                                <td>{split.benificiary?.charity_name || "N/A"}</td>
-                                <td>{split.benificiary?.age || "N/A"}</td>
+                                <td>{split.beneficiary?.beneficiary_id || "N/A"}</td>
+                                <td>{split.beneficiary?.beneficiary_name || "N/A"}</td>
+                                <td>{split.beneficiary?.number || "N/A"}</td>
+                                <td>{split.beneficiary?.charity_name || "N/A"}</td>
+                                <td>{split.beneficiary?.age || "N/A"}</td>
                                 <td>{split.splitamount}</td>
                                 <td>{split.status === 'Accepted' ? 'Approved' : split.status}</td>
                               </tr>
