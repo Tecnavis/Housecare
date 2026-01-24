@@ -3,7 +3,7 @@
 
 var express = require("express");
 const Controller = require("../controller/charity");
-const Controller1 = require("../controller/beneficiary");
+const Controller1 = require("../controller/benficiary");
 var router = express.Router();
 const multer = require("multer");
 

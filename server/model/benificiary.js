@@ -1,54 +1,71 @@
 const mongoose = require("mongoose");
-const Charity = require("./charity");
+const Charity = require("./charity"); // Import the Charity model
 
-const benificiarySchema = new mongoose.Schema({
-  benificiary_id: { type: String, unique: true },
-
-  benificiary_name: { type: String, required: true },
-  email_id: { type: String, required: true },
-  number: Number,
-
-  charity_name: { type: String, required: true },
-  charity_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Charity",
-    required: true
+const benificiarySchema = mongoose.Schema(
+  {
+    benificiary_id: { type: String, unique: true }, // Unique benificiary ID with charity prefix
+    benificiary_name: { type: String, required: true },
+    number: { type: Number},
+    email_id: { type: String, required: true },
+    charity_name: { type: String, required: true },
+    nationality: { type: String},
+    sex: { type: String },
+    health_status: { type: String },
+    marital: { type: String,  },
+    navision_linked_no: { type: String },
+    physically_challenged: { type: String },
+    family_members: { type: Number },
+    account_status: { type: String },
+    date: { type: Date, default: Date.now },
+    Balance: { type: Number },
+    category: { type: String, },
+    age: { type: Number,  },
+    isBlocked: { type: Boolean, default: false }
   },
+  { timestamps: true }
+);
 
-  nationality: String,
-  sex: String,
-  health_status: String,
-  marital: String,
-  navision_linked_no: String,
-  physically_challenged: String,
-  family_members: Number,
-  account_status: String,
-  Balance: { type: Number, default: 0 },
-  category: String,
-  age: Number,
-  isBlocked: { type: Boolean, default: false }
-}, { timestamps: true });
-
-/* AUTO ID GENERATION */
+// Pre-save middleware to generate unique beneficiary_id with charity prefix
 benificiarySchema.pre("save", async function (next) {
-  if (!this.isNew) return next();
+  const benificiary = this;
 
-  const charity = await Charity.findById(this.charity_id);
-  if (!charity || !charity.prifix) {
-    return next(new Error("Invalid charity or prefix"));
+  if (benificiary.isNew) {
+    try {
+      // Find the charity using charity_name
+      const charity = await Charity.findOne({ charity: benificiary.charity_name });
+
+      if (!charity) {
+        return next(new Error("Charity not found!"));
+      }
+
+      const charityPrefix = charity.prifix; // Get the prefix from the charity
+      if (!charityPrefix) {
+        return next(new Error("Charity prefix not found!"));
+      }
+
+      // Find the last beneficiary for this charity to determine the next ID
+      const lastBenificiary = await this.constructor
+        .findOne({ charity_name: benificiary.charity_name })
+        .sort({ createdAt: -1 });
+
+      let newIdNumber = "00001"; // Default first ID
+
+      if (lastBenificiary && lastBenificiary.benificiary_id) {
+        // Extract the numeric part and increment it
+        const lastId = lastBenificiary.benificiary_id.replace(charityPrefix, "");
+        const lastNum = parseInt(lastId, 10) || 0; // Get the numeric part safely
+        const nextNum = (lastNum + 1).toString().padStart(5, "0"); // Increment and pad with leading zeros
+        newIdNumber = nextNum;
+      }
+
+      benificiary.benificiary_id = `${charityPrefix}${newIdNumber}`; // Combine prefix with new ID
+    } catch (error) {
+      return next(error);
+    }
   }
 
-  const last = await this.constructor
-    .findOne({ charity_id: charity._id })
-    .sort({ createdAt: -1 });
-
-  let num = 1;
-  if (last?.benificiary_id) {
-    num = parseInt(last.benificiary_id.replace(charity.prifix, ""), 10) + 1;
-  }
-
-  this.benificiary_id = `${charity.prifix}${num.toString().padStart(5, "0")}`;
-  next();
+  next(); // Continue with the save operation
 });
 
-module.exports = mongoose.model("Benificiaries", benificiarySchema);
+const Benificiaries = mongoose.model("Benificiaries", benificiarySchema);
+module.exports = Benificiaries;

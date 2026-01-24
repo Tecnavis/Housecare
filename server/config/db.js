@@ -2,15 +2,14 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const dblink = process.env.MONGODB_URI;
-
 function connectDB() {
-    mongoose.connect(dblink)
+    mongoose.connect(dblink, {})
     .then(() => {
-        console.log("✅ MongoDB connected successfully");
+        console.log("Database connected successfully");
+        console.log("http://localhost:8000");
     })
     .catch((err) => {
-        console.error("❌ MongoDB connection error:", err.message);
-        process.exit(1); // Exit if DB connection fails
+        console.log(err, "error occurred in database connection");
     });
 }
 

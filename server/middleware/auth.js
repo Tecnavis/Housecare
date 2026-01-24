@@ -1,22 +1,17 @@
 const jwt = require("jsonwebtoken");
 
 module.exports = function (req, res, next) {
-  const header = req.header("Authorization");
-  if (!header) {
-    return res.status(401).json({ message: "Authorization token missing" });
+  const token = req.header("Authorization");
+  if (!token) {
+    console.log("Authorization token is missing");
+    return res.status(401).json({ message: "Authorization token is missing" });
   }
-
   try {
-    const token = header.replace("Bearer ", "");
-    const decoded = jwt.verify(token, "myjwtsecretkey");
-
-    req.user = {
-      id: decoded.id,     // charity _id
-      role: decoded.role // "charity" | "admin"
-    };
-
+    const decoded = jwt.verify(token.replace("Bearer ", ""), "myjwtsecretkey");
+    req.admin = decoded;
     next();
   } catch (err) {
+    console.error("JWT verification error:", err.message);
     return res.status(401).json({ message: "Invalid Token" });
   }
 };
