@@ -1,44 +1,40 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 const multer = require("multer");
 
-// ✅ Correct folder name usually is "controllers"
-// If your folder is really named "controller", keep it as you had.
+// ✅ Controllers (make sure filename matches exactly)
 const CharityController = require("../controller/charity");
 const BeneficiaryController = require("../controller/benficiary");
 
-// ✅ Multer memory storage
+// ✅ Multer config
 const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "application/vnd.ms-excel",
     ];
 
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only .xlsx and .xls files are allowed"), false);
-    }
+    if (allowedTypes.includes(file.mimetype)) cb(null, true);
+    else cb(new Error("Only .xlsx and .xls files are allowed"), false);
   },
 });
 
-// ✅ Safety wrapper: prevents server crash if controller function is missing
-const safeHandler = (fn, name) => {
-  if (typeof fn !== "function") {
-    console.error(`❌ Route handler missing or invalid: ${name}`);
+// ✅ SAFE WRAPPER to avoid crash if any controller is missing
+const safeHandler = (handler, name) => {
+  if (typeof handler !== "function") {
+    console.error(`❌ Missing handler: ${name}`);
     return (req, res) => {
       return res.status(500).json({
         success: false,
-        message: `Server route misconfigured: ${name} is not a function`,
+        message: `Route misconfigured: ${name} is not a function`,
       });
     };
   }
-  return fn;
+  return handler;
 };
 
 // ✅ Routes
